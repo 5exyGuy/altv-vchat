@@ -1,27 +1,32 @@
 <script lang="ts">
-    import { onMount } from 'svelte';
+    import { onMount, tick } from 'svelte';
     import Channel from './components/Channel.svelte';
     import Message from './components/Message.svelte';
     import MessageInput from './components/MessageInput.svelte';
-    import ChevronDownIcon from './icons/ChevronDownIcon.svelte';
 
-    let channels = ['Global', 'Channel #1', 'Channel #2'];
-    let messages = [
-        'Lorem Ipsum is simply dummy text of the printing and typesetting industry.',
-        'Contrary to popular belief, Lorem Ipsum is not simply random text.',
-        'The standard chunk of Lorem Ipsum used since the 1500s is reproduced below for those interested.',
-        'Lorem Ipsum is simply dummy text of the printing and typesetting industry.',
-        'Contrary to popular belief, Lorem Ipsum is not simply random text.',
-        'The standard chunk of Lorem Ipsum used since the 1500s is reproduced below for those interested.',
+    let channels = [
+        { name: 'global', closable: false },
+        { name: 'local', closable: true },
     ];
+    let messages = [];
 
     let messagesRef: HTMLDivElement;
     let currentChannel: number = -1;
 
-    function processMessageSend() {}
+    async function processMessageSend(event: CustomEvent<{ message: string }>) {
+        const { message } = event.detail;
+        if (!message || typeof message !== 'string' || message.length === 0) return;
+
+        messages = [...messages, message];
+
+        await tick();
+        messagesRef.scrollTo({ behavior: 'smooth', top: messagesRef.scrollHeight });
+    }
+
+    function processMessageScroll(event: Event) {}
 
     onMount(() => {
-        messagesRef.scrollTop = messagesRef.scrollHeight - messagesRef.clientHeight;
+        messagesRef.scrollTo({ behavior: 'smooth', top: messagesRef.scrollHeight });
 
         if (window.alt) {
             window.alt.emit('vchat:mounted');
@@ -32,10 +37,14 @@
 <div class="chat-box">
     <div class="chat-box-channels">
         {#each channels as channel}
-            <Channel>{channel}</Channel>
+            <Channel name={channel.name} closable={channel.closable} />
         {/each}
     </div>
-    <div class="chat-box-messages" bind:this={messagesRef}>
+    <div class="chat-box-messages" bind:this={messagesRef} on:scroll={processMessageScroll}>
+        {#if messages.length === 0}
+            <p class="chat-box-messages-empty">No messages yet.</p>
+        {/if}
+
         {#each messages as message}
             <Message>{message}</Message>
         {/each}

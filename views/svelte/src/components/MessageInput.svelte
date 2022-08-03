@@ -6,21 +6,28 @@
     // export let commands = {};
 
     const dispatch = createEventDispatcher();
+    let value: string;
 
     function processInput(event: HTMLElementEventMap['input']) {}
 
     function processKeyDown(event: HTMLElementEventMap['keydown']) {
         switch (event.key) {
             case 'Enter':
-                dispatch('send');
+                dispatch('send', { message: value });
+                value = '';
+                event.preventDefault();
+                break;
+            case 'Escape':
+                value = '';
+                event.preventDefault();
                 break;
         }
     }
 </script>
 
 <div class="message-input">
-    <input {placeholder} on:input={processInput} on:keydown={processKeyDown} />
-    <button on:click={() => dispatch('send')}>
+    <input {placeholder} bind:value on:input={processInput} on:keydown={processKeyDown} />
+    <button on:click={() => dispatch('send', { message: value })}>
         <PaperIcon />
     </button>
 </div>
