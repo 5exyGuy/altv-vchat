@@ -1,0 +1,28 @@
+.chat-box {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    padding: 0.5rem;
+    position: fixed;
+    top: 0;
+    width: 40rem;
+
+    &-channels {
+        display: flex;
+        flex-direction: row;
+        gap: 0.5rem;
+    }
+
+    &-messages {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+        max-height: 15rem;
+        overflow-y: scroll;
+
+        &::-webkit-scrollbar {
+            background: transparent;
+            width: 0;
+        }
+    }
+}

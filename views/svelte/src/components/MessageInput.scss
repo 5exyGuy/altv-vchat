@@ -1,0 +1,33 @@
+.message-input {
+    display: flex;
+    flex-direction: row;
+    gap: 0.5rem;
+    background-color: rgba(50, 50, 50, 0.5);
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+
+    & > input {
+        background-color: transparent;
+        width: 100%;
+        color: #ffffff;
+
+        &:focus {
+            outline: none;
+        }
+    }
+
+    & > button {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background-color: rgba(50, 50, 50);
+        width: 2rem;
+        height: 2rem;
+        border-radius: 9999px;
+        color: white;
+
+        &:hover {
+            background-color: rgba(50, 50, 50, 0.5);
+        }
+    }
+}
