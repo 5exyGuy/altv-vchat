@@ -7,13 +7,22 @@
     top: 0;
     width: 40rem;
 
-    &-channels {
+    & > .header {
         display: flex;
         flex-direction: row;
-        gap: 0.5rem;
+        justify-content: space-between;
+
+        & > .channels {
+            display: flex;
+            flex-direction: row;
+            gap: 0.5rem;
+        }
+
+        & > .controls {
+        }
     }
 
-    &-messages {
+    & > .messages {
         display: flex;
         flex-direction: column;
         gap: 0.5rem;

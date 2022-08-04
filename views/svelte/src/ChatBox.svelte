@@ -48,13 +48,18 @@
 </script>
 
 <div class="chat-box">
-    <div class="chat-box-channels">
-        {#each [...channels] as channel}
-            <Channel name={channel[0]} closable={channel[1].closable} on:click={processChannelClick} />
-        {/each}
+    <div class="header">
+        <div class="channels">
+            {#each [...channels] as channel}
+                <Channel name={channel[0]} closable={channel[1].closable} on:click={processChannelClick} />
+            {/each}
+        </div>
+        <div class="controls">
+            <div class="">Minimize</div>
+        </div>
     </div>
     {#if messages.length > 0}
-        <div class="chat-box-messages" bind:this={messagesRef} on:scroll={processMessageScroll}>
+        <div class="messages" bind:this={messagesRef} on:scroll={processMessageScroll}>
             {#each messages as message}
                 <Message>{message}</Message>
             {/each}
