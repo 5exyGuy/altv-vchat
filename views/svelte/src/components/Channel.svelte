@@ -2,17 +2,20 @@
     import { createEventDispatcher } from 'svelte';
     import CrossIcon from '../icons/CrossIcon.svelte';
 
-    export let name: string = 'Global';
+    export let name: string;
     export let selected: boolean = false;
     export let closable: boolean = true;
 
     const dispatch = createEventDispatcher();
 </script>
 
-<div class="channel" class:channel-selected={selected}>
-    <button class="channel-name">{name}</button>
+<div class="channel">
+    <div class="channel-new-message" />
+    <button class="btn-channel-name" class:channel-selected={selected} on:click={() => dispatch('click', { name })}>
+        {name}
+    </button>
     {#if closable}
-        <button class="channel-close" on:click={() => dispatch('close')}>
+        <button class="btn-channel-close" on:click={() => dispatch('close', { name })}>
             <CrossIcon />
         </button>
     {/if}

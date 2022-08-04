@@ -1,48 +1,60 @@
 .channel {
-    display: inline-flex;
-    gap: 0.5rem;
-    padding: 0.35rem 1rem 0.35rem 0.5rem;
-    background: rgb(45, 45, 45);
-    border-radius: 0.5rem;
-    transition: background 200ms ease-in-out;
-    cursor: pointer;
-    user-select: none;
+    display: inline-block;
+    position: relative;
 
-    &-selected {
-        background-color: rgb(0, 135, 54);
+    & > &-new-message {
+        position: absolute;
+        inset: 0 auto auto 0;
+        background-color: #00c896;
+        width: 0.5rem;
+        height: 0.5rem;
+        border-radius: 9999px;
+        border: 1px solid #1a1a1a;
+        transform: translateX(-25%) translateY(-25%);
     }
 
-    & > .channel-name {
+    & > .btn-channel-name {
+        padding: 0.25rem 1.25rem;
+        background: #343434;
         font-size: 0.75rem;
         text-transform: lowercase;
-        border-radius: 0.5rem;
-        padding: 0 0.5rem;
+        border-radius: 0.25rem;
         color: #ffffff;
+        text-align: left;
+        user-select: none;
+        transition: background-color 200ms ease-in-out;
 
         &:hover {
-            background-color: rgba(0, 0, 0, 1);
+            background-color: rgb(70, 70, 70);
+        }
+
+        &:active {
+            background-color: rgb(50, 50, 50);
         }
     }
 
-    & > .channel-close {
+    & > .btn-channel-close {
         display: flex;
         justify-content: center;
         align-items: center;
-        background-color: rgba(0, 0, 0, 1);
-        width: 1.15rem;
-        height: 1.15rem;
-        border-radius: 0.5rem;
+        position: absolute;
+        inset: 0 0 auto auto;
+        transform: translateX(25%) translateY(-25%);
+        background-color: rgb(255, 136, 136);
+        width: 1rem;
+        height: 1rem;
+        border-radius: 9999px;
+        border: 1px solid #36383c;
         color: white;
+        transition: background-color 200ms ease-in-out;
 
         &:hover {
-            background-color: rgb(228, 42, 42);
+            background-color: rgb(255, 87, 87);
         }
 
         & > :global(*) {
-            width: 0.75rem;
-            height: 0.75rem;
+            width: 0.5rem;
+            height: 0.5rem;
         }
-
-        margin-right: -0.5rem;
     }
 }

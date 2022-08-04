@@ -4,29 +4,42 @@
     import Message from './components/Message.svelte';
     import MessageInput from './components/MessageInput.svelte';
 
-    let channels = [
-        { name: 'global', closable: false },
-        { name: 'local', closable: true },
-    ];
-    let messages = [];
+    const channels = new Map<string, { closable: boolean }>([
+        ['global', { closable: false }],
+        ['local', { closable: true }],
+    ]);
+    const channelMessages = new Map<string, Array<string>>([
+        ['global', []],
+        ['local', ['Hello', 'World']],
+    ]);
 
     let messagesRef: HTMLDivElement;
-    let currentChannel: number = -1;
+    let currentChannel = 'global';
+    let messages = channelMessages.get(currentChannel);
 
     async function processMessageSend(event: CustomEvent<{ message: string }>) {
         const { message } = event.detail;
         if (!message || typeof message !== 'string' || message.length === 0) return;
 
-        messages = [...messages, message];
+        const channel = channelMessages.get(currentChannel);
+        if (!channel) return;
+
+        messages = [...channel, message];
+        channelMessages.set(currentChannel, messages);
 
         await tick();
-        messagesRef.scrollTo({ behavior: 'smooth', top: messagesRef.scrollHeight });
+        messagesRef?.scrollTo({ behavior: 'smooth', top: messagesRef.scrollHeight });
     }
 
     function processMessageScroll(event: Event) {}
 
+    function processChannelClick(event: CustomEvent<{ name: string }>) {
+        currentChannel = event.detail.name;
+        messages = channelMessages.get(currentChannel);
+    }
+
     onMount(() => {
-        messagesRef.scrollTo({ behavior: 'smooth', top: messagesRef.scrollHeight });
+        messagesRef?.scrollTo({ behavior: 'smooth', top: messagesRef.scrollHeight });
 
         if (window.alt) {
             window.alt.emit('vchat:mounted');
@@ -36,22 +49,20 @@
 
 <div class="chat-box">
     <div class="chat-box-channels">
-        {#each channels as channel}
-            <Channel name={channel.name} closable={channel.closable} />
+        {#each [...channels] as channel}
+            <Channel name={channel[0]} closable={channel[1].closable} on:click={processChannelClick} />
         {/each}
     </div>
-    <div class="chat-box-messages" bind:this={messagesRef} on:scroll={processMessageScroll}>
-        {#if messages.length === 0}
-            <p class="chat-box-messages-empty">No messages yet.</p>
-        {/if}
-
-        {#each messages as message}
-            <Message>{message}</Message>
-        {/each}
-        <!-- <button class="absolute right-0">
+    {#if messages.length > 0}
+        <div class="chat-box-messages" bind:this={messagesRef} on:scroll={processMessageScroll}>
+            {#each messages as message}
+                <Message>{message}</Message>
+            {/each}
+            <!-- <button class="absolute right-0">
             <ChevronDownIcon />
         </button> -->
-    </div>
+        </div>
+    {/if}
     <MessageInput on:send={processMessageSend} />
 </div>
 
