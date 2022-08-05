@@ -1,9 +1,10 @@
 <script lang="ts">
     import { createEventDispatcher } from 'svelte';
     import CrossIcon from '../icons/CrossIcon.svelte';
+    import Button from './Button.svelte';
 
     export let name: string;
-    export let selected: boolean = false;
+    // export let selected: boolean = false;
     export let closable: boolean = true;
 
     const dispatch = createEventDispatcher();
@@ -11,9 +12,9 @@
 
 <div class="channel">
     <div class="channel-new-message" />
-    <button class="btn-channel-name" class:channel-selected={selected} on:click={() => dispatch('click', { name })}>
+    <Button on:click={() => dispatch('click', { name })}>
         {name}
-    </button>
+    </Button>
     {#if closable}
         <button class="btn-channel-close" on:click={() => dispatch('close', { name })}>
             <CrossIcon />

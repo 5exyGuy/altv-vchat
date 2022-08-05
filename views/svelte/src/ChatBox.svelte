@@ -1,8 +1,11 @@
 <script lang="ts">
     import { onMount, tick } from 'svelte';
+    import Button from './components/Button.svelte';
     import Channel from './components/Channel.svelte';
     import Message from './components/Message.svelte';
     import MessageInput from './components/MessageInput.svelte';
+    import ChevronDownIcon from './icons/ChevronDownIcon.svelte';
+    import PlusIcon from './icons/PlusIcon.svelte';
 
     const channels = new Map<string, { closable: boolean }>([
         ['global', { closable: false }],
@@ -33,9 +36,12 @@
 
     function processMessageScroll(event: Event) {}
 
-    function processChannelClick(event: CustomEvent<{ name: string }>) {
+    async function processChannelClick(event: CustomEvent<{ name: string }>) {
         currentChannel = event.detail.name;
         messages = channelMessages.get(currentChannel);
+
+        await tick();
+        messagesRef?.scrollTo({ top: messagesRef.scrollHeight });
     }
 
     onMount(() => {
@@ -54,9 +60,10 @@
                 <Channel name={channel[0]} closable={channel[1].closable} on:click={processChannelClick} />
             {/each}
         </div>
-        <div class="controls">
-            <div class="">Minimize</div>
-        </div>
+        <!-- <div class="controls">
+            <Button shape="square"><ChevronDownIcon /></Button>
+            <Button shape="square"><PlusIcon /></Button>
+        </div> -->
     </div>
     {#if messages.length > 0}
         <div class="messages" bind:this={messagesRef} on:scroll={processMessageScroll}>

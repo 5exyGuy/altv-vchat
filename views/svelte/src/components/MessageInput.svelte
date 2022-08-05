@@ -1,6 +1,7 @@
 <script lang="ts">
     import { createEventDispatcher } from 'svelte';
     import PaperIcon from '../icons/PaperIcon.svelte';
+    import Button from './Button.svelte';
 
     export let placeholder: string = 'Type a message...';
     // export let commands = {};
@@ -17,19 +18,12 @@
                 value = '';
                 event.preventDefault();
                 break;
-            case 'Escape':
-                value = '';
-                event.preventDefault();
-                break;
         }
     }
 </script>
 
 <div class="message-input">
     <input {placeholder} bind:value on:input={processInput} on:keydown={processKeyDown} />
-    <button on:click={() => dispatch('send', { message: value })}>
-        <PaperIcon />
-    </button>
 </div>
 
 <style lang="scss">
