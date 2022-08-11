@@ -2,15 +2,10 @@
 @tailwind components;
 @tailwind utilities;
 
-@font-face {
-    font-family: 'Chalet';
-    src: url('ChaletLondonNineteenSixty.ttf') format('truetype');
-}
-
 body {
     background-image: url('background.jpg');
     background-repeat: no-repeat;
     background-size: cover;
 
-    font-family: 'Chalet';
+    font-family: 'Varela Round', serif;
 }
