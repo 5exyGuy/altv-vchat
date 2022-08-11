@@ -2,10 +2,6 @@
     // import { fade, fly } from 'svelte/transition';
 </script>
 
-<div class="messsage">
+<div class="text-white text-base select-none">
     <slot />
 </div>
-
-<style lang="scss">
-    @import 'Message.scss';
-</style>

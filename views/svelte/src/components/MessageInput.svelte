@@ -1,10 +1,7 @@
 <script lang="ts">
     import { createEventDispatcher } from 'svelte';
-    import PaperIcon from '../icons/PaperIcon.svelte';
-    import Button from './Button.svelte';
 
     export let placeholder: string = 'Type a message...';
-    // export let commands = {};
 
     const dispatch = createEventDispatcher();
     let value: string;
@@ -22,10 +19,10 @@
     }
 </script>
 
-<div class="message-input">
-    <input {placeholder} bind:value on:input={processInput} on:keydown={processKeyDown} />
-</div>
-
-<style lang="scss">
-    @import 'MessageInput.scss';
-</style>
+<input
+    class="bg-black bg-opacity-50 text-base text-white px-4 py-2 focus:outline-none"
+    {placeholder}
+    bind:value
+    on:input={processInput}
+    on:keydown={processKeyDown}
+/>

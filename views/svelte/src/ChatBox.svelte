@@ -19,7 +19,7 @@
     });
 </script>
 
-<div class="flex flex-col gap-4 p-2 top-0 w-96">
+<div class="flex flex-col m-4 top-60 w-[40rem]">
     <Messages {messages} />
     <MessageInput on:send={processMessageSend} />
 </div>
