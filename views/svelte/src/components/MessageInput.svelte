@@ -2,10 +2,15 @@
     export let placeholder: string = 'Type a message...';
     export let message: string = '';
     export let messages: Array<string> = [];
+    export let prefix: string = '/';
 
     async function sendMessage(event: KeyboardEvent) {
         if (event.key !== 'Enter') return;
         if (!message || typeof message !== 'string' || message.length === 0) return;
+
+        message.startsWith(prefix) && window.alt
+            ? window.alt.emit('vchat:command', message)
+            : window.alt.emit('vchat:message', message);
 
         messages = [...messages, message];
         message = '';

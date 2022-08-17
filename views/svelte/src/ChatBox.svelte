@@ -7,15 +7,13 @@
     let messages: Array<string> = [];
     let message: string = '';
 
-    onMount(() => {
-        if (window.alt) {
-            window.alt.emit('vchat:mounted');
-        }
-    });
+    const prefix: string = '/';
+
+    onMount(() => window.alt && window.alt.emit('vchat:mounted'));
 </script>
 
 <div class="flex flex-col m-4 top-60 w-[40rem]">
     <Messages {messages} />
-    <MessageInput bind:message bind:messages />
-    <Commands bind:message />
+    <MessageInput {prefix} bind:message bind:messages />
+    <Commands max={3} {prefix} bind:message />
 </div>
