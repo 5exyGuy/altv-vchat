@@ -1,16 +1,11 @@
 <script lang="ts">
-    import { onMount, tick } from 'svelte';
+    import { onMount } from 'svelte';
+    import Commands from './components/Commands.svelte';
     import MessageInput from './components/MessageInput.svelte';
     import Messages from './components/Messages.svelte';
 
-    let messages = [];
-
-    async function processMessageSend(event: CustomEvent<{ message: string }>) {
-        const { message } = event.detail;
-        if (!message || typeof message !== 'string' || message.length === 0) return;
-
-        messages = [...messages, message];
-    }
+    let messages: Array<string> = [];
+    let message: string = '';
 
     onMount(() => {
         if (window.alt) {
@@ -21,5 +16,6 @@
 
 <div class="flex flex-col m-4 top-60 w-[40rem]">
     <Messages {messages} />
-    <MessageInput on:send={processMessageSend} />
+    <MessageInput bind:message bind:messages />
+    <Commands bind:message />
 </div>
