@@ -80,6 +80,11 @@
         else scrollUp();
     }
 
+    //
+
+    $: maskTopHeight = currentScroll === 0 ? '0px' : `${(64 * currentScroll) / boxHeight}px`;
+    $: maskBottomHeight = currentScroll === boxHeight ? '0px' : `${(64 * (boxHeight - currentScroll)) / boxHeight}px`;
+
     // Hooks
 
     onMount(() => {
@@ -102,8 +107,8 @@
     class:opacity-100={focus}
     class:!overflow-y-hidden={!focus}
     style:direction="rtl"
-    style:--mask-top-height={currentScroll === 0 ? '0rem' : '4rem'}
-    style:--mask-bottom-height={currentScroll === boxHeight ? '0rem' : '4rem'}
+    style:--mask-top-height={maskTopHeight}
+    style:--mask-bottom-height={maskBottomHeight}
     bind:this={ref}
 >
     <div class="ml-4" style:direction="ltr">
