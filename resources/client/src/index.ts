@@ -1,20 +1,40 @@
-import { emitServer, on, onServer, WebView } from 'alt-client';
+import { on, onServer, WebView, toggleGameControls, emitServer, LocalStorage } from 'alt-client';
 
-const chatWebView = new WebView('http://localhost:5173/', false);
+const ESC_KEY: number = 27;
+const T_KEY: number = 84;
+const chatWebView: WebView = new WebView('http://localhost:4000/');
+const chatHistory: Array<string> = LocalStorage.get('chatHistory') ?? [];
+
+function addToHistory(message: string) {
+    chatHistory.push(message);
+    LocalStorage.set('chatHistory', chatHistory);
+    LocalStorage.save();
+}
+
+function focus() {
+    chatWebView.emit('vchat:focus', true);
+    toggleGameControls(false);
+    chatWebView.focus();
+}
+
+function unfocus() {
+    chatWebView.emit('vchat:focus', false);
+    toggleGameControls(true);
+    chatWebView.unfocus();
+}
 
 chatWebView.on('vchat:ready', () => {});
-chatWebView.on('vchat:send:message:to:client', (message: string) => {
-    emitServer('vchat:send:message:to:server', message);
+chatWebView.on('vchat:message', (message: string) => {
+    if (message.length > 0) emitServer('vchat:message', message);
+    unfocus();
 });
 
-onServer('vchat:send:message:to:client', (message: string) => {
-    chatWebView.emit('vchat:send:message:to:webview', message);
+onServer('vchat:message', (message: string) => {
+    addToHistory(message);
+    chatWebView.emit('vchat:message', message);
 });
 
 on('keyup', (keyCode) => {
-    switch (keyCode) {
-        case 84:
-            chatWebView.emit('vchat:open:chat');
-            break;
-    }
+    if (keyCode === ESC_KEY && chatWebView.focused) unfocus();
+    else if (keyCode === T_KEY && !chatWebView.focused) focus();
 });

@@ -1,39 +1,120 @@
 <script lang="ts">
+    import { onMount, tick } from 'svelte';
     import Message from './Message.svelte';
 
-    export let messages: Array<string> = [];
+    // Props
+
+    export let scrollStep: number = 20;
+
+    // Variables
+
+    let messages: Array<string> = [
+        'My life is a crazy explosion of shapes and colors - Creativity',
+        'I tend to be the peacemaker between friends',
+        'Every day - if walking through the shops count as working out!',
+        'Yes, but I only have a couple of items on it',
+        'Good question - I am still trying to figure that out!',
+        'My life is a crazy explosion of shapes and colors - Creativity',
+        'I tend to be the peacemaker between friends',
+        'Every day - if walking through the shops count as working out!',
+        'Yes, but I only have a couple of items on it',
+        'Good question - I am still trying to figure that out!',
+        'My life is a crazy explosion of shapes and colors - Creativity',
+        'I tend to be the peacemaker between friends',
+        'Every day - if walking through the shops count as working out!',
+        'Yes, but I only have a couple of items on it',
+        'Good question - I am still trying to figure that out!',
+        'My life is a crazy explosion of shapes and colors - Creativity',
+        'I tend to be the peacemaker between friends',
+        'Every day - if walking through the shops count as working out!',
+        'Yes, but I only have a couple of items on it',
+        'Good question - I am still trying to figure that out!',
+    ];
+    let ref: HTMLDivElement;
+    let focus: boolean = false;
+    let boxHeight: number = 0;
+    let currentScroll: number = 0;
+
+    // Functions
+
+    async function addMessage(message: string) {
+        messages = [...messages, message]; // Add message to array
+        await tick(); // Wait for next tick
+        boxHeight = ref.scrollHeight - ref.clientHeight; // Get height of box
+        // If the box is focused and previous scroll was at the bottom, scroll to the bottom again
+        if (!focus || (focus && currentScroll === boxHeight)) scrollToBottom();
+    }
+
+    function scrollToBottom() {
+        currentScroll = boxHeight;
+        ref.scroll({
+            top: boxHeight,
+            behavior: 'smooth',
+        });
+    }
+
+    function scrollUp() {
+        const scroll = currentScroll - scrollStep;
+        currentScroll = scroll < 0 ? 0 : scroll;
+        ref.scrollTop = scroll;
+    }
+
+    function scrollDown() {
+        const scroll = currentScroll + scrollStep;
+        currentScroll = scroll > boxHeight ? boxHeight : scroll;
+        ref.scrollTop = scroll;
+    }
+
+    function scroll(event: KeyboardEvent) {
+        if (event.key === 'PageUp') {
+            event.preventDefault();
+            scrollUp();
+        } else if (event.key === 'PageDown') {
+            event.preventDefault();
+            scrollDown();
+        }
+    }
+
+    async function processScroll(event: WheelEvent) {
+        if (event.deltaY > 0) scrollDown();
+        else scrollUp();
+    }
+
+    // Hooks
+
+    onMount(() => {
+        boxHeight = ref.scrollHeight - ref.clientHeight;
+        scrollToBottom();
+
+        if (!window.alt) return;
+        window.alt.on('vchat:message', async (message) => await addMessage(message));
+        window.alt.on('vchat:focus', (_focus) => {
+            focus = _focus;
+            if (!_focus) {
+                scrollToBottom();
+            }
+        });
+    });
 </script>
 
-<div class="test flex flex-col gap-2 mb-4 h-80 overflow-y-scroll">
-    {#each messages as message}
-        <Message>{@html message}</Message>
-    {/each}
+<div
+    class="flex flex-col gap-[8px] h-[320px] overflow-y-scroll mb-[16px] opacity-50 mask"
+    class:opacity-100={focus}
+    class:!overflow-y-hidden={!focus}
+    style:direction="rtl"
+    style:--mask-top-height={currentScroll === 0 ? '0rem' : '4rem'}
+    style:--mask-bottom-height={currentScroll === boxHeight ? '0rem' : '4rem'}
+    bind:this={ref}
+>
+    <div class="ml-4" style:direction="ltr">
+        {#each messages as message}
+            <Message>{@html message}</Message>
+        {/each}
+    </div>
 </div>
 
-<style lang="scss">
-    .test {
-        // --scrollbar-width: 8px;
-        // --mask-height: 4rem;
-        // overflow-y: auto;
-        // padding-bottom: var(--mask-height);
-        // --mask-image-content: linear-gradient(
-        //     to bottom,
-        //     transparent,
-        //     black var(--mask-height),
-        //     black calc(100% - var(--mask-height) + 2rem),
-        //     transparent
-        // );
-        // --mask-size-content: calc(100% - var(--scrollbar-width)) 100%;
-        // --mask-image-scrollbar: linear-gradient(black, black);
-        // --mask-size-scrollbar: var(--scrollbar-width) 100%;
-        // mask-image: var(--mask-image-content), var(--mask-image-scrollbar);
-        // mask-size: var(--mask-size-content), var(--mask-size-scrollbar);
-        // mask-position: 0 0, 100% 0;
-        // mask-repeat: no-repeat, no-repeat;
-    }
+<svelte:window on:keydown={scroll} on:mousewheel|nonpassive|preventDefault={processScroll} />
 
-    ::-webkit-scrollbar {
-        background: transparent;
-        width: 0;
-    }
+<style lang="scss">
+    @import 'Messages.scss';
 </style>

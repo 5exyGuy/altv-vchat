@@ -3,11 +3,12 @@
     "version": "1.0.0",
     "author": "5exyGuy (Aurėjus Remeika)",
     "license": "MIT",
+    "type": "module",
     "scripts": {
-        "build": "turbo run build",
-        "dev": "turbo run dev"
+        "build": "turbo run build --filter=!@altv-chat/react --filter=!@altv-chat/vue",
+        "dev": "turbo run dev --filter=!@altv-chat/react --filter=!@altv-chat/vue"
     },
     "devDependencies": {
-        "turbo": "^1.4.2"
+        "turbo": "^1.4.3"
     }
 }

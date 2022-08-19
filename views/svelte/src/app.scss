@@ -3,9 +3,6 @@
 @tailwind utilities;
 
 body {
-    background-image: url('background.jpg');
-    background-repeat: no-repeat;
-    background-size: cover;
-
     font-family: 'Varela Round', serif;
+    pointer-events: none;
 }

@@ -1,7 +1,7 @@
 <script lang="ts">
-    import type { MatchedCommand } from '../interfaces/matched-command.interface';
-    import type { Command } from '../interfaces/command.interface';
+    import type { Command, MatchedCommand } from '../interfaces';
     import commandsJson from '../commands.json';
+    import { onMount } from 'svelte';
 
     export let commands: Array<Command> = commandsJson; // commands
     export let message: string = ''; // message
@@ -10,6 +10,7 @@
 
     let selected = -1; // -1 means no command is selected
     let matchedCommands: Array<MatchedCommand> = [];
+    let focus: boolean = false;
 
     function addPrefix(message: string): string {
         return prefix + message;
@@ -37,7 +38,8 @@
             .filter((command) => {
                 const cmdName = words[0]; // Takes the first word as the command name
                 return (
-                    addPrefix(command.name).startsWith(cmdName) && words.length - 1 <= (command.parameters.length ?? 0)
+                    addPrefix(command.name).startsWith(cmdName) &&
+                    words.length - 1 <= (command?.parameters?.length ?? 0)
                 );
             }) // Filter commands that match the message
             .splice(0, max) // Only show the first 3 commands
@@ -56,20 +58,23 @@
     }
 
     $: updateMatchedCommands(message);
+
+    onMount(() => {
+        if (!window.alt) return;
+        window.alt.on('vchat:focus', (_focus) => (focus = _focus));
+    });
 </script>
 
 <div
-    class="mt-1 text-white flex flex-col transition origin-top"
-    class:scale-y-100={message.length > 0}
-    class:scale-y-0={message.length === 0}
+    class="mt-[4px] text-white flex flex-col transition origin-top scale-y-0"
+    class:!scale-y-100={message.length > 0 && focus}
 >
     {#each matchedCommands as matchedCommand, cmdIndex}
         <div
-            class="bg-black px-4 py-2 transition duration-200 select-none"
+            class="bg-black px-[16px] py-[8px] transition duration-200 select-none"
             class:bg-opacity-50={cmdIndex === selected}
             class:bg-opacity-30={cmdIndex !== selected}
             class:hover:bg-opacity-50={cmdIndex !== selected}
-            on:click={() => (message = matchedCommand.name)}
         >
             <div class="flex text-base text-white text-opacity-100">
                 <span>

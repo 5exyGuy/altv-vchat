@@ -4,16 +4,17 @@
     import MessageInput from './components/MessageInput.svelte';
     import Messages from './components/Messages.svelte';
 
-    let messages: Array<string> = [];
     let message: string = '';
-
     const prefix: string = '/';
 
-    onMount(() => window.alt && window.alt.emit('vchat:mounted'));
+    onMount(() => {
+        if (!window.alt) return;
+        window.alt.emit('vchat:mounted');
+    });
 </script>
 
-<div class="flex flex-col m-4 top-60 w-[40rem]">
-    <Messages {messages} />
-    <MessageInput {prefix} bind:message bind:messages />
-    <Commands max={3} {prefix} bind:message />
+<div class="flex flex-col m-[16px] top-[240px] w-[640px]">
+    <Messages />
+    <MessageInput bind:message />
+    <Commands bind:message max={3} {prefix} />
 </div>

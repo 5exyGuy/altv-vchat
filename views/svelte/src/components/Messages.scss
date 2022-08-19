@@ -1,0 +1,34 @@
+.mask {
+    --scrollbar-width: 16px;
+    --mask-image-content: linear-gradient(
+        to bottom,
+        transparent,
+        black var(--mask-top-height),
+        black calc(100% - var(--mask-bottom-height)),
+        transparent
+    );
+    --mask-size-content: calc(100% - var(--scrollbar-width)) 100%;
+    --mask-image-scrollbar: linear-gradient(black, black);
+    --mask-size-scrollbar: var(--scrollbar-width) 100%;
+    mask-image: var(--mask-image-content), var(--mask-image-scrollbar);
+    mask-size: var(--mask-size-content), var(--mask-size-scrollbar);
+    mask-position: 0 0, 100% 0;
+    mask-repeat: no-repeat, no-repeat;
+}
+
+::-webkit-scrollbar {
+    background-color: transparent;
+    width: 0.25rem;
+}
+
+::-webkit-scrollbar-track {
+    background-color: hsl(0 0% 0%);
+}
+
+::-webkit-scrollbar-thumb {
+    background-color: rgba(255, 255, 255, 1);
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background-color: hsl(0 0% 0%);
+}
