@@ -23,15 +23,16 @@
             focus = _focus;
             if (_focus) {
                 await tick();
-                ref.focus();
+                if (ref) ref.focus();
             }
         });
     });
 </script>
 
 <input
-    class="bg-black bg-opacity-50 text-base text-white px-4 py-2 focus:outline-none invisible"
-    class:!visible={focus}
+    class="bg-black bg-opacity-50 text-base text-white px-4 py-2 focus:outline-none w-full"
+    class:invisible={!focus}
+    class:visible={focus}
     {placeholder}
     bind:value={message}
     bind:this={ref}

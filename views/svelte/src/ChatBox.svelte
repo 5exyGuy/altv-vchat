@@ -13,7 +13,7 @@
     });
 </script>
 
-<div class="flex flex-col m-[16px] top-[240px] w-[640px]">
+<div class="fixed m-[16px] top-[4px] left-[4px] w-[640px]">
     <Messages />
     <MessageInput bind:message />
     <Commands bind:message max={3} {prefix} />

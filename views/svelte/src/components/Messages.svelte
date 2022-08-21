@@ -8,28 +8,7 @@
 
     // Variables
 
-    let messages: Array<string> = [
-        'My life is a crazy explosion of shapes and colors - Creativity',
-        'I tend to be the peacemaker between friends',
-        'Every day - if walking through the shops count as working out!',
-        'Yes, but I only have a couple of items on it',
-        'Good question - I am still trying to figure that out!',
-        'My life is a crazy explosion of shapes and colors - Creativity',
-        'I tend to be the peacemaker between friends',
-        'Every day - if walking through the shops count as working out!',
-        'Yes, but I only have a couple of items on it',
-        'Good question - I am still trying to figure that out!',
-        'My life is a crazy explosion of shapes and colors - Creativity',
-        'I tend to be the peacemaker between friends',
-        'Every day - if walking through the shops count as working out!',
-        'Yes, but I only have a couple of items on it',
-        'Good question - I am still trying to figure that out!',
-        'My life is a crazy explosion of shapes and colors - Creativity',
-        'I tend to be the peacemaker between friends',
-        'Every day - if walking through the shops count as working out!',
-        'Yes, but I only have a couple of items on it',
-        'Good question - I am still trying to figure that out!',
-    ];
+    let messages: Array<string> = [];
     let ref: HTMLDivElement;
     let focus: boolean = false;
     let boxHeight: number = 0;
@@ -40,17 +19,25 @@
     async function addMessage(message: string) {
         messages = [...messages, message]; // Add message to array
         await tick(); // Wait for next tick
-        boxHeight = ref.scrollHeight - ref.clientHeight; // Get height of box
+        if (ref) boxHeight = ref.scrollHeight - ref.clientHeight; // Get height of box
         // If the box is focused and previous scroll was at the bottom, scroll to the bottom again
         if (!focus || (focus && currentScroll === boxHeight)) scrollToBottom();
     }
 
-    function scrollToBottom() {
+    async function setMessages(_messages: Array<string>) {
+        messages = _messages;
+        await tick();
+        if (ref) boxHeight = ref.scrollHeight - ref.clientHeight;
+        if (!focus || (focus && currentScroll === boxHeight)) scrollToBottom('auto');
+    }
+
+    function scrollToBottom(behavior: ScrollBehavior = 'smooth') {
         currentScroll = boxHeight;
-        ref.scroll({
-            top: boxHeight,
-            behavior: 'smooth',
-        });
+        if (ref)
+            ref.scroll({
+                top: boxHeight,
+                behavior: behavior,
+            });
     }
 
     function scrollUp() {
@@ -66,6 +53,7 @@
     }
 
     function scroll(event: KeyboardEvent) {
+        if (!focus) return;
         if (event.key === 'PageUp') {
             event.preventDefault();
             scrollUp();
@@ -76,42 +64,50 @@
     }
 
     async function processScroll(event: WheelEvent) {
+        if (!focus) return;
         if (event.deltaY > 0) scrollDown();
         else scrollUp();
     }
 
     //
 
-    $: maskTopHeight = currentScroll === 0 ? '0px' : `${(64 * currentScroll) / boxHeight}px`;
-    $: maskBottomHeight = currentScroll === boxHeight ? '0px' : `${(64 * (boxHeight - currentScroll)) / boxHeight}px`;
+    $: maskTopHeight = currentScroll === 0 ? '0px' : `${Math.floor((64 * currentScroll) / boxHeight)}px`;
+    $: maskBottomHeight =
+        currentScroll === boxHeight ? '0px' : `${Math.floor((64 * (boxHeight - currentScroll)) / boxHeight)}px`;
 
     // Hooks
 
     onMount(() => {
         boxHeight = ref.scrollHeight - ref.clientHeight;
-        scrollToBottom();
+        scrollToBottom('auto');
 
         if (!window.alt) return;
+        window.alt.on('vchat:loadHistory', async (messages) => await setMessages(messages));
         window.alt.on('vchat:message', async (message) => await addMessage(message));
         window.alt.on('vchat:focus', (_focus) => {
             focus = _focus;
-            if (!_focus) {
-                scrollToBottom();
-            }
+            if (!_focus) scrollToBottom();
         });
     });
 </script>
 
 <div
-    class="flex flex-col gap-[8px] h-[320px] overflow-y-scroll mb-[16px] opacity-50 mask"
+    class="relative h-[320px] w-full mb-[16px] mask"
+    class:opacity-50={!focus}
     class:opacity-100={focus}
-    class:!overflow-y-hidden={!focus}
+    class:overflow-y-scroll={focus && ref?.scrollHeight > ref?.clientHeight}
+    class:overflow-y-hidden={!focus}
     style:direction="rtl"
     style:--mask-top-height={maskTopHeight}
     style:--mask-bottom-height={maskBottomHeight}
     bind:this={ref}
 >
-    <div class="ml-4" style:direction="ltr">
+    <div
+        class="flex flex-col gap-[8px]"
+        class:ml-4={focus && ref?.scrollHeight > ref?.clientHeight}
+        class:ml-5={!focus || (focus && ref?.scrollHeight === ref?.clientHeight)}
+        style:direction="ltr"
+    >
         {#each messages as message}
             <Message>{@html message}</Message>
         {/each}

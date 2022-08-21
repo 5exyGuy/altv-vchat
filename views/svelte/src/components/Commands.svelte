@@ -16,6 +16,10 @@
         return prefix + message;
     }
 
+    function removePrefix(message: string): string {
+        return message.replace(prefix, '');
+    }
+
     function selectCommand(event: KeyboardEvent) {
         // Only allow arrow keys and tab
         if (event.key !== 'ArrowDown' && event.key !== 'ArrowUp' && event.key !== 'Tab') return;
@@ -38,8 +42,9 @@
             .filter((command) => {
                 const cmdName = words[0]; // Takes the first word as the command name
                 return (
-                    addPrefix(command.name).startsWith(cmdName) &&
-                    words.length - 1 <= (command?.parameters?.length ?? 0)
+                    cmdName.startsWith(prefix) &&
+                    command.name.startsWith(removePrefix(cmdName)) &&
+                    words.length - 1 <= (command.parameters?.length ?? 0)
                 );
             }) // Filter commands that match the message
             .splice(0, max) // Only show the first 3 commands
@@ -67,7 +72,7 @@
 
 <div
     class="mt-[4px] text-white flex flex-col transition origin-top scale-y-0"
-    class:!scale-y-100={message.length > 0 && focus}
+    class:!scale-y-100={matchedCommands.length > 0 && focus}
 >
     {#each matchedCommands as matchedCommand, cmdIndex}
         <div

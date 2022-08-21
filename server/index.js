@@ -1,4 +1,4 @@
-import { onClient, emitAllClients, on } from 'alt-server';
+import { onClient, on, log, emitAllClients, emitClient, logError } from 'alt-server';
 
 var PedModel = /* @__PURE__ */ ((PedModel2) => {
   PedModel2[PedModel2["a_c_boar"] = 3462393972] = "a_c_boar";
@@ -996,22 +996,70 @@ var PedModel = /* @__PURE__ */ ((PedModel2) => {
   return PedModel2;
 })(PedModel || {});
 
-const chatPipelines = [];
-onClient("vchat:message", (player, message) => {
-  for (const pipeline of chatPipelines)
-    message = pipeline(player, message);
-  emitAllClients("vchat:message", message.replace(/</g, "&lt;").replace(/>/g, "&gt;"));
-});
+function processMessage(message) {
+  const toHTML = message.replace(/</g, "&lt;").replace(/'/g, "&#39").replace(/"/g, "&#34").replace(/\*\*(.+?)\*\*/gim, "<b>$1</b>").replace(/\*(.+?)\*/gim, "<i>$1</i>").replace(/~~(.+?)~~/gim, "<del>$1</del>").replace(/__(.+?)__/gim, "<ins>$1</ins>").replace(/\{([A-Fa-f0-9]{3}|[A-Fa-f0-9]{6})\}(.*?){\/\1}/gim, '<span style="color: $1">$2</span>');
+  return toHTML.trim();
+}
+
+const cmdHandlers = /* @__PURE__ */ new Map();
+const mutedPlayers = /* @__PURE__ */ new Set();
+function invokeCommand(player, cmdName, args) {
+  cmdName = cmdName.toLowerCase();
+  const callback = cmdHandlers.get(cmdName);
+  if (callback)
+    callback(player, args);
+  else
+    send(player, `Unknown command /${cmdName}`);
+}
+let chatHandler = (player, message) => {
+  if (typeof message !== "string")
+    return;
+  if (message.startsWith("/")) {
+    const words = message.trim().slice(1);
+    if (words.length > 0) {
+      log("[vchat:command] " + player.name + ": /" + words);
+      let args = words.split(" ");
+      let cmdName = args.shift() ?? "";
+      invokeCommand(player, cmdName, args);
+    }
+  } else {
+    if (mutedPlayers.has(player)) {
+      send(player, "You are currently muted.");
+      return;
+    }
+    message = message.trim();
+    if (message.length > 0) {
+      log("[vchat:message] " + player.name + ": " + message);
+      message = processMessage(`**${player.name}:** ${message}`);
+      emitAllClients("vchat:message", message);
+    }
+  }
+};
+onClient("vchat:message", (player, message) => chatHandler(player, message));
+function mute(player) {
+  mutedPlayers.add(player);
+}
+function send(player, message) {
+  message = processMessage(message);
+  emitClient(player, "vchat:message", message);
+}
+function broadcast(message) {
+  emitAllClients("vchat:message", message);
+}
+function registerCmd(cmdName, handler) {
+  cmdName = cmdName.toLocaleLowerCase();
+  if (cmdHandlers.has(cmdName))
+    logError(`Failed to register command /${cmdName}, already registered`);
+  else
+    cmdHandlers.set(cmdName, handler);
+}
+function setHandler(fn) {
+  chatHandler = fn;
+}
 const models = Object.keys(PedModel);
 on("playerConnect", (player) => {
   player.spawn(0, 0, 72);
   player.model = models[Math.floor(Math.random() * models.length)];
 });
-function addPipeline(fn) {
-  chatPipelines.push(fn);
-}
-function removeDefaultPipeline() {
-  chatPipelines.shift();
-}
 
-export { addPipeline, removeDefaultPipeline };
+export { broadcast, mute, registerCmd, send, setHandler };
