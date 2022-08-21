@@ -1,4 +1,15 @@
-import { emitAllClients, emitClient, log, logError, offClient, on, onClient, type Player } from 'alt-server';
+import {
+    emitAllClients,
+    emitClient,
+    log,
+    logError,
+    offClient,
+    on,
+    onClient,
+    Vector3,
+    Vehicle,
+    type Player,
+} from 'alt-server';
 import type { ChatHandler, CommandHandler, MountCallback } from './types';
 import { PedModel } from './ped-model.enum';
 import { processMessage } from './message-processor';
@@ -23,7 +34,7 @@ function invokeCommand(player: Player, cmdName: string, args: Array<string>) {
     const callback = cmdHandlers.get(cmdName);
 
     if (callback) callback(player, args);
-    else send(player, `Unknown command ${PREFIX}${cmdName}`);
+    else send(player, `Unknown command ${PREFIX}${cmdName}`, MessageType.Error);
 }
 
 // --------------------------------------------------------------
@@ -37,7 +48,7 @@ let chatHandler: ChatHandler = (player: Player, message: string) => {
         const words = message.trim().slice(1);
 
         if (words.length > 0) {
-            log('[vchat:command] ' + player.name + ': /' + words);
+            log(`[vchat:command] ${player.name}: ${PREFIX}${words}`);
 
             let args = words.split(' ');
             let cmdName = args.shift() ?? '';
@@ -46,14 +57,14 @@ let chatHandler: ChatHandler = (player: Player, message: string) => {
         }
     } else {
         if (mutedPlayers.has(player)) {
-            send(player, 'You are currently muted.');
+            send(player, 'You are currently muted.', MessageType.Error);
             return;
         }
 
         message = message.trim();
 
         if (message.length > 0) {
-            log('[vchat:message] ' + player.name + ': ' + message);
+            log(`[vchat:message] ${player.name}: ${message}`);
             message = processMessage(`**${player.name}:** ${message}`);
             emitAllClients('vchat:message', message);
         }
@@ -72,12 +83,20 @@ onClient('vchat:mounted', mount);
 // Exported Functions
 // --------------------------------------------------------------
 
+export function clearHistory(player: Player) {
+    emitClient(player, 'vchat:clearHistory');
+}
+
+export function clear(player: Player) {
+    emitClient(player, 'vchat:clear');
+}
+
 export function addSuggestion(player: Player, suggestion: CommandSuggestion) {
     emitClient(player, 'vchat:addSuggestion', suggestion);
 }
 
-export function addSuggestions(suggestions: Array<CommandSuggestion>) {
-    emitAllClients('vchat:addSuggestions', suggestions);
+export function addSuggestions(player: Player, suggestions: Array<CommandSuggestion>) {
+    emitClient(player, 'vchat:addSuggestions', suggestions);
 }
 
 export function onMounted(fn: MountCallback) {
@@ -101,11 +120,11 @@ export function unmutePlayer(player: Player) {
 }
 
 export function send(player: Player, message: string, type: MessageType = MessageType.Default) {
-    emitClient(player, 'vchat:message', message);
+    emitClient(player, 'vchat:message', message, type);
 }
 
 export function broadcast(message: string, type: MessageType = MessageType.Default) {
-    emitAllClients('vchat:message', message);
+    emitAllClients('vchat:message', message, type);
 }
 
 export function registerCmd(cmdName: string, handler: CommandHandler) {
@@ -133,6 +152,52 @@ on('playerConnect', (player: Player) => {
 });
 
 registerCmd('spawn', (player: Player, args: Array<string>) => {
-    player.spawn(0, 0, 72);
-    console.log(args);
+    if (args.length < 1) return;
+    if (!args[0]) return;
+
+    new Vehicle(args[0], player.pos, Vector3.zero);
+});
+
+registerCmd('info', (player: Player) => {
+    console.log('info');
+    send(player, 'This is a test', MessageType.Info);
+});
+
+registerCmd('success', (player: Player) => {
+    console.log('success');
+    send(player, 'This is a test', MessageType.Success);
+});
+
+registerCmd('warning', (player: Player) => {
+    console.log('warning');
+    send(player, 'This is a test', MessageType.Warning);
+});
+
+registerCmd('error', (player: Player) => {
+    console.log('error');
+    send(player, 'This is a test', MessageType.Error);
+});
+
+onMounted((player: Player, _mounted: boolean) => {
+    addSuggestions(player, [
+        { name: 'help', description: 'Show this help !' },
+        {
+            name: 'help',
+            description: 'Show this help #',
+            parameters: [{ name: 'page', description: 'Help page' }],
+        },
+        {
+            name: 'ban',
+            description: 'Ban a player',
+            parameters: [
+                { name: 'player', description: "Player's name" },
+                { name: 'reason', description: 'Reason' },
+            ],
+        },
+        {
+            name: 'heal',
+            description: 'Heal a player',
+            parameters: [{ name: 'player', description: "Player's name" }],
+        },
+    ]);
 });

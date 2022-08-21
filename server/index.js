@@ -1,4 +1,4 @@
-import { onClient, on, log, emitAllClients, emitClient, offClient, logError } from 'alt-server';
+import { onClient, on, log, emitAllClients, emitClient, offClient, logError, Vehicle, Vector3 } from 'alt-server';
 
 var PedModel = /* @__PURE__ */ ((PedModel2) => {
   PedModel2[PedModel2["a_c_boar"] = 3462393972] = "a_c_boar";
@@ -1021,7 +1021,7 @@ function invokeCommand(player, cmdName, args) {
   if (callback)
     callback(player, args);
   else
-    send(player, `Unknown command ${PREFIX}${cmdName}`);
+    send(player, `Unknown command ${PREFIX}${cmdName}`, MessageType.Error);
 }
 let chatHandler = (player, message) => {
   if (typeof message !== "string")
@@ -1029,19 +1029,19 @@ let chatHandler = (player, message) => {
   if (message.startsWith("/")) {
     const words = message.trim().slice(1);
     if (words.length > 0) {
-      log("[vchat:command] " + player.name + ": /" + words);
+      log(`[vchat:command] ${player.name}: ${PREFIX}${words}`);
       let args = words.split(" ");
       let cmdName = args.shift() ?? "";
       invokeCommand(player, cmdName, args);
     }
   } else {
     if (mutedPlayers.has(player)) {
-      send(player, "You are currently muted.");
+      send(player, "You are currently muted.", MessageType.Error);
       return;
     }
     message = message.trim();
     if (message.length > 0) {
-      log("[vchat:message] " + player.name + ": " + message);
+      log(`[vchat:message] ${player.name}: ${message}`);
       message = processMessage(`**${player.name}:** ${message}`);
       emitAllClients("vchat:message", message);
     }
@@ -1054,11 +1054,17 @@ function mount(player, mounted) {
 }
 onClient("vchat:message", (player, message) => chatHandler(player, message));
 onClient("vchat:mounted", mount);
+function clearHistory(player) {
+  emitClient(player, "vchat:clearHistory");
+}
+function clear(player) {
+  emitClient(player, "vchat:clear");
+}
 function addSuggestion(player, suggestion) {
   emitClient(player, "vchat:addSuggestion", suggestion);
 }
-function addSuggestions(suggestions) {
-  emitAllClients("vchat:addSuggestions", suggestions);
+function addSuggestions(player, suggestions) {
+  emitClient(player, "vchat:addSuggestions", suggestions);
 }
 function onMounted(fn) {
   onClient("vchat:mounted", fn);
@@ -1076,10 +1082,10 @@ function unmutePlayer(player) {
   mutedPlayers.delete(player);
 }
 function send(player, message, type = MessageType.Default) {
-  emitClient(player, "vchat:message", message);
+  emitClient(player, "vchat:message", message, type);
 }
 function broadcast(message, type = MessageType.Default) {
-  emitAllClients("vchat:message", message);
+  emitAllClients("vchat:message", message, type);
 }
 function registerCmd(cmdName, handler) {
   cmdName = cmdName.toLocaleLowerCase();
@@ -1099,8 +1105,50 @@ on("playerConnect", (player) => {
   player.model = models[Math.floor(Math.random() * models.length)];
 });
 registerCmd("spawn", (player, args) => {
-  player.spawn(0, 0, 72);
-  console.log(args);
+  if (args.length < 1)
+    return;
+  if (!args[0])
+    return;
+  new Vehicle(args[0], player.pos, Vector3.zero);
+});
+registerCmd("info", (player) => {
+  console.log("info");
+  send(player, "This is a test", MessageType.Info);
+});
+registerCmd("success", (player) => {
+  console.log("success");
+  send(player, "This is a test", MessageType.Success);
+});
+registerCmd("warning", (player) => {
+  console.log("warning");
+  send(player, "This is a test", MessageType.Warning);
+});
+registerCmd("error", (player) => {
+  console.log("error");
+  send(player, "This is a test", MessageType.Error);
+});
+onMounted((player, _mounted) => {
+  addSuggestions(player, [
+    { name: "help", description: "Show this help !" },
+    {
+      name: "help",
+      description: "Show this help #",
+      parameters: [{ name: "page", description: "Help page" }]
+    },
+    {
+      name: "ban",
+      description: "Ban a player",
+      parameters: [
+        { name: "player", description: "Player's name" },
+        { name: "reason", description: "Reason" }
+      ]
+    },
+    {
+      name: "heal",
+      description: "Heal a player",
+      parameters: [{ name: "player", description: "Player's name" }]
+    }
+  ]);
 });
 
-export { addSuggestion, addSuggestions, broadcast, isMounted, mutePlayer, offMounted, onMounted, processMessage, registerCmd, send, setHandler, setup, unmutePlayer };
+export { addSuggestion, addSuggestions, broadcast, clear, clearHistory, isMounted, mutePlayer, offMounted, onMounted, processMessage, registerCmd, send, setHandler, setup, unmutePlayer };

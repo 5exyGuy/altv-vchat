@@ -1,43 +1,64 @@
 <script lang="ts">
     import { onMount, tick } from 'svelte';
 
+    // --------------------------------------------------------------
+    // Props
+    // --------------------------------------------------------------
+
     export let placeholder: string = 'Type a message...';
     export let message: string = '';
     export let prefix: string = '/';
 
+    // --------------------------------------------------------------
+    // Variables
+    // --------------------------------------------------------------
+
     let buffer: Array<string> = [];
-    let currentBufferIndex: number = 0;
+    let currentBufferIndex: number = -1;
     let ref: HTMLInputElement;
     let focus: boolean = false;
+    let previousMessage: string = '';
+
+    // --------------------------------------------------------------
+    // Functions
+    // --------------------------------------------------------------
 
     async function sendMessage(event: KeyboardEvent) {
         if (event.key !== 'Enter') return;
 
         if (window.alt) window.alt.emit('vchat:message', message);
-        buffer = [...buffer, message];
+        if (buffer.length > 100) buffer.shift();
+        buffer = [message, ...buffer];
+        currentBufferIndex = -1;
         message = '';
 
         event.preventDefault();
     }
 
     function handleKeydown(event: KeyboardEvent) {
-        if (message.startsWith(prefix)) return;
+        if (message && message.startsWith(prefix)) return;
+        if (buffer.length === 0) return;
 
-        if (event.key === 'ArrowUp') {
+        if (event.key === 'ArrowDown') {
             event.preventDefault();
-            if (buffer.length > 0) {
-                currentBufferIndex = currentBufferIndex - 1 < 0 ? 0 : currentBufferIndex - 1;
-                message = buffer[currentBufferIndex];
+            if (currentBufferIndex > 0) {
+                message = buffer[--currentBufferIndex];
+            } else if (currentBufferIndex === 0) {
+                currentBufferIndex = -1;
+                message = previousMessage;
             }
-        } else if (event.key === 'ArrowDown') {
+        } else if (event.key === 'ArrowUp') {
             event.preventDefault();
-            if (buffer.length > 0) {
-                currentBufferIndex =
-                    currentBufferIndex + 1 > buffer.length - 1 ? buffer.length - 1 : currentBufferIndex + 1;
-                message = buffer[currentBufferIndex];
+            if (currentBufferIndex < 0) previousMessage = message;
+            if (currentBufferIndex < buffer.length - 1) {
+                message = buffer[++currentBufferIndex];
             }
         }
     }
+
+    // --------------------------------------------------------------
+    // Hooks
+    // --------------------------------------------------------------
 
     onMount(() => {
         if (!window.alt) return;
@@ -46,6 +67,8 @@
             if (_focus) {
                 await tick();
                 if (ref) ref.focus();
+            } else {
+                currentBufferIndex = -1;
             }
         });
     });

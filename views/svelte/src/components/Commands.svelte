@@ -1,28 +1,41 @@
 <script lang="ts">
-    import type { Command, MatchedCommand } from '../interfaces';
+    import type { CommandSuggestion, MatchedCommand } from '../interfaces';
     import commandsJson from '../commands.json';
     import { onMount } from 'svelte';
 
-    export let commands: Array<Command> = commandsJson; // commands
+    // --------------------------------------------------------------
+    // Props
+    // --------------------------------------------------------------
+
+    export let commands: Array<CommandSuggestion> = commandsJson; // commands
     export let message: string = ''; // message
     export let prefix: string = '/'; // prefix for commands
     export let max = 3; // max number of commands to display
 
+    // --------------------------------------------------------------
+    // Variables
+    // --------------------------------------------------------------
+
     let selected = -1; // -1 means no command is selected
     let matchedCommands: Array<MatchedCommand> = [];
     let focus: boolean = false;
+
+    // --------------------------------------------------------------
+    // Functions
+    // --------------------------------------------------------------
 
     function addPrefix(message: string): string {
         return prefix + message;
     }
 
     function removePrefix(message: string): string {
-        return message.replace(prefix, '');
+        return message.startsWith(prefix) ? message.substring(1) : message;
     }
 
     function selectCommand(event: KeyboardEvent) {
         // Only allow arrow keys and tab
         if (event.key !== 'ArrowDown' && event.key !== 'ArrowUp' && event.key !== 'Tab') return;
+        event.preventDefault();
 
         // Select previous command
         if (event.key === 'ArrowUp' && matchedCommands.length > 1) selected = Math.max(0, selected - 1);
@@ -32,18 +45,24 @@
         // Select the selected command to the chat box input
         else if (event.key === 'Tab' && selected >= 0 && !(matchedCommands[selected].currentParam > -1))
             message = addPrefix(matchedCommands[selected].name);
-
-        event.preventDefault();
     }
 
     function updateMatchedCommands(message: string) {
+        if (!message) return;
+
         const words = message.split(' ');
+        if (!words[0].startsWith(prefix)) {
+            matchedCommands = [];
+            return;
+        }
+
         matchedCommands = commands
             .filter((command) => {
-                const cmdName = words[0]; // Takes the first word as the command name
+                const cmdName = removePrefix(words[0]);
+
                 return (
-                    cmdName.startsWith(prefix) &&
-                    command.name.startsWith(removePrefix(cmdName)) &&
+                    cmdName.length > 0 &&
+                    command.name.startsWith(cmdName) &&
                     words.length - 1 <= (command.parameters?.length ?? 0)
                 );
             }) // Filter commands that match the message
@@ -62,11 +81,27 @@
         matchedCommands.length === 0 ? (selected = -1) : (selected = 0); // Reset selected if no commands are found
     }
 
+    // --------------------------------------------------------------
+    // Reactive Statments
+    // --------------------------------------------------------------
+
     $: updateMatchedCommands(message);
+
+    // --------------------------------------------------------------
+    // Hooks
+    // --------------------------------------------------------------
 
     onMount(() => {
         if (!window.alt) return;
         window.alt.on('vchat:focus', (_focus) => (focus = _focus));
+        window.alt.on('vhat:addSuggestion', (suggestion: CommandSuggestion) => {
+            commands = [...commands, suggestion];
+            updateMatchedCommands(message);
+        });
+        window.alt.on('vchat:addSuggestions', (suggestions: Array<CommandSuggestion>) => {
+            commands = [...commands, ...suggestions];
+            updateMatchedCommands(message);
+        });
     });
 </script>
 

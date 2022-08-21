@@ -1,34 +1,51 @@
 <script lang="ts">
+    import type { Message as MessageData } from '../interfaces';
     import { onMount, tick } from 'svelte';
     import Message from './Message.svelte';
+    import { MessageType } from '../enums';
 
+    // --------------------------------------------------------------
     // Props
+    // --------------------------------------------------------------
 
     export let scrollStep: number = 20;
 
+    // --------------------------------------------------------------
     // Variables
+    // --------------------------------------------------------------
 
-    let messages: Array<string> = [];
+    let messages: Array<MessageData> = [];
     let ref: HTMLDivElement;
     let focus: boolean = false;
     let boxHeight: number = 0;
     let currentScroll: number = 0;
 
+    // --------------------------------------------------------------
     // Functions
+    // --------------------------------------------------------------
 
-    async function addMessage(message: string) {
-        messages = [...messages, message]; // Add message to array
+    async function addMessage(message: string, type: MessageType = MessageType.Default) {
+        messages = [...messages, { content: message, type }]; // Add message to array
         await tick(); // Wait for next tick
         if (ref) boxHeight = ref.scrollHeight - ref.clientHeight; // Get height of box
         // If the box is focused and previous scroll was at the bottom, scroll to the bottom again
         if (!focus || (focus && currentScroll === boxHeight)) scrollToBottom();
     }
 
-    async function setMessages(_messages: Array<string>) {
+    async function setMessages(_messages: Array<MessageData>) {
         messages = _messages;
         await tick();
         if (ref) boxHeight = ref.scrollHeight - ref.clientHeight;
         if (!focus || (focus && currentScroll === boxHeight)) scrollToBottom('auto');
+    }
+
+    function clearMessages() {
+        setMessages([]);
+    }
+
+    function toggleFocus(_focus: boolean) {
+        focus = _focus;
+        if (!_focus) scrollToBottom();
     }
 
     function scrollToTop(behavior: ScrollBehavior = 'smooth') {
@@ -76,30 +93,32 @@
         else scrollUp();
     }
 
-    //
+    // --------------------------------------------------------------
+    // Reactive Statments
+    // --------------------------------------------------------------
 
     $: maskTopHeight = currentScroll === 0 ? '0px' : `${Math.floor((64 * currentScroll) / boxHeight)}px`;
     $: maskBottomHeight =
         currentScroll === boxHeight ? '0px' : `${Math.floor((64 * (boxHeight - currentScroll)) / boxHeight)}px`;
 
+    // --------------------------------------------------------------
     // Hooks
+    // --------------------------------------------------------------
 
     onMount(() => {
         boxHeight = ref.scrollHeight - ref.clientHeight;
         scrollToBottom('auto');
 
         if (!window.alt) return;
-        window.alt.on('vchat:loadHistory', async (messages) => await setMessages(messages));
-        window.alt.on('vchat:message', async (message) => await addMessage(message));
-        window.alt.on('vchat:focus', (_focus) => {
-            focus = _focus;
-            if (!_focus) scrollToBottom();
-        });
+        window.alt.on('vchat:loadHistory', setMessages);
+        window.alt.on('vchat:message', addMessage);
+        window.alt.on('vchat:focus', toggleFocus);
+        window.alt.on('chat:clear', clearMessages);
     });
 </script>
 
 <div
-    class="flex flex-col gap-[8px] h-[320px] w-full mask pl-[8px] mb-[16px]"
+    class="flex flex-col gap-[4px] h-[320px] w-full mask mb-[16px] pr-2"
     class:opacity-50={!focus}
     class:opacity-100={focus}
     class:overflow-y-scroll={focus && ref?.scrollHeight > ref?.clientHeight}
@@ -109,7 +128,7 @@
     bind:this={ref}
 >
     {#each messages as message}
-        <Message>{@html message}</Message>
+        <Message type={message.type}>{@html message.content}</Message>
     {/each}
 </div>
 

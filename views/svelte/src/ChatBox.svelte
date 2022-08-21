@@ -6,6 +6,7 @@
 
     let message: string = '';
     const prefix: string = '/';
+    const maxCmds: number = 3;
 
     onMount(() => {
         if (!window.alt) return;
@@ -15,6 +16,6 @@
 
 <div class="fixed top-[16px] left-[16px] w-[640px]">
     <Messages />
-    <MessageInput bind:message />
-    <Commands bind:message max={3} {prefix} />
+    <MessageInput bind:message {prefix} />
+    <Commands bind:message max={maxCmds} {prefix} />
 </div>

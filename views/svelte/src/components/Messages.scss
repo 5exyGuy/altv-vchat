@@ -7,12 +7,12 @@
         black calc(100% - var(--mask-bottom-height)),
         transparent
     );
-    --mask-size-content: 100% calc(100% - var(--scrollbar-width));
+    --mask-size-content: calc(100% - var(--scrollbar-width)) 100%;
     --mask-image-scrollbar: linear-gradient(black, black);
-    --mask-size-scrollbar: 100% var(--scrollbar-width);
+    --mask-size-scrollbar: var(--scrollbar-width) 100%;
     mask-image: var(--mask-image-content), var(--mask-image-scrollbar);
     mask-size: var(--mask-size-content), var(--mask-size-scrollbar);
-    mask-position: 0 0, 0 0;
+    mask-position: 0 0, 100% 0;
     mask-repeat: no-repeat, no-repeat;
 
     &::-webkit-scrollbar {
