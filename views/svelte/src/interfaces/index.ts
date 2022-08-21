@@ -1,3 +1,3 @@
-export * from './command-parameter.interface';
-export * from './command.interface';
-export * from './matched-command.interface';
+export * from './cmd-parameter.interface';
+export * from './cmd.interface';
+export * from './matched-cmd.interface';

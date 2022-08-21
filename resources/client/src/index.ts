@@ -1,5 +1,5 @@
-import { on, onServer, WebView, toggleGameControls, emitServer, LocalStorage } from 'alt-client';
-import { ESC_KEY, MAX_HISTORY_LENGTH, T_KEY } from './constants';
+import { on, onServer, WebView, toggleGameControls, emitServer, LocalStorage, showCursor } from 'alt-client';
+import { ESC_KEY, MAX_HISTORY_LENGTH, SHOW_CURSOR, T_KEY } from './constants';
 
 const chatWebView: WebView = new WebView('http://localhost:4000/');
 const chatHistory: Array<string> = LocalStorage.get('chatHistory') ?? [];
@@ -12,12 +12,14 @@ if (chatHistory.length > MAX_HISTORY_LENGTH) chatHistory.splice(0, chatHistory.l
 function focus() {
     chatWebView.emit('vchat:focus', true);
     toggleGameControls(false);
+    SHOW_CURSOR && showCursor(true);
     chatWebView.focus();
 }
 
 function unfocus() {
     chatWebView.emit('vchat:focus', false);
     toggleGameControls(true);
+    SHOW_CURSOR && showCursor(false);
     chatWebView.unfocus();
 }
 
@@ -27,6 +29,7 @@ function unfocus() {
 
 function loadHistory() {
     chatWebView.emit('vchat:loadHistory', chatHistory);
+    emitServer('chat:mounted', true);
 }
 
 function sendMessageToServer(message: string) {
@@ -49,7 +52,12 @@ function addMessage(message: string) {
     chatWebView.emit('vchat:message', message);
 }
 
+function addSuggestion(cmdName: string) {
+    chatWebView.emit('vchat:suggestion', cmdName);
+}
+
 onServer('vchat:message', addMessage);
+onServer('vchat:addSuggestion', addSuggestion);
 
 // --------------------------------------------------------------
 // Local Events

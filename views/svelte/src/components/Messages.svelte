@@ -31,13 +31,14 @@
         if (!focus || (focus && currentScroll === boxHeight)) scrollToBottom('auto');
     }
 
+    function scrollToTop(behavior: ScrollBehavior = 'smooth') {
+        currentScroll = 0;
+        if (ref) ref.scrollTo({ top: 0, behavior });
+    }
+
     function scrollToBottom(behavior: ScrollBehavior = 'smooth') {
         currentScroll = boxHeight;
-        if (ref)
-            ref.scroll({
-                top: boxHeight,
-                behavior: behavior,
-            });
+        if (ref) ref.scroll({ top: boxHeight, behavior });
     }
 
     function scrollUp() {
@@ -52,7 +53,7 @@
         ref.scrollTop = scroll;
     }
 
-    function scroll(event: KeyboardEvent) {
+    function handleKeydown(event: KeyboardEvent) {
         if (!focus) return;
         if (event.key === 'PageUp') {
             event.preventDefault();
@@ -60,6 +61,12 @@
         } else if (event.key === 'PageDown') {
             event.preventDefault();
             scrollDown();
+        } else if (event.key === 'Home') {
+            event.preventDefault();
+            scrollToTop();
+        } else if (event.key === 'End') {
+            event.preventDefault();
+            scrollToBottom();
         }
     }
 
@@ -92,29 +99,21 @@
 </script>
 
 <div
-    class="relative h-[320px] w-full mb-[16px] mask"
+    class="flex flex-col gap-[8px] h-[320px] w-full mask pl-[8px] mb-[16px]"
     class:opacity-50={!focus}
     class:opacity-100={focus}
     class:overflow-y-scroll={focus && ref?.scrollHeight > ref?.clientHeight}
     class:overflow-y-hidden={!focus}
-    style:direction="rtl"
     style:--mask-top-height={maskTopHeight}
     style:--mask-bottom-height={maskBottomHeight}
     bind:this={ref}
 >
-    <div
-        class="flex flex-col gap-[8px]"
-        class:ml-4={focus && ref?.scrollHeight > ref?.clientHeight}
-        class:ml-5={!focus || (focus && ref?.scrollHeight === ref?.clientHeight)}
-        style:direction="ltr"
-    >
-        {#each messages as message}
-            <Message>{@html message}</Message>
-        {/each}
-    </div>
+    {#each messages as message}
+        <Message>{@html message}</Message>
+    {/each}
 </div>
 
-<svelte:window on:keydown={scroll} on:mousewheel|nonpassive|preventDefault={processScroll} />
+<svelte:window on:keydown={handleKeydown} on:mousewheel|nonpassive|preventDefault={processScroll} />
 
 <style lang="scss">
     @import 'Messages.scss';

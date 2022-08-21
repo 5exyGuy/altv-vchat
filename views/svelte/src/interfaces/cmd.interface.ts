@@ -1,4 +1,4 @@
-import type { CommandParameter } from './command-parameter.interface';
+import type { CommandParameter } from './cmd-parameter.interface';
 
 export interface Command {
     name: string;

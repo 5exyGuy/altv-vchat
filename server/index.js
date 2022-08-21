@@ -1,4 +1,4 @@
-import { onClient, on, log, emitAllClients, emitClient, logError } from 'alt-server';
+import { onClient, on, log, emitAllClients, emitClient, offClient, logError } from 'alt-server';
 
 var PedModel = /* @__PURE__ */ ((PedModel2) => {
   PedModel2[PedModel2["a_c_boar"] = 3462393972] = "a_c_boar";
@@ -997,19 +997,31 @@ var PedModel = /* @__PURE__ */ ((PedModel2) => {
 })(PedModel || {});
 
 function processMessage(message) {
-  const toHTML = message.replace(/</g, "&lt;").replace(/'/g, "&#39").replace(/"/g, "&#34").replace(/\*\*(.+?)\*\*/gim, "<b>$1</b>").replace(/\*(.+?)\*/gim, "<i>$1</i>").replace(/~~(.+?)~~/gim, "<del>$1</del>").replace(/__(.+?)__/gim, "<ins>$1</ins>").replace(/\{([A-Fa-f0-9]{3}|[A-Fa-f0-9]{6})\}(.*?){\/\1}/gim, '<span style="color: $1">$2</span>');
+  const toHTML = message.replace(/</g, "&lt;").replace(/'/g, "&#39").replace(/"/g, "&#34").replace(/\*\*(.+?)\*\*/gim, "<b>$1</b>").replace(/\*(.+?)\*/gim, "<i>$1</i>").replace(/~~(.+?)~~/gim, "<del>$1</del>").replace(/__(.+?)__/gim, "<ins>$1</ins>").replace(/\{([A-Fa-f0-9]{3}|[A-Fa-f0-9]{6})\}(.*?){\/\1}/gim, '<span style="color: #$1;">$2</span>');
   return toHTML.trim();
 }
 
+const PREFIX = "/";
+
+var MessageType = /* @__PURE__ */ ((MessageType2) => {
+  MessageType2[MessageType2["Default"] = 0] = "Default";
+  MessageType2[MessageType2["Info"] = 1] = "Info";
+  MessageType2[MessageType2["Success"] = 2] = "Success";
+  MessageType2[MessageType2["Warning"] = 3] = "Warning";
+  MessageType2[MessageType2["Error"] = 4] = "Error";
+  return MessageType2;
+})(MessageType || {});
+
 const cmdHandlers = /* @__PURE__ */ new Map();
 const mutedPlayers = /* @__PURE__ */ new Set();
+const mountedPlayers = /* @__PURE__ */ new Set();
 function invokeCommand(player, cmdName, args) {
   cmdName = cmdName.toLowerCase();
   const callback = cmdHandlers.get(cmdName);
   if (callback)
     callback(player, args);
   else
-    send(player, `Unknown command /${cmdName}`);
+    send(player, `Unknown command ${PREFIX}${cmdName}`);
 }
 let chatHandler = (player, message) => {
   if (typeof message !== "string")
@@ -1035,15 +1047,38 @@ let chatHandler = (player, message) => {
     }
   }
 };
+function mount(player, mounted) {
+  if (mounted && !mountedPlayers.has(player))
+    return;
+  mountedPlayers.add(player);
+}
 onClient("vchat:message", (player, message) => chatHandler(player, message));
-function mute(player) {
+onClient("vchat:mounted", mount);
+function addSuggestion(player, suggestion) {
+  emitClient(player, "vchat:addSuggestion", suggestion);
+}
+function addSuggestions(suggestions) {
+  emitAllClients("vchat:addSuggestions", suggestions);
+}
+function onMounted(fn) {
+  onClient("vchat:mounted", fn);
+}
+function offMounted(fn) {
+  offClient("vchat:mounted", fn);
+}
+function isMounted(player) {
+  return mountedPlayers.has(player);
+}
+function mutePlayer(player) {
   mutedPlayers.add(player);
 }
-function send(player, message) {
-  message = processMessage(message);
+function unmutePlayer(player) {
+  mutedPlayers.delete(player);
+}
+function send(player, message, type = MessageType.Default) {
   emitClient(player, "vchat:message", message);
 }
-function broadcast(message) {
+function broadcast(message, type = MessageType.Default) {
   emitAllClients("vchat:message", message);
 }
 function registerCmd(cmdName, handler) {
@@ -1056,10 +1091,16 @@ function registerCmd(cmdName, handler) {
 function setHandler(fn) {
   chatHandler = fn;
 }
+function setup(player) {
+}
 const models = Object.keys(PedModel);
 on("playerConnect", (player) => {
   player.spawn(0, 0, 72);
   player.model = models[Math.floor(Math.random() * models.length)];
 });
+registerCmd("spawn", (player, args) => {
+  player.spawn(0, 0, 72);
+  console.log(args);
+});
 
-export { broadcast, mute, registerCmd, send, setHandler };
+export { addSuggestion, addSuggestions, broadcast, isMounted, mutePlayer, offMounted, onMounted, processMessage, registerCmd, send, setHandler, setup, unmutePlayer };

@@ -13,7 +13,7 @@
     });
 </script>
 
-<div class="fixed m-[16px] top-[4px] left-[4px] w-[640px]">
+<div class="fixed top-[16px] left-[16px] w-[640px]">
     <Messages />
     <MessageInput bind:message />
     <Commands bind:message max={3} {prefix} />

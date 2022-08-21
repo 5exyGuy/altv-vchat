@@ -20,6 +20,7 @@ function unfocus() {
 }
 function loadHistory() {
   chatWebView.emit("vchat:loadHistory", chatHistory);
+  emitServer("chat:mounted", true);
 }
 function sendMessageToServer(message) {
   if (message.length > 0)
@@ -36,7 +37,11 @@ function addMessage(message) {
   LocalStorage.save();
   chatWebView.emit("vchat:message", message);
 }
+function addSuggestion(cmdName) {
+  chatWebView.emit("vchat:suggestion", cmdName);
+}
 onServer("vchat:message", addMessage);
+onServer("vchat:addSuggestion", addSuggestion);
 function toggleChat(keyCode) {
   if (keyCode === ESC_KEY && chatWebView.focused)
     unfocus();
