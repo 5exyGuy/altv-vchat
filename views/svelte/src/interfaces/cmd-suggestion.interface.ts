@@ -1,9 +1,7 @@
-import type { CommandParameter } from './cmd-parameter.interface';
-
 export interface CommandSuggestion {
     name: string;
     description?: string;
-    parameters?: Array<{
+    params?: Array<{
         name: string;
         description?: string;
     }>;

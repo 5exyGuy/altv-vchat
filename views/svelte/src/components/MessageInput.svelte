@@ -24,15 +24,15 @@
     // --------------------------------------------------------------
 
     async function sendMessage(event: KeyboardEvent) {
-        if (event.key !== 'Enter') return;
+        if (event.key === 'Enter') {
+            event.preventDefault();
+            if (window.alt) window.alt.emit('vchat:message', message);
 
-        if (window.alt) window.alt.emit('vchat:message', message);
-        if (buffer.length > 100) buffer.shift();
-        buffer = [message, ...buffer];
-        currentBufferIndex = -1;
-        message = '';
-
-        event.preventDefault();
+            if (buffer.length > 100) buffer.shift();
+            buffer = [message, ...buffer];
+            currentBufferIndex = -1;
+            message = '';
+        }
     }
 
     function handleKeydown(event: KeyboardEvent) {

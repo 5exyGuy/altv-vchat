@@ -1,4 +1,4 @@
-import { WebView, LocalStorage, onServer, on, emitServer, toggleGameControls } from 'alt-client';
+import { WebView, LocalStorage, onServer, on, emitServerRaw, toggleGameControls } from 'alt-client';
 
 const ESC_KEY = 27;
 const T_KEY = 84;
@@ -17,6 +17,7 @@ const chatWebView = new WebView("http://localhost:4000/");
 const chatHistory = LocalStorage.get("chatHistory") ?? [];
 if (chatHistory.length > MAX_HISTORY_LENGTH)
   chatHistory.splice(0, chatHistory.length - MAX_HISTORY_LENGTH);
+let focusEnabled = true;
 function focus() {
   chatWebView.emit("vchat:focus", true);
   toggleGameControls(false);
@@ -29,15 +30,18 @@ function unfocus() {
 }
 function loadHistory() {
   chatWebView.emit("vchat:loadHistory", chatHistory);
-  emitServer("vchat:mounted", true);
+  emitServerRaw("vchat:mounted", true);
 }
 function sendMessageToServer(message) {
   if (message.length > 0)
-    emitServer("vchat:message", message);
+    emitServerRaw("vchat:message", message);
   unfocus();
 }
 chatWebView.on("vchat:mounted", loadHistory);
 chatWebView.on("vchat:message", sendMessageToServer);
+function toggleChat(_focus) {
+  _focus ? focus() : unfocus();
+}
 function clearHistory() {
   chatHistory.length = 0;
   LocalStorage.set("chatHistory", chatHistory);
@@ -60,15 +64,22 @@ function addSuggestion(suggestion) {
 function addSuggestions(suggestions) {
   chatWebView.emit("vchat:addSuggestions", suggestions);
 }
+function toggleFocusEnabled(enabled) {
+  focusEnabled = enabled;
+  if (!enabled)
+    unfocus();
+}
+onServer("vchat:focus", toggleChat);
 onServer("vchat:clearHistory", clearHistory);
 onServer("vchat:clear", clear);
 onServer("vchat:message", addMessage);
 onServer("vchat:addSuggestion", addSuggestion);
 onServer("vchat:addSuggestions", addSuggestions);
-function toggleChat(keyCode) {
+onServer("vchat:focusEnabled", toggleFocusEnabled);
+function toggleChatWithKey(keyCode) {
   if (keyCode === ESC_KEY && chatWebView.focused)
     unfocus();
-  else if (keyCode === T_KEY && !chatWebView.focused)
+  else if (keyCode === T_KEY && !chatWebView.focused && focusEnabled)
     focus();
 }
-on("keyup", toggleChat);
+on("keyup", toggleChatWithKey);

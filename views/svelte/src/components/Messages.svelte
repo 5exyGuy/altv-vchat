@@ -97,6 +97,7 @@
     // Reactive Statments
     // --------------------------------------------------------------
 
+    // TODO: Find better way to do this, because if the overflow gets bigger, the mask won't be noticeable
     $: maskTopHeight = currentScroll === 0 ? '0px' : `${Math.floor((64 * currentScroll) / boxHeight)}px`;
     $: maskBottomHeight =
         currentScroll === boxHeight ? '0px' : `${Math.floor((64 * (boxHeight - currentScroll)) / boxHeight)}px`;
@@ -110,10 +111,11 @@
         scrollToBottom('auto');
 
         if (!window.alt) return;
+
         window.alt.on('vchat:loadHistory', setMessages);
         window.alt.on('vchat:message', addMessage);
         window.alt.on('vchat:focus', toggleFocus);
-        window.alt.on('chat:clear', clearMessages);
+        window.alt.on('vchat:clear', clearMessages);
     });
 </script>
 

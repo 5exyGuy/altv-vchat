@@ -1,1000 +1,4 @@
-import { onClient, on, log, emitAllClients, emitClient, offClient, logError, Vehicle, Vector3 } from 'alt-server';
-
-var PedModel = /* @__PURE__ */ ((PedModel2) => {
-  PedModel2[PedModel2["a_c_boar"] = 3462393972] = "a_c_boar";
-  PedModel2[PedModel2["a_c_cat_01"] = 1462895032] = "a_c_cat_01";
-  PedModel2[PedModel2["a_c_chickenhawk"] = 2864127842] = "a_c_chickenhawk";
-  PedModel2[PedModel2["a_c_chimp"] = 2825402133] = "a_c_chimp";
-  PedModel2[PedModel2["a_c_chop"] = 351016938] = "a_c_chop";
-  PedModel2[PedModel2["a_c_chop_02"] = 1039404993] = "a_c_chop_02";
-  PedModel2[PedModel2["a_c_cormorant"] = 1457690978] = "a_c_cormorant";
-  PedModel2[PedModel2["a_c_cow"] = 4244282910] = "a_c_cow";
-  PedModel2[PedModel2["a_c_coyote"] = 1682622302] = "a_c_coyote";
-  PedModel2[PedModel2["a_c_crow"] = 402729631] = "a_c_crow";
-  PedModel2[PedModel2["a_c_deer"] = 3630914197] = "a_c_deer";
-  PedModel2[PedModel2["a_c_dolphin"] = 2344268885] = "a_c_dolphin";
-  PedModel2[PedModel2["a_c_fish"] = 802685111] = "a_c_fish";
-  PedModel2[PedModel2["a_c_hen"] = 1794449327] = "a_c_hen";
-  PedModel2[PedModel2["a_c_humpback"] = 1193010354] = "a_c_humpback";
-  PedModel2[PedModel2["a_c_husky"] = 1318032802] = "a_c_husky";
-  PedModel2[PedModel2["a_c_killerwhale"] = 2374682809] = "a_c_killerwhale";
-  PedModel2[PedModel2["a_c_mtlion"] = 307287994] = "a_c_mtlion";
-  PedModel2[PedModel2["a_c_panther"] = 3877461608] = "a_c_panther";
-  PedModel2[PedModel2["a_c_pig"] = 2971380566] = "a_c_pig";
-  PedModel2[PedModel2["a_c_pigeon"] = 111281960] = "a_c_pigeon";
-  PedModel2[PedModel2["a_c_poodle"] = 1125994524] = "a_c_poodle";
-  PedModel2[PedModel2["a_c_pug"] = 1832265812] = "a_c_pug";
-  PedModel2[PedModel2["a_c_rabbit_01"] = 3753204865] = "a_c_rabbit_01";
-  PedModel2[PedModel2["a_c_rat"] = 3283429734] = "a_c_rat";
-  PedModel2[PedModel2["a_c_retriever"] = 882848737] = "a_c_retriever";
-  PedModel2[PedModel2["a_c_rhesus"] = 3268439891] = "a_c_rhesus";
-  PedModel2[PedModel2["a_c_rottweiler"] = 2506301981] = "a_c_rottweiler";
-  PedModel2[PedModel2["a_c_seagull"] = 3549666813] = "a_c_seagull";
-  PedModel2[PedModel2["a_c_sharkhammer"] = 1015224100] = "a_c_sharkhammer";
-  PedModel2[PedModel2["a_c_sharktiger"] = 113504370] = "a_c_sharktiger";
-  PedModel2[PedModel2["a_c_shepherd"] = 1126154828] = "a_c_shepherd";
-  PedModel2[PedModel2["a_c_stingray"] = 2705875277] = "a_c_stingray";
-  PedModel2[PedModel2["a_c_westy"] = 2910340283] = "a_c_westy";
-  PedModel2[PedModel2["a_f_m_beach_01"] = 808859815] = "a_f_m_beach_01";
-  PedModel2[PedModel2["a_f_m_bevhills_01"] = 3188223741] = "a_f_m_bevhills_01";
-  PedModel2[PedModel2["a_f_m_bevhills_02"] = 2688103263] = "a_f_m_bevhills_02";
-  PedModel2[PedModel2["a_f_m_bodybuild_01"] = 1004114196] = "a_f_m_bodybuild_01";
-  PedModel2[PedModel2["a_f_m_business_02"] = 532905404] = "a_f_m_business_02";
-  PedModel2[PedModel2["a_f_m_downtown_01"] = 1699403886] = "a_f_m_downtown_01";
-  PedModel2[PedModel2["a_f_m_eastsa_01"] = 2638072698] = "a_f_m_eastsa_01";
-  PedModel2[PedModel2["a_f_m_eastsa_02"] = 1674107025] = "a_f_m_eastsa_02";
-  PedModel2[PedModel2["a_f_m_fatbla_01"] = 4206136267] = "a_f_m_fatbla_01";
-  PedModel2[PedModel2["a_f_m_fatcult_01"] = 3050275044] = "a_f_m_fatcult_01";
-  PedModel2[PedModel2["a_f_m_fatwhite_01"] = 951767867] = "a_f_m_fatwhite_01";
-  PedModel2[PedModel2["a_f_m_genbiker_01"] = 1956335717] = "a_f_m_genbiker_01";
-  PedModel2[PedModel2["a_f_m_ktown_01"] = 1388848350] = "a_f_m_ktown_01";
-  PedModel2[PedModel2["a_f_m_ktown_02"] = 1090617681] = "a_f_m_ktown_02";
-  PedModel2[PedModel2["a_f_m_prolhost_01"] = 379310561] = "a_f_m_prolhost_01";
-  PedModel2[PedModel2["a_f_m_salton_01"] = 3725461865] = "a_f_m_salton_01";
-  PedModel2[PedModel2["a_f_m_skidrow_01"] = 2962707003] = "a_f_m_skidrow_01";
-  PedModel2[PedModel2["a_f_m_soucent_01"] = 1951946145] = "a_f_m_soucent_01";
-  PedModel2[PedModel2["a_f_m_soucent_02"] = 4079145784] = "a_f_m_soucent_02";
-  PedModel2[PedModel2["a_f_m_soucentmc_01"] = 3454621138] = "a_f_m_soucentmc_01";
-  PedModel2[PedModel2["a_f_m_tourist_01"] = 1347814329] = "a_f_m_tourist_01";
-  PedModel2[PedModel2["a_f_m_tramp_01"] = 1224306523] = "a_f_m_tramp_01";
-  PedModel2[PedModel2["a_f_m_trampbeac_01"] = 2359345766] = "a_f_m_trampbeac_01";
-  PedModel2[PedModel2["a_f_o_genstreet_01"] = 1640504453] = "a_f_o_genstreet_01";
-  PedModel2[PedModel2["a_f_o_indian_01"] = 3134700416] = "a_f_o_indian_01";
-  PedModel2[PedModel2["a_f_o_ktown_01"] = 1204772502] = "a_f_o_ktown_01";
-  PedModel2[PedModel2["a_f_o_salton_01"] = 3439295882] = "a_f_o_salton_01";
-  PedModel2[PedModel2["a_f_o_soucent_01"] = 1039800368] = "a_f_o_soucent_01";
-  PedModel2[PedModel2["a_f_o_soucent_02"] = 2775443222] = "a_f_o_soucent_02";
-  PedModel2[PedModel2["a_f_y_beach_01"] = 3349113128] = "a_f_y_beach_01";
-  PedModel2[PedModel2["a_f_y_beach_02"] = 3105934379] = "a_f_y_beach_02";
-  PedModel2[PedModel2["a_f_y_bevhills_01"] = 1146800212] = "a_f_y_bevhills_01";
-  PedModel2[PedModel2["a_f_y_bevhills_02"] = 1546450936] = "a_f_y_bevhills_02";
-  PedModel2[PedModel2["a_f_y_bevhills_03"] = 549978415] = "a_f_y_bevhills_03";
-  PedModel2[PedModel2["a_f_y_bevhills_04"] = 920595805] = "a_f_y_bevhills_04";
-  PedModel2[PedModel2["a_f_y_bevhills_05"] = 2464671085] = "a_f_y_bevhills_05";
-  PedModel2[PedModel2["a_f_y_business_01"] = 664399832] = "a_f_y_business_01";
-  PedModel2[PedModel2["a_f_y_business_02"] = 826475330] = "a_f_y_business_02";
-  PedModel2[PedModel2["a_f_y_business_03"] = 2928082356] = "a_f_y_business_03";
-  PedModel2[PedModel2["a_f_y_business_04"] = 3083210802] = "a_f_y_business_04";
-  PedModel2[PedModel2["a_f_y_carclub_01"] = 4245210443] = "a_f_y_carclub_01";
-  PedModel2[PedModel2["a_f_y_clubcust_01"] = 1744231373] = "a_f_y_clubcust_01";
-  PedModel2[PedModel2["a_f_y_clubcust_02"] = 357447289] = "a_f_y_clubcust_02";
-  PedModel2[PedModel2["a_f_y_clubcust_03"] = 10751269] = "a_f_y_clubcust_03";
-  PedModel2[PedModel2["a_f_y_clubcust_04"] = 786557344] = "a_f_y_clubcust_04";
-  PedModel2[PedModel2["a_f_y_eastsa_01"] = 4121954205] = "a_f_y_eastsa_01";
-  PedModel2[PedModel2["a_f_y_eastsa_02"] = 70821038] = "a_f_y_eastsa_02";
-  PedModel2[PedModel2["a_f_y_eastsa_03"] = 1371553700] = "a_f_y_eastsa_03";
-  PedModel2[PedModel2["a_f_y_epsilon_01"] = 1755064960] = "a_f_y_epsilon_01";
-  PedModel2[PedModel2["a_f_y_femaleagent"] = 1348537411] = "a_f_y_femaleagent";
-  PedModel2[PedModel2["a_f_y_fitness_01"] = 1165780219] = "a_f_y_fitness_01";
-  PedModel2[PedModel2["a_f_y_fitness_02"] = 331645324] = "a_f_y_fitness_02";
-  PedModel2[PedModel2["a_f_y_gencaspat_01"] = 2434503858] = "a_f_y_gencaspat_01";
-  PedModel2[PedModel2["a_f_y_genhot_01"] = 793439294] = "a_f_y_genhot_01";
-  PedModel2[PedModel2["a_f_y_golfer_01"] = 2111372120] = "a_f_y_golfer_01";
-  PedModel2[PedModel2["a_f_y_hiker_01"] = 813893651] = "a_f_y_hiker_01";
-  PedModel2[PedModel2["a_f_y_hippie_01"] = 343259175] = "a_f_y_hippie_01";
-  PedModel2[PedModel2["a_f_y_hipster_01"] = 2185745201] = "a_f_y_hipster_01";
-  PedModel2[PedModel2["a_f_y_hipster_02"] = 2549481101] = "a_f_y_hipster_02";
-  PedModel2[PedModel2["a_f_y_hipster_03"] = 2780469782] = "a_f_y_hipster_03";
-  PedModel2[PedModel2["a_f_y_hipster_04"] = 429425116] = "a_f_y_hipster_04";
-  PedModel2[PedModel2["a_f_y_indian_01"] = 153984193] = "a_f_y_indian_01";
-  PedModel2[PedModel2["a_f_y_juggalo_01"] = 3675473203] = "a_f_y_juggalo_01";
-  PedModel2[PedModel2["a_f_y_runner_01"] = 3343476521] = "a_f_y_runner_01";
-  PedModel2[PedModel2["a_f_y_rurmeth_01"] = 1064866854] = "a_f_y_rurmeth_01";
-  PedModel2[PedModel2["a_f_y_scdressy_01"] = 3680420864] = "a_f_y_scdressy_01";
-  PedModel2[PedModel2["a_f_y_skater_01"] = 1767892582] = "a_f_y_skater_01";
-  PedModel2[PedModel2["a_f_y_smartcaspat_01"] = 279228114] = "a_f_y_smartcaspat_01";
-  PedModel2[PedModel2["a_f_y_soucent_01"] = 744758650] = "a_f_y_soucent_01";
-  PedModel2[PedModel2["a_f_y_soucent_02"] = 1519319503] = "a_f_y_soucent_02";
-  PedModel2[PedModel2["a_f_y_soucent_03"] = 2276611093] = "a_f_y_soucent_03";
-  PedModel2[PedModel2["a_f_y_studioparty_01"] = 1152702280] = "a_f_y_studioparty_01";
-  PedModel2[PedModel2["a_f_y_studioparty_02"] = 1984313950] = "a_f_y_studioparty_02";
-  PedModel2[PedModel2["a_f_y_tennis_01"] = 1426880966] = "a_f_y_tennis_01";
-  PedModel2[PedModel2["a_f_y_topless_01"] = 2633130371] = "a_f_y_topless_01";
-  PedModel2[PedModel2["a_f_y_tourist_01"] = 1446741360] = "a_f_y_tourist_01";
-  PedModel2[PedModel2["a_f_y_tourist_02"] = 2435054400] = "a_f_y_tourist_02";
-  PedModel2[PedModel2["a_f_y_vinewood_01"] = 435429221] = "a_f_y_vinewood_01";
-  PedModel2[PedModel2["a_f_y_vinewood_02"] = 3669401835] = "a_f_y_vinewood_02";
-  PedModel2[PedModel2["a_f_y_vinewood_03"] = 933092024] = "a_f_y_vinewood_03";
-  PedModel2[PedModel2["a_f_y_vinewood_04"] = 4209271110] = "a_f_y_vinewood_04";
-  PedModel2[PedModel2["a_f_y_yoga_01"] = 3290105390] = "a_f_y_yoga_01";
-  PedModel2[PedModel2["a_m_m_acult_01"] = 1413662315] = "a_m_m_acult_01";
-  PedModel2[PedModel2["a_m_m_afriamer_01"] = 3513928062] = "a_m_m_afriamer_01";
-  PedModel2[PedModel2["a_m_m_beach_01"] = 1077785853] = "a_m_m_beach_01";
-  PedModel2[PedModel2["a_m_m_beach_02"] = 2021631368] = "a_m_m_beach_02";
-  PedModel2[PedModel2["a_m_m_bevhills_01"] = 1423699487] = "a_m_m_bevhills_01";
-  PedModel2[PedModel2["a_m_m_bevhills_02"] = 1068876755] = "a_m_m_bevhills_02";
-  PedModel2[PedModel2["a_m_m_business_01"] = 2120901815] = "a_m_m_business_01";
-  PedModel2[PedModel2["a_m_m_eastsa_01"] = 4188468543] = "a_m_m_eastsa_01";
-  PedModel2[PedModel2["a_m_m_eastsa_02"] = 131961260] = "a_m_m_eastsa_02";
-  PedModel2[PedModel2["a_m_m_farmer_01"] = 2488675799] = "a_m_m_farmer_01";
-  PedModel2[PedModel2["a_m_m_fatlatin_01"] = 1641152947] = "a_m_m_fatlatin_01";
-  PedModel2[PedModel2["a_m_m_genbiker_01"] = 3739319678] = "a_m_m_genbiker_01";
-  PedModel2[PedModel2["a_m_m_genfat_01"] = 115168927] = "a_m_m_genfat_01";
-  PedModel2[PedModel2["a_m_m_genfat_02"] = 330231874] = "a_m_m_genfat_02";
-  PedModel2[PedModel2["a_m_m_golfer_01"] = 2850754114] = "a_m_m_golfer_01";
-  PedModel2[PedModel2["a_m_m_hasjew_01"] = 1809430156] = "a_m_m_hasjew_01";
-  PedModel2[PedModel2["a_m_m_hillbilly_01"] = 1822107721] = "a_m_m_hillbilly_01";
-  PedModel2[PedModel2["a_m_m_hillbilly_02"] = 2064532783] = "a_m_m_hillbilly_02";
-  PedModel2[PedModel2["a_m_m_indian_01"] = 3721046572] = "a_m_m_indian_01";
-  PedModel2[PedModel2["a_m_m_ktown_01"] = 3512565361] = "a_m_m_ktown_01";
-  PedModel2[PedModel2["a_m_m_malibu_01"] = 803106487] = "a_m_m_malibu_01";
-  PedModel2[PedModel2["a_m_m_mexcntry_01"] = 3716251309] = "a_m_m_mexcntry_01";
-  PedModel2[PedModel2["a_m_m_mexlabor_01"] = 2992445106] = "a_m_m_mexlabor_01";
-  PedModel2[PedModel2["a_m_m_mlcrisis_01"] = 1561088805] = "a_m_m_mlcrisis_01";
-  PedModel2[PedModel2["a_m_m_og_boss_01"] = 1746653202] = "a_m_m_og_boss_01";
-  PedModel2[PedModel2["a_m_m_paparazzi_01"] = 3972697109] = "a_m_m_paparazzi_01";
-  PedModel2[PedModel2["a_m_m_polynesian_01"] = 2849617566] = "a_m_m_polynesian_01";
-  PedModel2[PedModel2["a_m_m_prolhost_01"] = 2534589327] = "a_m_m_prolhost_01";
-  PedModel2[PedModel2["a_m_m_rurmeth_01"] = 1001210244] = "a_m_m_rurmeth_01";
-  PedModel2[PedModel2["a_m_m_salton_01"] = 1328415626] = "a_m_m_salton_01";
-  PedModel2[PedModel2["a_m_m_salton_02"] = 1626646295] = "a_m_m_salton_02";
-  PedModel2[PedModel2["a_m_m_salton_03"] = 2995538501] = "a_m_m_salton_03";
-  PedModel2[PedModel2["a_m_m_salton_04"] = 2521108919] = "a_m_m_salton_04";
-  PedModel2[PedModel2["a_m_m_skater_01"] = 3654768780] = "a_m_m_skater_01";
-  PedModel2[PedModel2["a_m_m_skidrow_01"] = 32417469] = "a_m_m_skidrow_01";
-  PedModel2[PedModel2["a_m_m_socenlat_01"] = 193817059] = "a_m_m_socenlat_01";
-  PedModel2[PedModel2["a_m_m_soucent_01"] = 1750583735] = "a_m_m_soucent_01";
-  PedModel2[PedModel2["a_m_m_soucent_02"] = 2674735073] = "a_m_m_soucent_02";
-  PedModel2[PedModel2["a_m_m_soucent_03"] = 2346291386] = "a_m_m_soucent_03";
-  PedModel2[PedModel2["a_m_m_soucent_04"] = 3271294718] = "a_m_m_soucent_04";
-  PedModel2[PedModel2["a_m_m_stlat_02"] = 3265820418] = "a_m_m_stlat_02";
-  PedModel2[PedModel2["a_m_m_studioparty_01"] = 2342084645] = "a_m_m_studioparty_01";
-  PedModel2[PedModel2["a_m_m_tennis_01"] = 1416254276] = "a_m_m_tennis_01";
-  PedModel2[PedModel2["a_m_m_tourist_01"] = 3365863812] = "a_m_m_tourist_01";
-  PedModel2[PedModel2["a_m_m_tramp_01"] = 516505552] = "a_m_m_tramp_01";
-  PedModel2[PedModel2["a_m_m_trampbeac_01"] = 1404403376] = "a_m_m_trampbeac_01";
-  PedModel2[PedModel2["a_m_m_tranvest_01"] = 3773208948] = "a_m_m_tranvest_01";
-  PedModel2[PedModel2["a_m_m_tranvest_02"] = 4144940484] = "a_m_m_tranvest_02";
-  PedModel2[PedModel2["a_m_o_acult_01"] = 1430544400] = "a_m_o_acult_01";
-  PedModel2[PedModel2["a_m_o_acult_02"] = 1268862154] = "a_m_o_acult_02";
-  PedModel2[PedModel2["a_m_o_beach_01"] = 2217202584] = "a_m_o_beach_01";
-  PedModel2[PedModel2["a_m_o_beach_02"] = 3243462130] = "a_m_o_beach_02";
-  PedModel2[PedModel2["a_m_o_genstreet_01"] = 2908022696] = "a_m_o_genstreet_01";
-  PedModel2[PedModel2["a_m_o_ktown_01"] = 355916122] = "a_m_o_ktown_01";
-  PedModel2[PedModel2["a_m_o_salton_01"] = 539004493] = "a_m_o_salton_01";
-  PedModel2[PedModel2["a_m_o_soucent_01"] = 718836251] = "a_m_o_soucent_01";
-  PedModel2[PedModel2["a_m_o_soucent_02"] = 1082572151] = "a_m_o_soucent_02";
-  PedModel2[PedModel2["a_m_o_soucent_03"] = 238213328] = "a_m_o_soucent_03";
-  PedModel2[PedModel2["a_m_o_tramp_01"] = 390939205] = "a_m_o_tramp_01";
-  PedModel2[PedModel2["a_m_y_acult_01"] = 3043264555] = "a_m_y_acult_01";
-  PedModel2[PedModel2["a_m_y_acult_02"] = 2162532142] = "a_m_y_acult_02";
-  PedModel2[PedModel2["a_m_y_beach_01"] = 3523131524] = "a_m_y_beach_01";
-  PedModel2[PedModel2["a_m_y_beach_02"] = 600300561] = "a_m_y_beach_02";
-  PedModel2[PedModel2["a_m_y_beach_03"] = 3886638041] = "a_m_y_beach_03";
-  PedModel2[PedModel2["a_m_y_beach_04"] = 3105523388] = "a_m_y_beach_04";
-  PedModel2[PedModel2["a_m_y_beachvesp_01"] = 2114544056] = "a_m_y_beachvesp_01";
-  PedModel2[PedModel2["a_m_y_beachvesp_02"] = 3394697810] = "a_m_y_beachvesp_02";
-  PedModel2[PedModel2["a_m_y_bevhills_01"] = 1982350912] = "a_m_y_bevhills_01";
-  PedModel2[PedModel2["a_m_y_bevhills_02"] = 1720428295] = "a_m_y_bevhills_02";
-  PedModel2[PedModel2["a_m_y_breakdance_01"] = 933205398] = "a_m_y_breakdance_01";
-  PedModel2[PedModel2["a_m_y_busicas_01"] = 2597531625] = "a_m_y_busicas_01";
-  PedModel2[PedModel2["a_m_y_business_01"] = 3382649284] = "a_m_y_business_01";
-  PedModel2[PedModel2["a_m_y_business_02"] = 3014915558] = "a_m_y_business_02";
-  PedModel2[PedModel2["a_m_y_business_03"] = 2705543429] = "a_m_y_business_03";
-  PedModel2[PedModel2["a_m_y_carclub_01"] = 1751120084] = "a_m_y_carclub_01";
-  PedModel2[PedModel2["a_m_y_clubcust_01"] = 2813792322] = "a_m_y_clubcust_01";
-  PedModel2[PedModel2["a_m_y_clubcust_02"] = 3324988722] = "a_m_y_clubcust_02";
-  PedModel2[PedModel2["a_m_y_clubcust_03"] = 3572886207] = "a_m_y_clubcust_03";
-  PedModel2[PedModel2["a_m_y_clubcust_04"] = 3793814805] = "a_m_y_clubcust_04";
-  PedModel2[PedModel2["a_m_y_cyclist_01"] = 4257633223] = "a_m_y_cyclist_01";
-  PedModel2[PedModel2["a_m_y_dhill_01"] = 4282288299] = "a_m_y_dhill_01";
-  PedModel2[PedModel2["a_m_y_downtown_01"] = 766375082] = "a_m_y_downtown_01";
-  PedModel2[PedModel2["a_m_y_eastsa_01"] = 2756120947] = "a_m_y_eastsa_01";
-  PedModel2[PedModel2["a_m_y_eastsa_02"] = 377976310] = "a_m_y_eastsa_02";
-  PedModel2[PedModel2["a_m_y_epsilon_01"] = 2010389054] = "a_m_y_epsilon_01";
-  PedModel2[PedModel2["a_m_y_epsilon_02"] = 2860711835] = "a_m_y_epsilon_02";
-  PedModel2[PedModel2["a_m_y_gay_01"] = 3519864886] = "a_m_y_gay_01";
-  PedModel2[PedModel2["a_m_y_gay_02"] = 2775713665] = "a_m_y_gay_02";
-  PedModel2[PedModel2["a_m_y_gencaspat_01"] = 2600762591] = "a_m_y_gencaspat_01";
-  PedModel2[PedModel2["a_m_y_genstreet_01"] = 2557996913] = "a_m_y_genstreet_01";
-  PedModel2[PedModel2["a_m_y_genstreet_02"] = 891398354] = "a_m_y_genstreet_02";
-  PedModel2[PedModel2["a_m_y_golfer_01"] = 3609190705] = "a_m_y_golfer_01";
-  PedModel2[PedModel2["a_m_y_hasjew_01"] = 3782053633] = "a_m_y_hasjew_01";
-  PedModel2[PedModel2["a_m_y_hiker_01"] = 1358380044] = "a_m_y_hiker_01";
-  PedModel2[PedModel2["a_m_y_hippy_01"] = 2097407511] = "a_m_y_hippy_01";
-  PedModel2[PedModel2["a_m_y_hipster_01"] = 587703123] = "a_m_y_hipster_01";
-  PedModel2[PedModel2["a_m_y_hipster_02"] = 349505262] = "a_m_y_hipster_02";
-  PedModel2[PedModel2["a_m_y_hipster_03"] = 1312913862] = "a_m_y_hipster_03";
-  PedModel2[PedModel2["a_m_y_indian_01"] = 706935758] = "a_m_y_indian_01";
-  PedModel2[PedModel2["a_m_y_jetski_01"] = 767028979] = "a_m_y_jetski_01";
-  PedModel2[PedModel2["a_m_y_juggalo_01"] = 2445950508] = "a_m_y_juggalo_01";
-  PedModel2[PedModel2["a_m_y_ktown_01"] = 452351020] = "a_m_y_ktown_01";
-  PedModel2[PedModel2["a_m_y_ktown_02"] = 696250687] = "a_m_y_ktown_02";
-  PedModel2[PedModel2["a_m_y_latino_01"] = 321657486] = "a_m_y_latino_01";
-  PedModel2[PedModel2["a_m_y_methhead_01"] = 1768677545] = "a_m_y_methhead_01";
-  PedModel2[PedModel2["a_m_y_mexthug_01"] = 810804565] = "a_m_y_mexthug_01";
-  PedModel2[PedModel2["a_m_y_motox_01"] = 1694362237] = "a_m_y_motox_01";
-  PedModel2[PedModel2["a_m_y_motox_02"] = 2007797722] = "a_m_y_motox_02";
-  PedModel2[PedModel2["a_m_y_musclbeac_01"] = 1264920838] = "a_m_y_musclbeac_01";
-  PedModel2[PedModel2["a_m_y_musclbeac_02"] = 3374523516] = "a_m_y_musclbeac_02";
-  PedModel2[PedModel2["a_m_y_polynesian_01"] = 2206530719] = "a_m_y_polynesian_01";
-  PedModel2[PedModel2["a_m_y_roadcyc_01"] = 4116817094] = "a_m_y_roadcyc_01";
-  PedModel2[PedModel2["a_m_y_runner_01"] = 623927022] = "a_m_y_runner_01";
-  PedModel2[PedModel2["a_m_y_runner_02"] = 2218630415] = "a_m_y_runner_02";
-  PedModel2[PedModel2["a_m_y_salton_01"] = 3613420592] = "a_m_y_salton_01";
-  PedModel2[PedModel2["a_m_y_skater_01"] = 3250873975] = "a_m_y_skater_01";
-  PedModel2[PedModel2["a_m_y_skater_02"] = 2952446692] = "a_m_y_skater_02";
-  PedModel2[PedModel2["a_m_y_smartcaspat_01"] = 553826858] = "a_m_y_smartcaspat_01";
-  PedModel2[PedModel2["a_m_y_soucent_01"] = 3877027275] = "a_m_y_soucent_01";
-  PedModel2[PedModel2["a_m_y_soucent_02"] = 2896414922] = "a_m_y_soucent_02";
-  PedModel2[PedModel2["a_m_y_soucent_03"] = 3287349092] = "a_m_y_soucent_03";
-  PedModel2[PedModel2["a_m_y_soucent_04"] = 2318861297] = "a_m_y_soucent_04";
-  PedModel2[PedModel2["a_m_y_stbla_01"] = 3482496489] = "a_m_y_stbla_01";
-  PedModel2[PedModel2["a_m_y_stbla_02"] = 2563194959] = "a_m_y_stbla_02";
-  PedModel2[PedModel2["a_m_y_stlat_01"] = 2255803900] = "a_m_y_stlat_01";
-  PedModel2[PedModel2["a_m_y_studioparty_01"] = 2989564573] = "a_m_y_studioparty_01";
-  PedModel2[PedModel2["a_m_y_stwhi_01"] = 605602864] = "a_m_y_stwhi_01";
-  PedModel2[PedModel2["a_m_y_stwhi_02"] = 919005580] = "a_m_y_stwhi_02";
-  PedModel2[PedModel2["a_m_y_sunbathe_01"] = 3072929548] = "a_m_y_sunbathe_01";
-  PedModel2[PedModel2["a_m_y_surfer_01"] = 3938633710] = "a_m_y_surfer_01";
-  PedModel2[PedModel2["a_m_y_tattoocust_01"] = 2619283993] = "a_m_y_tattoocust_01";
-  PedModel2[PedModel2["a_m_y_vindouche_01"] = 3247667175] = "a_m_y_vindouche_01";
-  PedModel2[PedModel2["a_m_y_vinewood_01"] = 1264851357] = "a_m_y_vinewood_01";
-  PedModel2[PedModel2["a_m_y_vinewood_02"] = 1561705728] = "a_m_y_vinewood_02";
-  PedModel2[PedModel2["a_m_y_vinewood_03"] = 534725268] = "a_m_y_vinewood_03";
-  PedModel2[PedModel2["a_m_y_vinewood_04"] = 835315305] = "a_m_y_vinewood_04";
-  PedModel2[PedModel2["a_m_y_yoga_01"] = 2869588309] = "a_m_y_yoga_01";
-  PedModel2[PedModel2["cs_amandatownley"] = 2515474659] = "cs_amandatownley";
-  PedModel2[PedModel2["cs_andreas"] = 3881194279] = "cs_andreas";
-  PedModel2[PedModel2["cs_ashley"] = 650367097] = "cs_ashley";
-  PedModel2[PedModel2["cs_bankman"] = 2539657518] = "cs_bankman";
-  PedModel2[PedModel2["cs_barry"] = 1767447799] = "cs_barry";
-  PedModel2[PedModel2["cs_beverly"] = 3027157846] = "cs_beverly";
-  PedModel2[PedModel2["cs_brad"] = 4024807398] = "cs_brad";
-  PedModel2[PedModel2["cs_bradcadaver"] = 1915268960] = "cs_bradcadaver";
-  PedModel2[PedModel2["cs_carbuyer"] = 2362341647] = "cs_carbuyer";
-  PedModel2[PedModel2["cs_casey"] = 3935738944] = "cs_casey";
-  PedModel2[PedModel2["cs_chengsr"] = 819699067] = "cs_chengsr";
-  PedModel2[PedModel2["cs_chrisformage"] = 3253960934] = "cs_chrisformage";
-  PedModel2[PedModel2["cs_clay"] = 3687553076] = "cs_clay";
-  PedModel2[PedModel2["cs_dale"] = 216536661] = "cs_dale";
-  PedModel2[PedModel2["cs_davenorton"] = 2240226444] = "cs_davenorton";
-  PedModel2[PedModel2["cs_debra"] = 3973074921] = "cs_debra";
-  PedModel2[PedModel2["cs_denise"] = 1870669624] = "cs_denise";
-  PedModel2[PedModel2["cs_devin"] = 788622594] = "cs_devin";
-  PedModel2[PedModel2["cs_dom"] = 1198698306] = "cs_dom";
-  PedModel2[PedModel2["cs_dreyfuss"] = 1012965715] = "cs_dreyfuss";
-  PedModel2[PedModel2["cs_drfriedlander"] = 2745392175] = "cs_drfriedlander";
-  PedModel2[PedModel2["cs_fabien"] = 1191403201] = "cs_fabien";
-  PedModel2[PedModel2["cs_fbisuit_01"] = 1482427218] = "cs_fbisuit_01";
-  PedModel2[PedModel2["cs_floyd"] = 103106535] = "cs_floyd";
-  PedModel2[PedModel2["cs_guadalope"] = 261428209] = "cs_guadalope";
-  PedModel2[PedModel2["cs_gurk"] = 3272931111] = "cs_gurk";
-  PedModel2[PedModel2["cs_hunter"] = 1531218220] = "cs_hunter";
-  PedModel2[PedModel2["cs_janet"] = 808778210] = "cs_janet";
-  PedModel2[PedModel2["cs_jewelass"] = 1145088004] = "cs_jewelass";
-  PedModel2[PedModel2["cs_jimmyboston"] = 60192701] = "cs_jimmyboston";
-  PedModel2[PedModel2["cs_jimmydisanto"] = 3100414644] = "cs_jimmydisanto";
-  PedModel2[PedModel2["cs_jimmydisanto2"] = 1836024091] = "cs_jimmydisanto2";
-  PedModel2[PedModel2["cs_joeminuteman"] = 4036845097] = "cs_joeminuteman";
-  PedModel2[PedModel2["cs_johnnyklebitz"] = 4203395201] = "cs_johnnyklebitz";
-  PedModel2[PedModel2["cs_josef"] = 1167549130] = "cs_josef";
-  PedModel2[PedModel2["cs_josh"] = 1158606749] = "cs_josh";
-  PedModel2[PedModel2["cs_karen_daniels"] = 1269774364] = "cs_karen_daniels";
-  PedModel2[PedModel2["cs_lamardavis"] = 1162230285] = "cs_lamardavis";
-  PedModel2[PedModel2["cs_lamardavis_02"] = 22425093] = "cs_lamardavis_02";
-  PedModel2[PedModel2["cs_lazlow"] = 949295643] = "cs_lazlow";
-  PedModel2[PedModel2["cs_lazlow_2"] = 1598839101] = "cs_lazlow_2";
-  PedModel2[PedModel2["cs_lestercrest"] = 3046438339] = "cs_lestercrest";
-  PedModel2[PedModel2["cs_lestercrest_2"] = 191074589] = "cs_lestercrest_2";
-  PedModel2[PedModel2["cs_lestercrest_3"] = 496317824] = "cs_lestercrest_3";
-  PedModel2[PedModel2["cs_lifeinvad_01"] = 1918178165] = "cs_lifeinvad_01";
-  PedModel2[PedModel2["cs_magenta"] = 1477887514] = "cs_magenta";
-  PedModel2[PedModel2["cs_manuel"] = 4222842058] = "cs_manuel";
-  PedModel2[PedModel2["cs_marnie"] = 1464721716] = "cs_marnie";
-  PedModel2[PedModel2["cs_martinmadrazo"] = 1129928304] = "cs_martinmadrazo";
-  PedModel2[PedModel2["cs_maryann"] = 161007533] = "cs_maryann";
-  PedModel2[PedModel2["cs_michelle"] = 1890499016] = "cs_michelle";
-  PedModel2[PedModel2["cs_milton"] = 3077190415] = "cs_milton";
-  PedModel2[PedModel2["cs_molly"] = 1167167044] = "cs_molly";
-  PedModel2[PedModel2["cs_movpremf_01"] = 1270514905] = "cs_movpremf_01";
-  PedModel2[PedModel2["cs_movpremmale"] = 2372398717] = "cs_movpremmale";
-  PedModel2[PedModel2["cs_mrk"] = 3284966005] = "cs_mrk";
-  PedModel2[PedModel2["cs_mrs_thornhill"] = 1334976110] = "cs_mrs_thornhill";
-  PedModel2[PedModel2["cs_mrsphillips"] = 3422397391] = "cs_mrsphillips";
-  PedModel2[PedModel2["cs_natalia"] = 1325314544] = "cs_natalia";
-  PedModel2[PedModel2["cs_nervousron"] = 2023152276] = "cs_nervousron";
-  PedModel2[PedModel2["cs_nigel"] = 3779566603] = "cs_nigel";
-  PedModel2[PedModel2["cs_old_man1a"] = 518814684] = "cs_old_man1a";
-  PedModel2[PedModel2["cs_old_man2"] = 2566514544] = "cs_old_man2";
-  PedModel2[PedModel2["cs_omega"] = 2339419141] = "cs_omega";
-  PedModel2[PedModel2["cs_orleans"] = 2905870170] = "cs_orleans";
-  PedModel2[PedModel2["cs_paper"] = 1798879480] = "cs_paper";
-  PedModel2[PedModel2["cs_patricia"] = 3750433537] = "cs_patricia";
-  PedModel2[PedModel2["cs_patricia_02"] = 788179139] = "cs_patricia_02";
-  PedModel2[PedModel2["cs_priest"] = 1299047806] = "cs_priest";
-  PedModel2[PedModel2["cs_prolsec_02"] = 512955554] = "cs_prolsec_02";
-  PedModel2[PedModel2["cs_russiandrunk"] = 1179785778] = "cs_russiandrunk";
-  PedModel2[PedModel2["cs_siemonyetarian"] = 3230888450] = "cs_siemonyetarian";
-  PedModel2[PedModel2["cs_solomon"] = 4140949582] = "cs_solomon";
-  PedModel2[PedModel2["cs_stevehains"] = 2766184958] = "cs_stevehains";
-  PedModel2[PedModel2["cs_stretch"] = 2302502917] = "cs_stretch";
-  PedModel2[PedModel2["cs_tanisha"] = 1123963760] = "cs_tanisha";
-  PedModel2[PedModel2["cs_taocheng"] = 2288257085] = "cs_taocheng";
-  PedModel2[PedModel2["cs_taocheng2"] = 650034742] = "cs_taocheng2";
-  PedModel2[PedModel2["cs_taostranslator"] = 1397974313] = "cs_taostranslator";
-  PedModel2[PedModel2["cs_taostranslator2"] = 3017289007] = "cs_taostranslator2";
-  PedModel2[PedModel2["cs_tenniscoach"] = 1545995274] = "cs_tenniscoach";
-  PedModel2[PedModel2["cs_terry"] = 978452933] = "cs_terry";
-  PedModel2[PedModel2["cs_tom"] = 1776856003] = "cs_tom";
-  PedModel2[PedModel2["cs_tomepsilon"] = 2349847778] = "cs_tomepsilon";
-  PedModel2[PedModel2["cs_tracydisanto"] = 101298480] = "cs_tracydisanto";
-  PedModel2[PedModel2["cs_wade"] = 3529955798] = "cs_wade";
-  PedModel2[PedModel2["cs_zimbor"] = 3937184496] = "cs_zimbor";
-  PedModel2[PedModel2["csb_abigail"] = 2306246977] = "csb_abigail";
-  PedModel2[PedModel2["csb_agatha"] = 756308504] = "csb_agatha";
-  PedModel2[PedModel2["csb_agent"] = 3614493108] = "csb_agent";
-  PedModel2[PedModel2["csb_alan"] = 1925887591] = "csb_alan";
-  PedModel2[PedModel2["csb_anita"] = 117698822] = "csb_anita";
-  PedModel2[PedModel2["csb_anton"] = 2781317046] = "csb_anton";
-  PedModel2[PedModel2["csb_ary"] = 3059505486] = "csb_ary";
-  PedModel2[PedModel2["csb_ary_02"] = 3927407837] = "csb_ary_02";
-  PedModel2[PedModel2["csb_avery"] = 1427949869] = "csb_avery";
-  PedModel2[PedModel2["csb_avischwartzman_02"] = 2315189472] = "csb_avischwartzman_02";
-  PedModel2[PedModel2["csb_avon"] = 406009421] = "csb_avon";
-  PedModel2[PedModel2["csb_ballas_leader"] = 3098086931] = "csb_ballas_leader";
-  PedModel2[PedModel2["csb_ballasog"] = 2884567044] = "csb_ballasog";
-  PedModel2[PedModel2["csb_billionaire"] = 3397673303] = "csb_billionaire";
-  PedModel2[PedModel2["csb_bogdan"] = 1594283837] = "csb_bogdan";
-  PedModel2[PedModel2["csb_bride"] = 2193587873] = "csb_bride";
-  PedModel2[PedModel2["csb_brucie2"] = 3361779221] = "csb_brucie2";
-  PedModel2[PedModel2["csb_bryony"] = 2006035933] = "csb_bryony";
-  PedModel2[PedModel2["csb_burgerdrug"] = 2363277399] = "csb_burgerdrug";
-  PedModel2[PedModel2["csb_car3guy1"] = 71501447] = "csb_car3guy1";
-  PedModel2[PedModel2["csb_car3guy2"] = 327394568] = "csb_car3guy2";
-  PedModel2[PedModel2["csb_celeb_01"] = 592225333] = "csb_celeb_01";
-  PedModel2[PedModel2["csb_chef"] = 2739391114] = "csb_chef";
-  PedModel2[PedModel2["csb_chef2"] = 2925257274] = "csb_chef2";
-  PedModel2[PedModel2["csb_chin_goon"] = 2831296918] = "csb_chin_goon";
-  PedModel2[PedModel2["csb_cletus"] = 3404326357] = "csb_cletus";
-  PedModel2[PedModel2["csb_cop"] = 2595446627] = "csb_cop";
-  PedModel2[PedModel2["csb_customer"] = 2756669323] = "csb_customer";
-  PedModel2[PedModel2["csb_denise_friend"] = 3045926185] = "csb_denise_friend";
-  PedModel2[PedModel2["csb_dix"] = 3957337349] = "csb_dix";
-  PedModel2[PedModel2["csb_djblamadon"] = 1835399538] = "csb_djblamadon";
-  PedModel2[PedModel2["csb_drugdealer"] = 949115134] = "csb_drugdealer";
-  PedModel2[PedModel2["csb_englishdave"] = 3533210174] = "csb_englishdave";
-  PedModel2[PedModel2["csb_englishdave_02"] = 3713623407] = "csb_englishdave_02";
-  PedModel2[PedModel2["csb_fos_rep"] = 466359675] = "csb_fos_rep";
-  PedModel2[PedModel2["csb_g"] = 2727244247] = "csb_g";
-  PedModel2[PedModel2["csb_georginacheng"] = 345107131] = "csb_georginacheng";
-  PedModel2[PedModel2["csb_golfer_a"] = 2120159624] = "csb_golfer_a";
-  PedModel2[PedModel2["csb_golfer_b"] = 3706572452] = "csb_golfer_b";
-  PedModel2[PedModel2["csb_groom"] = 2058033618] = "csb_groom";
-  PedModel2[PedModel2["csb_grove_str_dlr"] = 3898166818] = "csb_grove_str_dlr";
-  PedModel2[PedModel2["csb_gustavo"] = 2331262242] = "csb_gustavo";
-  PedModel2[PedModel2["csb_hao"] = 3969814300] = "csb_hao";
-  PedModel2[PedModel2["csb_hao_02"] = 3211915155] = "csb_hao_02";
-  PedModel2[PedModel2["csb_helmsmanpavel"] = 2675868152] = "csb_helmsmanpavel";
-  PedModel2[PedModel2["csb_huang"] = 1064198787] = "csb_huang";
-  PedModel2[PedModel2["csb_hugh"] = 1863555924] = "csb_hugh";
-  PedModel2[PedModel2["csb_imani"] = 1987160310] = "csb_imani";
-  PedModel2[PedModel2["csb_imran"] = 3812756443] = "csb_imran";
-  PedModel2[PedModel2["csb_isldj_00"] = 2053038501] = "csb_isldj_00";
-  PedModel2[PedModel2["csb_isldj_01"] = 887084708] = "csb_isldj_01";
-  PedModel2[PedModel2["csb_isldj_02"] = 1712601360] = "csb_isldj_02";
-  PedModel2[PedModel2["csb_isldj_03"] = 2440761309] = "csb_isldj_03";
-  PedModel2[PedModel2["csb_isldj_04"] = 2998686303] = "csb_isldj_04";
-  PedModel2[PedModel2["csb_jackhowitzer"] = 1153203121] = "csb_jackhowitzer";
-  PedModel2[PedModel2["csb_janitor"] = 3254803008] = "csb_janitor";
-  PedModel2[PedModel2["csb_jio"] = 2727058989] = "csb_jio";
-  PedModel2[PedModel2["csb_jio_02"] = 3702591664] = "csb_jio_02";
-  PedModel2[PedModel2["csb_johnny_guns"] = 2108278433] = "csb_johnny_guns";
-  PedModel2[PedModel2["csb_juanstrickler"] = 3612049721] = "csb_juanstrickler";
-  PedModel2[PedModel2["csb_maude"] = 3166991819] = "csb_maude";
-  PedModel2[PedModel2["csb_miguelmadrazo"] = 3685838978] = "csb_miguelmadrazo";
-  PedModel2[PedModel2["csb_mimi"] = 2260860904] = "csb_mimi";
-  PedModel2[PedModel2["csb_mjo"] = 2700978005] = "csb_mjo";
-  PedModel2[PedModel2["csb_mjo_02"] = 2566126104] = "csb_mjo_02";
-  PedModel2[PedModel2["csb_money"] = 2560490906] = "csb_money";
-  PedModel2[PedModel2["csb_moodyman_02"] = 2373903780] = "csb_moodyman_02";
-  PedModel2[PedModel2["csb_mp_agent14"] = 1841036427] = "csb_mp_agent14";
-  PedModel2[PedModel2["csb_mrs_r"] = 2642001958] = "csb_mrs_r";
-  PedModel2[PedModel2["csb_musician_00"] = 3351027244] = "csb_musician_00";
-  PedModel2[PedModel2["csb_mweather"] = 1631478380] = "csb_mweather";
-  PedModel2[PedModel2["csb_ortega"] = 3235579087] = "csb_ortega";
-  PedModel2[PedModel2["csb_oscar"] = 4095687067] = "csb_oscar";
-  PedModel2[PedModel2["csb_paige"] = 1528799427] = "csb_paige";
-  PedModel2[PedModel2["csb_party_promo"] = 2564310175] = "csb_party_promo";
-  PedModel2[PedModel2["csb_popov"] = 1635617250] = "csb_popov";
-  PedModel2[PedModel2["csb_porndudes"] = 793443893] = "csb_porndudes";
-  PedModel2[PedModel2["csb_prologuedriver"] = 4027271643] = "csb_prologuedriver";
-  PedModel2[PedModel2["csb_prolsec"] = 2141384740] = "csb_prolsec";
-  PedModel2[PedModel2["csb_ramp_gang"] = 3263172030] = "csb_ramp_gang";
-  PedModel2[PedModel2["csb_ramp_hic"] = 2240582840] = "csb_ramp_hic";
-  PedModel2[PedModel2["csb_ramp_hipster"] = 569740212] = "csb_ramp_hipster";
-  PedModel2[PedModel2["csb_ramp_marine"] = 1634506681] = "csb_ramp_marine";
-  PedModel2[PedModel2["csb_ramp_mex"] = 4132362192] = "csb_ramp_mex";
-  PedModel2[PedModel2["csb_rashcosvki"] = 411081129] = "csb_rashcosvki";
-  PedModel2[PedModel2["csb_reporter"] = 776079908] = "csb_reporter";
-  PedModel2[PedModel2["csb_req_officer"] = 2297916218] = "csb_req_officer";
-  PedModel2[PedModel2["csb_roccopelosi"] = 2858686092] = "csb_roccopelosi";
-  PedModel2[PedModel2["csb_screen_writer"] = 2346790124] = "csb_screen_writer";
-  PedModel2[PedModel2["csb_security_a"] = 734593052] = "csb_security_a";
-  PedModel2[PedModel2["csb_sessanta"] = 3552233440] = "csb_sessanta";
-  PedModel2[PedModel2["csb_sol"] = 1324952405] = "csb_sol";
-  PedModel2[PedModel2["csb_soundeng_00"] = 543190380] = "csb_soundeng_00";
-  PedModel2[PedModel2["csb_sss"] = 3772505184] = "csb_sss";
-  PedModel2[PedModel2["csb_stripper_01"] = 2934601397] = "csb_stripper_01";
-  PedModel2[PedModel2["csb_stripper_02"] = 2168724337] = "csb_stripper_02";
-  PedModel2[PedModel2["csb_talcc"] = 3392144504] = "csb_talcc";
-  PedModel2[PedModel2["csb_talmm"] = 3785408493] = "csb_talmm";
-  PedModel2[PedModel2["csb_thornton"] = 4086880849] = "csb_thornton";
-  PedModel2[PedModel2["csb_tomcasino"] = 3488666811] = "csb_tomcasino";
-  PedModel2[PedModel2["csb_tonya"] = 1665391897] = "csb_tonya";
-  PedModel2[PedModel2["csb_tonyprince"] = 1566545691] = "csb_tonyprince";
-  PedModel2[PedModel2["csb_trafficwarden"] = 3727243251] = "csb_trafficwarden";
-  PedModel2[PedModel2["csb_undercover"] = 4017642090] = "csb_undercover";
-  PedModel2[PedModel2["csb_vagos_leader"] = 2201152485] = "csb_vagos_leader";
-  PedModel2[PedModel2["csb_vagspeak"] = 1224690857] = "csb_vagspeak";
-  PedModel2[PedModel2["csb_vernon"] = 3178697670] = "csb_vernon";
-  PedModel2[PedModel2["csb_vincent"] = 520636071] = "csb_vincent";
-  PedModel2[PedModel2["csb_vincent_2"] = 2782957088] = "csb_vincent_2";
-  PedModel2[PedModel2["csb_wendy"] = 1437043119] = "csb_wendy";
-  PedModel2[PedModel2["g_f_importexport_01"] = 2225189146] = "g_f_importexport_01";
-  PedModel2[PedModel2["g_f_y_ballas_01"] = 361513884] = "g_f_y_ballas_01";
-  PedModel2[PedModel2["g_f_y_families_01"] = 1309468115] = "g_f_y_families_01";
-  PedModel2[PedModel2["g_f_y_lost_01"] = 4250220510] = "g_f_y_lost_01";
-  PedModel2[PedModel2["g_f_y_vagos_01"] = 1520708641] = "g_f_y_vagos_01";
-  PedModel2[PedModel2["g_m_importexport_01"] = 3164785898] = "g_m_importexport_01";
-  PedModel2[PedModel2["g_m_m_armboss_01"] = 4058522530] = "g_m_m_armboss_01";
-  PedModel2[PedModel2["g_m_m_armgoon_01"] = 4255728232] = "g_m_m_armgoon_01";
-  PedModel2[PedModel2["g_m_m_armlieut_01"] = 3882958867] = "g_m_m_armlieut_01";
-  PedModel2[PedModel2["g_m_m_cartelguards_01"] = 2127932792] = "g_m_m_cartelguards_01";
-  PedModel2[PedModel2["g_m_m_cartelguards_02"] = 1821116645] = "g_m_m_cartelguards_02";
-  PedModel2[PedModel2["g_m_m_casrn_01"] = 1020431539] = "g_m_m_casrn_01";
-  PedModel2[PedModel2["g_m_m_chemwork_01"] = 4128603535] = "g_m_m_chemwork_01";
-  PedModel2[PedModel2["g_m_m_chiboss_01"] = 3118269184] = "g_m_m_chiboss_01";
-  PedModel2[PedModel2["g_m_m_chicold_01"] = 275618457] = "g_m_m_chicold_01";
-  PedModel2[PedModel2["g_m_m_chigoon_01"] = 2119136831] = "g_m_m_chigoon_01";
-  PedModel2[PedModel2["g_m_m_chigoon_02"] = 4285659174] = "g_m_m_chigoon_02";
-  PedModel2[PedModel2["g_m_m_genthug_01"] = 3540189323] = "g_m_m_genthug_01";
-  PedModel2[PedModel2["g_m_m_goons_01"] = 1642910562] = "g_m_m_goons_01";
-  PedModel2[PedModel2["g_m_m_korboss_01"] = 891945583] = "g_m_m_korboss_01";
-  PedModel2[PedModel2["g_m_m_mexboss_01"] = 1466037421] = "g_m_m_mexboss_01";
-  PedModel2[PedModel2["g_m_m_mexboss_02"] = 1226102803] = "g_m_m_mexboss_02";
-  PedModel2[PedModel2["g_m_m_prisoners_01"] = 565446671] = "g_m_m_prisoners_01";
-  PedModel2[PedModel2["g_m_m_slasher_01"] = 662575004] = "g_m_m_slasher_01";
-  PedModel2[PedModel2["g_m_y_armgoon_02"] = 3310258058] = "g_m_y_armgoon_02";
-  PedModel2[PedModel2["g_m_y_azteca_01"] = 1752208920] = "g_m_y_azteca_01";
-  PedModel2[PedModel2["g_m_y_ballaeast_01"] = 4096714883] = "g_m_y_ballaeast_01";
-  PedModel2[PedModel2["g_m_y_ballaorig_01"] = 588969535] = "g_m_y_ballaorig_01";
-  PedModel2[PedModel2["g_m_y_ballasout_01"] = 599294057] = "g_m_y_ballasout_01";
-  PedModel2[PedModel2["g_m_y_famca_01"] = 3896218551] = "g_m_y_famca_01";
-  PedModel2[PedModel2["g_m_y_famdnf_01"] = 3681718840] = "g_m_y_famdnf_01";
-  PedModel2[PedModel2["g_m_y_famfor_01"] = 2217749257] = "g_m_y_famfor_01";
-  PedModel2[PedModel2["g_m_y_korean_01"] = 611648169] = "g_m_y_korean_01";
-  PedModel2[PedModel2["g_m_y_korean_02"] = 2414729609] = "g_m_y_korean_02";
-  PedModel2[PedModel2["g_m_y_korlieut_01"] = 2093736314] = "g_m_y_korlieut_01";
-  PedModel2[PedModel2["g_m_y_lost_01"] = 1330042375] = "g_m_y_lost_01";
-  PedModel2[PedModel2["g_m_y_lost_02"] = 1032073858] = "g_m_y_lost_02";
-  PedModel2[PedModel2["g_m_y_lost_03"] = 850468060] = "g_m_y_lost_03";
-  PedModel2[PedModel2["g_m_y_mexgang_01"] = 3185399110] = "g_m_y_mexgang_01";
-  PedModel2[PedModel2["g_m_y_mexgoon_01"] = 653210662] = "g_m_y_mexgoon_01";
-  PedModel2[PedModel2["g_m_y_mexgoon_02"] = 832784782] = "g_m_y_mexgoon_02";
-  PedModel2[PedModel2["g_m_y_mexgoon_03"] = 2521633500] = "g_m_y_mexgoon_03";
-  PedModel2[PedModel2["g_m_y_pologoon_01"] = 1329576454] = "g_m_y_pologoon_01";
-  PedModel2[PedModel2["g_m_y_pologoon_02"] = 2733138262] = "g_m_y_pologoon_02";
-  PedModel2[PedModel2["g_m_y_salvaboss_01"] = 2422005962] = "g_m_y_salvaboss_01";
-  PedModel2[PedModel2["g_m_y_salvagoon_01"] = 663522487] = "g_m_y_salvagoon_01";
-  PedModel2[PedModel2["g_m_y_salvagoon_02"] = 846439045] = "g_m_y_salvagoon_02";
-  PedModel2[PedModel2["g_m_y_salvagoon_03"] = 62440720] = "g_m_y_salvagoon_03";
-  PedModel2[PedModel2["g_m_y_strpunk_01"] = 4246489531] = "g_m_y_strpunk_01";
-  PedModel2[PedModel2["g_m_y_strpunk_02"] = 228715206] = "g_m_y_strpunk_02";
-  PedModel2[PedModel2["hc_driver"] = 994527967] = "hc_driver";
-  PedModel2[PedModel2["hc_gunman"] = 193469166] = "hc_gunman";
-  PedModel2[PedModel2["hc_hacker"] = 2579169528] = "hc_hacker";
-  PedModel2[PedModel2["ig_abigail"] = 1074457665] = "ig_abigail";
-  PedModel2[PedModel2["ig_agatha"] = 1855569864] = "ig_agatha";
-  PedModel2[PedModel2["ig_agent"] = 610988552] = "ig_agent";
-  PedModel2[PedModel2["ig_agent_02"] = 1183124263] = "ig_agent_02";
-  PedModel2[PedModel2["ig_amandatownley"] = 1830688247] = "ig_amandatownley";
-  PedModel2[PedModel2["ig_andreas"] = 1206185632] = "ig_andreas";
-  PedModel2[PedModel2["ig_ary"] = 3473698871] = "ig_ary";
-  PedModel2[PedModel2["ig_ary_02"] = 2275358319] = "ig_ary_02";
-  PedModel2[PedModel2["ig_ashley"] = 2129936603] = "ig_ashley";
-  PedModel2[PedModel2["ig_avery"] = 3088269167] = "ig_avery";
-  PedModel2[PedModel2["ig_avischwartzman_02"] = 3735478533] = "ig_avischwartzman_02";
-  PedModel2[PedModel2["ig_avon"] = 4242698434] = "ig_avon";
-  PedModel2[PedModel2["ig_ballas_leader"] = 3678516463] = "ig_ballas_leader";
-  PedModel2[PedModel2["ig_ballasog"] = 2802535058] = "ig_ballasog";
-  PedModel2[PedModel2["ig_bankman"] = 2426248831] = "ig_bankman";
-  PedModel2[PedModel2["ig_barry"] = 797459875] = "ig_barry";
-  PedModel2[PedModel2["ig_benny"] = 3300333010] = "ig_benny";
-  PedModel2[PedModel2["ig_benny_02"] = 1943113851] = "ig_benny_02";
-  PedModel2[PedModel2["ig_bestmen"] = 1464257942] = "ig_bestmen";
-  PedModel2[PedModel2["ig_beverly"] = 3181518428] = "ig_beverly";
-  PedModel2[PedModel2["ig_billionaire"] = 28135809] = "ig_billionaire";
-  PedModel2[PedModel2["ig_brad"] = 3183167778] = "ig_brad";
-  PedModel2[PedModel2["ig_bride"] = 1633872967] = "ig_bride";
-  PedModel2[PedModel2["ig_brucie2"] = 3893268832] = "ig_brucie2";
-  PedModel2[PedModel2["ig_car3guy1"] = 2230970679] = "ig_car3guy1";
-  PedModel2[PedModel2["ig_car3guy2"] = 1975732938] = "ig_car3guy2";
-  PedModel2[PedModel2["ig_casey"] = 3774489940] = "ig_casey";
-  PedModel2[PedModel2["ig_celeb_01"] = 3676106820] = "ig_celeb_01";
-  PedModel2[PedModel2["ig_chef"] = 1240128502] = "ig_chef";
-  PedModel2[PedModel2["ig_chef2"] = 2240322243] = "ig_chef2";
-  PedModel2[PedModel2["ig_chengsr"] = 2867128955] = "ig_chengsr";
-  PedModel2[PedModel2["ig_chrisformage"] = 678319271] = "ig_chrisformage";
-  PedModel2[PedModel2["ig_clay"] = 1825562762] = "ig_clay";
-  PedModel2[PedModel2["ig_claypain"] = 2634057640] = "ig_claypain";
-  PedModel2[PedModel2["ig_cletus"] = 3865252245] = "ig_cletus";
-  PedModel2[PedModel2["ig_dale"] = 1182012905] = "ig_dale";
-  PedModel2[PedModel2["ig_davenorton"] = 365775923] = "ig_davenorton";
-  PedModel2[PedModel2["ig_denise"] = 2181772221] = "ig_denise";
-  PedModel2[PedModel2["ig_devin"] = 1952555184] = "ig_devin";
-  PedModel2[PedModel2["ig_dix"] = 4207997581] = "ig_dix";
-  PedModel2[PedModel2["ig_djblamadon"] = 4219210853] = "ig_djblamadon";
-  PedModel2[PedModel2["ig_djblamrupert"] = 914073350] = "ig_djblamrupert";
-  PedModel2[PedModel2["ig_djblamryanh"] = 400495475] = "ig_djblamryanh";
-  PedModel2[PedModel2["ig_djblamryans"] = 3057799231] = "ig_djblamryans";
-  PedModel2[PedModel2["ig_djdixmanager"] = 4221366718] = "ig_djdixmanager";
-  PedModel2[PedModel2["ig_djgeneric_01"] = 2580849741] = "ig_djgeneric_01";
-  PedModel2[PedModel2["ig_djsolfotios"] = 1241432569] = "ig_djsolfotios";
-  PedModel2[PedModel2["ig_djsoljakob"] = 2486302027] = "ig_djsoljakob";
-  PedModel2[PedModel2["ig_djsolmanager"] = 2123514453] = "ig_djsolmanager";
-  PedModel2[PedModel2["ig_djsolmike"] = 795497466] = "ig_djsolmike";
-  PedModel2[PedModel2["ig_djsolrobt"] = 1194880004] = "ig_djsolrobt";
-  PedModel2[PedModel2["ig_djtalaurelia"] = 2972453492] = "ig_djtalaurelia";
-  PedModel2[PedModel2["ig_djtalignazio"] = 2787461577] = "ig_djtalignazio";
-  PedModel2[PedModel2["ig_dom"] = 2620240008] = "ig_dom";
-  PedModel2[PedModel2["ig_dreyfuss"] = 3666413874] = "ig_dreyfuss";
-  PedModel2[PedModel2["ig_drfriedlander"] = 3422293493] = "ig_drfriedlander";
-  PedModel2[PedModel2["ig_drugdealer"] = 520923037] = "ig_drugdealer";
-  PedModel2[PedModel2["ig_englishdave"] = 205318924] = "ig_englishdave";
-  PedModel2[PedModel2["ig_englishdave_02"] = 905946442] = "ig_englishdave_02";
-  PedModel2[PedModel2["ig_entourage_a"] = 435539666] = "ig_entourage_a";
-  PedModel2[PedModel2["ig_entourage_b"] = 3362171829] = "ig_entourage_b";
-  PedModel2[PedModel2["ig_fabien"] = 3499148112] = "ig_fabien";
-  PedModel2[PedModel2["ig_fbisuit_01"] = 988062523] = "ig_fbisuit_01";
-  PedModel2[PedModel2["ig_floyd"] = 2981205682] = "ig_floyd";
-  PedModel2[PedModel2["ig_g"] = 2216405299] = "ig_g";
-  PedModel2[PedModel2["ig_georginacheng"] = 4014713647] = "ig_georginacheng";
-  PedModel2[PedModel2["ig_golfer_a"] = 1067129421] = "ig_golfer_a";
-  PedModel2[PedModel2["ig_golfer_b"] = 1858893999] = "ig_golfer_b";
-  PedModel2[PedModel2["ig_groom"] = 4274948997] = "ig_groom";
-  PedModel2[PedModel2["ig_gustavo"] = 3045437975] = "ig_gustavo";
-  PedModel2[PedModel2["ig_hao"] = 1704428387] = "ig_hao";
-  PedModel2[PedModel2["ig_hao_02"] = 4035146080] = "ig_hao_02";
-  PedModel2[PedModel2["ig_helmsmanpavel"] = 3619807921] = "ig_helmsmanpavel";
-  PedModel2[PedModel2["ig_huang"] = 3218252083] = "ig_huang";
-  PedModel2[PedModel2["ig_hunter"] = 3457361118] = "ig_hunter";
-  PedModel2[PedModel2["ig_imani"] = 772427594] = "ig_imani";
-  PedModel2[PedModel2["ig_isldj_00"] = 3802345064] = "ig_isldj_00";
-  PedModel2[PedModel2["ig_isldj_01"] = 1866942414] = "ig_isldj_01";
-  PedModel2[PedModel2["ig_isldj_02"] = 1562223483] = "ig_isldj_02";
-  PedModel2[PedModel2["ig_isldj_03"] = 322310057] = "ig_isldj_03";
-  PedModel2[PedModel2["ig_isldj_04"] = 2154719772] = "ig_isldj_04";
-  PedModel2[PedModel2["ig_isldj_04_d_01"] = 2979249514] = "ig_isldj_04_d_01";
-  PedModel2[PedModel2["ig_isldj_04_d_02"] = 4260779566] = "ig_isldj_04_d_02";
-  PedModel2[PedModel2["ig_isldj_04_e_01"] = 590182749] = "ig_isldj_04_e_01";
-  PedModel2[PedModel2["ig_jackie"] = 2040422902] = "ig_jackie";
-  PedModel2[PedModel2["ig_janet"] = 225287241] = "ig_janet";
-  PedModel2[PedModel2["ig_jay_norris"] = 2050158196] = "ig_jay_norris";
-  PedModel2[PedModel2["ig_jewelass"] = 257763003] = "ig_jewelass";
-  PedModel2[PedModel2["ig_jimmyboston"] = 3986688045] = "ig_jimmyboston";
-  PedModel2[PedModel2["ig_jimmyboston_02"] = 1135976220] = "ig_jimmyboston_02";
-  PedModel2[PedModel2["ig_jimmydisanto"] = 1459905209] = "ig_jimmydisanto";
-  PedModel2[PedModel2["ig_jimmydisanto2"] = 2217591510] = "ig_jimmydisanto2";
-  PedModel2[PedModel2["ig_jio"] = 1937203007] = "ig_jio";
-  PedModel2[PedModel2["ig_jio_02"] = 3494374974] = "ig_jio_02";
-  PedModel2[PedModel2["ig_joeminuteman"] = 3189787803] = "ig_joeminuteman";
-  PedModel2[PedModel2["ig_johnny_guns"] = 658984954] = "ig_johnny_guns";
-  PedModel2[PedModel2["ig_johnnyklebitz"] = 2278195374] = "ig_johnnyklebitz";
-  PedModel2[PedModel2["ig_josef"] = 3776618420] = "ig_josef";
-  PedModel2[PedModel2["ig_josh"] = 2040438510] = "ig_josh";
-  PedModel2[PedModel2["ig_juanstrickler"] = 507392637] = "ig_juanstrickler";
-  PedModel2[PedModel2["ig_karen_daniels"] = 3948009817] = "ig_karen_daniels";
-  PedModel2[PedModel2["ig_kaylee"] = 2810251555] = "ig_kaylee";
-  PedModel2[PedModel2["ig_kerrymcintosh"] = 1530648845] = "ig_kerrymcintosh";
-  PedModel2[PedModel2["ig_kerrymcintosh_02"] = 3628252818] = "ig_kerrymcintosh_02";
-  PedModel2[PedModel2["ig_lacey_jones_02"] = 3426139884] = "ig_lacey_jones_02";
-  PedModel2[PedModel2["ig_lamardavis"] = 1706635382] = "ig_lamardavis";
-  PedModel2[PedModel2["ig_lamardavis_02"] = 421830750] = "ig_lamardavis_02";
-  PedModel2[PedModel2["ig_lazlow"] = 3756278757] = "ig_lazlow";
-  PedModel2[PedModel2["ig_lazlow_2"] = 2231650028] = "ig_lazlow_2";
-  PedModel2[PedModel2["ig_lestercrest"] = 1302784073] = "ig_lestercrest";
-  PedModel2[PedModel2["ig_lestercrest_2"] = 1849883942] = "ig_lestercrest_2";
-  PedModel2[PedModel2["ig_lestercrest_3"] = 2013139108] = "ig_lestercrest_3";
-  PedModel2[PedModel2["ig_lifeinvad_01"] = 1401530684] = "ig_lifeinvad_01";
-  PedModel2[PedModel2["ig_lifeinvad_02"] = 666718676] = "ig_lifeinvad_02";
-  PedModel2[PedModel2["ig_lildee"] = 3356359010] = "ig_lildee";
-  PedModel2[PedModel2["ig_magenta"] = 4242313482] = "ig_magenta";
-  PedModel2[PedModel2["ig_malc"] = 4055673113] = "ig_malc";
-  PedModel2[PedModel2["ig_manuel"] = 4248931856] = "ig_manuel";
-  PedModel2[PedModel2["ig_marnie"] = 411185872] = "ig_marnie";
-  PedModel2[PedModel2["ig_maryann"] = 2741999622] = "ig_maryann";
-  PedModel2[PedModel2["ig_mason_duggan"] = 1224757029] = "ig_mason_duggan";
-  PedModel2[PedModel2["ig_maude"] = 1005070462] = "ig_maude";
-  PedModel2[PedModel2["ig_michelle"] = 3214308084] = "ig_michelle";
-  PedModel2[PedModel2["ig_miguelmadrazo"] = 2781707480] = "ig_miguelmadrazo";
-  PedModel2[PedModel2["ig_milton"] = 3408943538] = "ig_milton";
-  PedModel2[PedModel2["ig_mimi"] = 2018483349] = "ig_mimi";
-  PedModel2[PedModel2["ig_mjo"] = 761115490] = "ig_mjo";
-  PedModel2[PedModel2["ig_mjo_02"] = 952584644] = "ig_mjo_02";
-  PedModel2[PedModel2["ig_molly"] = 2936266209] = "ig_molly";
-  PedModel2[PedModel2["ig_money"] = 939183526] = "ig_money";
-  PedModel2[PedModel2["ig_moodyman_02"] = 2547074227] = "ig_moodyman_02";
-  PedModel2[PedModel2["ig_mp_agent14"] = 4227433577] = "ig_mp_agent14";
-  PedModel2[PedModel2["ig_mrk"] = 3990661997] = "ig_mrk";
-  PedModel2[PedModel2["ig_mrs_thornhill"] = 503621995] = "ig_mrs_thornhill";
-  PedModel2[PedModel2["ig_mrsphillips"] = 946007720] = "ig_mrsphillips";
-  PedModel2[PedModel2["ig_musician_00"] = 595139263] = "ig_musician_00";
-  PedModel2[PedModel2["ig_natalia"] = 3726105915] = "ig_natalia";
-  PedModel2[PedModel2["ig_nervousron"] = 3170921201] = "ig_nervousron";
-  PedModel2[PedModel2["ig_nigel"] = 3367442045] = "ig_nigel";
-  PedModel2[PedModel2["ig_old_man1a"] = 1906124788] = "ig_old_man1a";
-  PedModel2[PedModel2["ig_old_man2"] = 4011150407] = "ig_old_man2";
-  PedModel2[PedModel2["ig_oldrichguy"] = 1006915658] = "ig_oldrichguy";
-  PedModel2[PedModel2["ig_omega"] = 1625728984] = "ig_omega";
-  PedModel2[PedModel2["ig_oneil"] = 768005095] = "ig_oneil";
-  PedModel2[PedModel2["ig_orleans"] = 1641334641] = "ig_orleans";
-  PedModel2[PedModel2["ig_ortega"] = 648372919] = "ig_ortega";
-  PedModel2[PedModel2["ig_paige"] = 357551935] = "ig_paige";
-  PedModel2[PedModel2["ig_paper"] = 2577072326] = "ig_paper";
-  PedModel2[PedModel2["ig_party_promo"] = 2243470389] = "ig_party_promo";
-  PedModel2[PedModel2["ig_patricia"] = 3312325004] = "ig_patricia";
-  PedModel2[PedModel2["ig_patricia_02"] = 3272690865] = "ig_patricia_02";
-  PedModel2[PedModel2["ig_pilot"] = 2253313678] = "ig_pilot";
-  PedModel2[PedModel2["ig_popov"] = 645279998] = "ig_popov";
-  PedModel2[PedModel2["ig_priest"] = 1681385341] = "ig_priest";
-  PedModel2[PedModel2["ig_prolsec_02"] = 666086773] = "ig_prolsec_02";
-  PedModel2[PedModel2["ig_ramp_gang"] = 3845001836] = "ig_ramp_gang";
-  PedModel2[PedModel2["ig_ramp_hic"] = 1165307954] = "ig_ramp_hic";
-  PedModel2[PedModel2["ig_ramp_hipster"] = 3740245870] = "ig_ramp_hipster";
-  PedModel2[PedModel2["ig_ramp_mex"] = 3870061732] = "ig_ramp_mex";
-  PedModel2[PedModel2["ig_rashcosvki"] = 940330470] = "ig_rashcosvki";
-  PedModel2[PedModel2["ig_req_officer"] = 3944177684] = "ig_req_officer";
-  PedModel2[PedModel2["ig_roccopelosi"] = 3585757951] = "ig_roccopelosi";
-  PedModel2[PedModel2["ig_russiandrunk"] = 1024089777] = "ig_russiandrunk";
-  PedModel2[PedModel2["ig_sacha"] = 1476581877] = "ig_sacha";
-  PedModel2[PedModel2["ig_screen_writer"] = 4293277303] = "ig_screen_writer";
-  PedModel2[PedModel2["ig_security_a"] = 793664635] = "ig_security_a";
-  PedModel2[PedModel2["ig_sessanta"] = 924556713] = "ig_sessanta";
-  PedModel2[PedModel2["ig_siemonyetarian"] = 1283141381] = "ig_siemonyetarian";
-  PedModel2[PedModel2["ig_sol"] = 3786117468] = "ig_sol";
-  PedModel2[PedModel2["ig_solomon"] = 2260598310] = "ig_solomon";
-  PedModel2[PedModel2["ig_soundeng_00"] = 3661356520] = "ig_soundeng_00";
-  PedModel2[PedModel2["ig_sss"] = 991486725] = "ig_sss";
-  PedModel2[PedModel2["ig_stevehains"] = 941695432] = "ig_stevehains";
-  PedModel2[PedModel2["ig_stretch"] = 915948376] = "ig_stretch";
-  PedModel2[PedModel2["ig_talcc"] = 3828621987] = "ig_talcc";
-  PedModel2[PedModel2["ig_talina"] = 3885222120] = "ig_talina";
-  PedModel2[PedModel2["ig_talmm"] = 1182156569] = "ig_talmm";
-  PedModel2[PedModel2["ig_tanisha"] = 226559113] = "ig_tanisha";
-  PedModel2[PedModel2["ig_taocheng"] = 3697041061] = "ig_taocheng";
-  PedModel2[PedModel2["ig_taocheng2"] = 1506159504] = "ig_taocheng2";
-  PedModel2[PedModel2["ig_taostranslator"] = 2089096292] = "ig_taostranslator";
-  PedModel2[PedModel2["ig_taostranslator2"] = 3828553631] = "ig_taostranslator2";
-  PedModel2[PedModel2["ig_tenniscoach"] = 2721800023] = "ig_tenniscoach";
-  PedModel2[PedModel2["ig_terry"] = 1728056212] = "ig_terry";
-  PedModel2[PedModel2["ig_thornton"] = 2482949079] = "ig_thornton";
-  PedModel2[PedModel2["ig_tomcasino"] = 55858852] = "ig_tomcasino";
-  PedModel2[PedModel2["ig_tomepsilon"] = 3447159466] = "ig_tomepsilon";
-  PedModel2[PedModel2["ig_tonya"] = 3402126148] = "ig_tonya";
-  PedModel2[PedModel2["ig_tonyprince"] = 761829301] = "ig_tonyprince";
-  PedModel2[PedModel2["ig_tracydisanto"] = 3728026165] = "ig_tracydisanto";
-  PedModel2[PedModel2["ig_trafficwarden"] = 1461287021] = "ig_trafficwarden";
-  PedModel2[PedModel2["ig_tylerdix"] = 1382414087] = "ig_tylerdix";
-  PedModel2[PedModel2["ig_tylerdix_02"] = 1511543927] = "ig_tylerdix_02";
-  PedModel2[PedModel2["ig_vagos_leader"] = 2205902046] = "ig_vagos_leader";
-  PedModel2[PedModel2["ig_vagspeak"] = 4194109068] = "ig_vagspeak";
-  PedModel2[PedModel2["ig_vernon"] = 3451031970] = "ig_vernon";
-  PedModel2[PedModel2["ig_vincent"] = 736659122] = "ig_vincent";
-  PedModel2[PedModel2["ig_vincent_2"] = 197443027] = "ig_vincent_2";
-  PedModel2[PedModel2["ig_vincent_3"] = 363712933] = "ig_vincent_3";
-  PedModel2[PedModel2["ig_wade"] = 2459507570] = "ig_wade";
-  PedModel2[PedModel2["ig_warehouseboss"] = 1108376739] = "ig_warehouseboss";
-  PedModel2[PedModel2["ig_wendy"] = 1850188817] = "ig_wendy";
-  PedModel2[PedModel2["ig_zimbor"] = 188012277] = "ig_zimbor";
-  PedModel2[PedModel2["mp_f_bennymech_01"] = 2139205821] = "mp_f_bennymech_01";
-  PedModel2[PedModel2["mp_f_boatstaff_01"] = 848542158] = "mp_f_boatstaff_01";
-  PedModel2[PedModel2["mp_f_cardesign_01"] = 606876839] = "mp_f_cardesign_01";
-  PedModel2[PedModel2["mp_f_chbar_01"] = 3287737221] = "mp_f_chbar_01";
-  PedModel2[PedModel2["mp_f_cocaine_01"] = 1264941816] = "mp_f_cocaine_01";
-  PedModel2[PedModel2["mp_f_counterfeit_01"] = 3079205365] = "mp_f_counterfeit_01";
-  PedModel2[PedModel2["mp_f_deadhooker"] = 1943971979] = "mp_f_deadhooker";
-  PedModel2[PedModel2["mp_f_execpa_01"] = 1126998116] = "mp_f_execpa_01";
-  PedModel2[PedModel2["mp_f_execpa_02"] = 1500695792] = "mp_f_execpa_02";
-  PedModel2[PedModel2["mp_f_forgery_01"] = 2014985464] = "mp_f_forgery_01";
-  PedModel2[PedModel2["mp_f_freemode_01"] = 2627665880] = "mp_f_freemode_01";
-  PedModel2[PedModel2["mp_f_helistaff_01"] = 431423238] = "mp_f_helistaff_01";
-  PedModel2[PedModel2["mp_f_meth_01"] = 3534913217] = "mp_f_meth_01";
-  PedModel2[PedModel2["mp_f_misty_01"] = 3509125021] = "mp_f_misty_01";
-  PedModel2[PedModel2["mp_f_stripperlite"] = 695248020] = "mp_f_stripperlite";
-  PedModel2[PedModel2["mp_f_weed_01"] = 2992993187] = "mp_f_weed_01";
-  PedModel2[PedModel2["mp_g_m_pros_01"] = 1822283721] = "mp_g_m_pros_01";
-  PedModel2[PedModel2["mp_headtargets"] = 1173958009] = "mp_headtargets";
-  PedModel2[PedModel2["mp_m_avongoon"] = 2618542997] = "mp_m_avongoon";
-  PedModel2[PedModel2["mp_m_boatstaff_01"] = 3361671816] = "mp_m_boatstaff_01";
-  PedModel2[PedModel2["mp_m_bogdangoon"] = 1297520375] = "mp_m_bogdangoon";
-  PedModel2[PedModel2["mp_m_claude_01"] = 3237179831] = "mp_m_claude_01";
-  PedModel2[PedModel2["mp_m_cocaine_01"] = 1456705429] = "mp_m_cocaine_01";
-  PedModel2[PedModel2["mp_m_counterfeit_01"] = 2555758964] = "mp_m_counterfeit_01";
-  PedModel2[PedModel2["mp_m_exarmy_01"] = 1161072059] = "mp_m_exarmy_01";
-  PedModel2[PedModel2["mp_m_execpa_01"] = 1048844220] = "mp_m_execpa_01";
-  PedModel2[PedModel2["mp_m_famdd_01"] = 866411749] = "mp_m_famdd_01";
-  PedModel2[PedModel2["mp_m_fibsec_01"] = 1558115333] = "mp_m_fibsec_01";
-  PedModel2[PedModel2["mp_m_forgery_01"] = 1631482011] = "mp_m_forgery_01";
-  PedModel2[PedModel2["mp_m_freemode_01"] = 1885233650] = "mp_m_freemode_01";
-  PedModel2[PedModel2["mp_m_g_vagfun_01"] = 3299219389] = "mp_m_g_vagfun_01";
-  PedModel2[PedModel2["mp_m_marston_01"] = 943915367] = "mp_m_marston_01";
-  PedModel2[PedModel2["mp_m_meth_01"] = 3988008767] = "mp_m_meth_01";
-  PedModel2[PedModel2["mp_m_niko_01"] = 4007317449] = "mp_m_niko_01";
-  PedModel2[PedModel2["mp_m_securoguard_01"] = 3660355662] = "mp_m_securoguard_01";
-  PedModel2[PedModel2["mp_m_shopkeep_01"] = 416176080] = "mp_m_shopkeep_01";
-  PedModel2[PedModel2["mp_m_waremech_01"] = 4154933561] = "mp_m_waremech_01";
-  PedModel2[PedModel2["mp_m_weapexp_01"] = 921328393] = "mp_m_weapexp_01";
-  PedModel2[PedModel2["mp_m_weapwork_01"] = 1099321454] = "mp_m_weapwork_01";
-  PedModel2[PedModel2["mp_m_weed_01"] = 2441008217] = "mp_m_weed_01";
-  PedModel2[PedModel2["mp_s_m_armoured_01"] = 3455013896] = "mp_s_m_armoured_01";
-  PedModel2[PedModel2["p_franklin_02"] = 2937109846] = "p_franklin_02";
-  PedModel2[PedModel2["player_one"] = 2602752943] = "player_one";
-  PedModel2[PedModel2["player_two"] = 2608926626] = "player_two";
-  PedModel2[PedModel2["player_zero"] = 225514697] = "player_zero";
-  PedModel2[PedModel2["s_f_m_autoshop_01"] = 12394276] = "s_f_m_autoshop_01";
-  PedModel2[PedModel2["s_f_m_fembarber"] = 373000027] = "s_f_m_fembarber";
-  PedModel2[PedModel2["s_f_m_maid_01"] = 3767780806] = "s_f_m_maid_01";
-  PedModel2[PedModel2["s_f_m_retailstaff_01"] = 3248235618] = "s_f_m_retailstaff_01";
-  PedModel2[PedModel2["s_f_m_shop_high"] = 2923947184] = "s_f_m_shop_high";
-  PedModel2[PedModel2["s_f_m_studioassist_01"] = 3243617472] = "s_f_m_studioassist_01";
-  PedModel2[PedModel2["s_f_m_sweatshop_01"] = 824925120] = "s_f_m_sweatshop_01";
-  PedModel2[PedModel2["s_f_m_warehouse_01"] = 3845594002] = "s_f_m_warehouse_01";
-  PedModel2[PedModel2["s_f_y_airhostess_01"] = 1567728751] = "s_f_y_airhostess_01";
-  PedModel2[PedModel2["s_f_y_bartender_01"] = 2014052797] = "s_f_y_bartender_01";
-  PedModel2[PedModel2["s_f_y_baywatch_01"] = 1250841910] = "s_f_y_baywatch_01";
-  PedModel2[PedModel2["s_f_y_beachbarstaff_01"] = 3269663242] = "s_f_y_beachbarstaff_01";
-  PedModel2[PedModel2["s_f_y_casino_01"] = 3163733717] = "s_f_y_casino_01";
-  PedModel2[PedModel2["s_f_y_clubbar_01"] = 3240507723] = "s_f_y_clubbar_01";
-  PedModel2[PedModel2["s_f_y_clubbar_02"] = 1438999163] = "s_f_y_clubbar_02";
-  PedModel2[PedModel2["s_f_y_cop_01"] = 368603149] = "s_f_y_cop_01";
-  PedModel2[PedModel2["s_f_y_factory_01"] = 1777626099] = "s_f_y_factory_01";
-  PedModel2[PedModel2["s_f_y_hooker_01"] = 42647445] = "s_f_y_hooker_01";
-  PedModel2[PedModel2["s_f_y_hooker_02"] = 348382215] = "s_f_y_hooker_02";
-  PedModel2[PedModel2["s_f_y_hooker_03"] = 51789996] = "s_f_y_hooker_03";
-  PedModel2[PedModel2["s_f_y_migrant_01"] = 3579522037] = "s_f_y_migrant_01";
-  PedModel2[PedModel2["s_f_y_movprem_01"] = 587253782] = "s_f_y_movprem_01";
-  PedModel2[PedModel2["s_f_y_ranger_01"] = 2680682039] = "s_f_y_ranger_01";
-  PedModel2[PedModel2["s_f_y_scrubs_01"] = 2874755766] = "s_f_y_scrubs_01";
-  PedModel2[PedModel2["s_f_y_sheriff_01"] = 1096929346] = "s_f_y_sheriff_01";
-  PedModel2[PedModel2["s_f_y_shop_low"] = 2842568196] = "s_f_y_shop_low";
-  PedModel2[PedModel2["s_f_y_shop_mid"] = 1055701597] = "s_f_y_shop_mid";
-  PedModel2[PedModel2["s_f_y_stripper_01"] = 1381498905] = "s_f_y_stripper_01";
-  PedModel2[PedModel2["s_f_y_stripper_02"] = 1846523796] = "s_f_y_stripper_02";
-  PedModel2[PedModel2["s_f_y_stripperlite"] = 1544875514] = "s_f_y_stripperlite";
-  PedModel2[PedModel2["s_f_y_sweatshop_01"] = 2231547570] = "s_f_y_sweatshop_01";
-  PedModel2[PedModel2["s_m_m_ammucountry"] = 233415434] = "s_m_m_ammucountry";
-  PedModel2[PedModel2["s_m_m_armoured_01"] = 2512875213] = "s_m_m_armoured_01";
-  PedModel2[PedModel2["s_m_m_armoured_02"] = 1669696074] = "s_m_m_armoured_02";
-  PedModel2[PedModel2["s_m_m_autoshop_01"] = 68070371] = "s_m_m_autoshop_01";
-  PedModel2[PedModel2["s_m_m_autoshop_02"] = 4033578141] = "s_m_m_autoshop_02";
-  PedModel2[PedModel2["s_m_m_autoshop_03"] = 109850898] = "s_m_m_autoshop_03";
-  PedModel2[PedModel2["s_m_m_bouncer_01"] = 2681481517] = "s_m_m_bouncer_01";
-  PedModel2[PedModel2["s_m_m_bouncer_02"] = 1376128402] = "s_m_m_bouncer_02";
-  PedModel2[PedModel2["s_m_m_ccrew_01"] = 3387290987] = "s_m_m_ccrew_01";
-  PedModel2[PedModel2["s_m_m_chemsec_01"] = 788443093] = "s_m_m_chemsec_01";
-  PedModel2[PedModel2["s_m_m_ciasec_01"] = 1650288984] = "s_m_m_ciasec_01";
-  PedModel2[PedModel2["s_m_m_cntrybar_01"] = 436345731] = "s_m_m_cntrybar_01";
-  PedModel2[PedModel2["s_m_m_dockwork_01"] = 349680864] = "s_m_m_dockwork_01";
-  PedModel2[PedModel2["s_m_m_doctor_01"] = 3564307372] = "s_m_m_doctor_01";
-  PedModel2[PedModel2["s_m_m_drugprocess_01"] = 1547070595] = "s_m_m_drugprocess_01";
-  PedModel2[PedModel2["s_m_m_fiboffice_01"] = 3988550982] = "s_m_m_fiboffice_01";
-  PedModel2[PedModel2["s_m_m_fiboffice_02"] = 653289389] = "s_m_m_fiboffice_02";
-  PedModel2[PedModel2["s_m_m_fibsec_01"] = 2072724299] = "s_m_m_fibsec_01";
-  PedModel2[PedModel2["s_m_m_fieldworker_01"] = 2423573072] = "s_m_m_fieldworker_01";
-  PedModel2[PedModel2["s_m_m_gaffer_01"] = 2841034142] = "s_m_m_gaffer_01";
-  PedModel2[PedModel2["s_m_m_gardener_01"] = 1240094341] = "s_m_m_gardener_01";
-  PedModel2[PedModel2["s_m_m_gentransport"] = 411102470] = "s_m_m_gentransport";
-  PedModel2[PedModel2["s_m_m_hairdress_01"] = 1099825042] = "s_m_m_hairdress_01";
-  PedModel2[PedModel2["s_m_m_highsec_01"] = 4049719826] = "s_m_m_highsec_01";
-  PedModel2[PedModel2["s_m_m_highsec_02"] = 691061163] = "s_m_m_highsec_02";
-  PedModel2[PedModel2["s_m_m_highsec_03"] = 518696223] = "s_m_m_highsec_03";
-  PedModel2[PedModel2["s_m_m_highsec_04"] = 1442749254] = "s_m_m_highsec_04";
-  PedModel2[PedModel2["s_m_m_highsec_05"] = 985359552] = "s_m_m_highsec_05";
-  PedModel2[PedModel2["s_m_m_janitor"] = 2842417644] = "s_m_m_janitor";
-  PedModel2[PedModel2["s_m_m_lathandy_01"] = 2659242702] = "s_m_m_lathandy_01";
-  PedModel2[PedModel2["s_m_m_lifeinvad_01"] = 3724572669] = "s_m_m_lifeinvad_01";
-  PedModel2[PedModel2["s_m_m_linecook"] = 3684436375] = "s_m_m_linecook";
-  PedModel2[PedModel2["s_m_m_lsmetro_01"] = 1985653476] = "s_m_m_lsmetro_01";
-  PedModel2[PedModel2["s_m_m_mariachi_01"] = 2124742566] = "s_m_m_mariachi_01";
-  PedModel2[PedModel2["s_m_m_marine_01"] = 4074414829] = "s_m_m_marine_01";
-  PedModel2[PedModel2["s_m_m_marine_02"] = 4028996995] = "s_m_m_marine_02";
-  PedModel2[PedModel2["s_m_m_migrant_01"] = 3977045190] = "s_m_m_migrant_01";
-  PedModel2[PedModel2["s_m_m_movalien_01"] = 1684083350] = "s_m_m_movalien_01";
-  PedModel2[PedModel2["s_m_m_movprem_01"] = 3630066984] = "s_m_m_movprem_01";
-  PedModel2[PedModel2["s_m_m_movspace_01"] = 3887273010] = "s_m_m_movspace_01";
-  PedModel2[PedModel2["s_m_m_paramedic_01"] = 3008586398] = "s_m_m_paramedic_01";
-  PedModel2[PedModel2["s_m_m_pilot_01"] = 3881519900] = "s_m_m_pilot_01";
-  PedModel2[PedModel2["s_m_m_pilot_02"] = 4131252449] = "s_m_m_pilot_02";
-  PedModel2[PedModel2["s_m_m_postal_01"] = 1650036788] = "s_m_m_postal_01";
-  PedModel2[PedModel2["s_m_m_postal_02"] = 1936142927] = "s_m_m_postal_02";
-  PedModel2[PedModel2["s_m_m_prisguard_01"] = 1456041926] = "s_m_m_prisguard_01";
-  PedModel2[PedModel2["s_m_m_raceorg_01"] = 2597948825] = "s_m_m_raceorg_01";
-  PedModel2[PedModel2["s_m_m_scientist_01"] = 1092080539] = "s_m_m_scientist_01";
-  PedModel2[PedModel2["s_m_m_security_01"] = 3613962792] = "s_m_m_security_01";
-  PedModel2[PedModel2["s_m_m_snowcop_01"] = 451459928] = "s_m_m_snowcop_01";
-  PedModel2[PedModel2["s_m_m_strperf_01"] = 2035992488] = "s_m_m_strperf_01";
-  PedModel2[PedModel2["s_m_m_strpreach_01"] = 469792763] = "s_m_m_strpreach_01";
-  PedModel2[PedModel2["s_m_m_strvend_01"] = 3465614249] = "s_m_m_strvend_01";
-  PedModel2[PedModel2["s_m_m_studioassist_02"] = 2679204136] = "s_m_m_studioassist_02";
-  PedModel2[PedModel2["s_m_m_studioprod_01"] = 3819113407] = "s_m_m_studioprod_01";
-  PedModel2[PedModel2["s_m_m_studiosoueng_02"] = 3725116432] = "s_m_m_studiosoueng_02";
-  PedModel2[PedModel2["s_m_m_tattoo_01"] = 3289859051] = "s_m_m_tattoo_01";
-  PedModel2[PedModel2["s_m_m_trucker_01"] = 1498487404] = "s_m_m_trucker_01";
-  PedModel2[PedModel2["s_m_m_ups_01"] = 2680389410] = "s_m_m_ups_01";
-  PedModel2[PedModel2["s_m_m_ups_02"] = 3502104854] = "s_m_m_ups_02";
-  PedModel2[PedModel2["s_m_m_warehouse_01"] = 660117393] = "s_m_m_warehouse_01";
-  PedModel2[PedModel2["s_m_o_busker_01"] = 2912874939] = "s_m_o_busker_01";
-  PedModel2[PedModel2["s_m_y_airworker"] = 1644266841] = "s_m_y_airworker";
-  PedModel2[PedModel2["s_m_y_ammucity_01"] = 2651349821] = "s_m_y_ammucity_01";
-  PedModel2[PedModel2["s_m_y_armymech_01"] = 1657546978] = "s_m_y_armymech_01";
-  PedModel2[PedModel2["s_m_y_autopsy_01"] = 2988916046] = "s_m_y_autopsy_01";
-  PedModel2[PedModel2["s_m_y_barman_01"] = 3852538118] = "s_m_y_barman_01";
-  PedModel2[PedModel2["s_m_y_baywatch_01"] = 189425762] = "s_m_y_baywatch_01";
-  PedModel2[PedModel2["s_m_y_blackops_01"] = 3019107892] = "s_m_y_blackops_01";
-  PedModel2[PedModel2["s_m_y_blackops_02"] = 2047212121] = "s_m_y_blackops_02";
-  PedModel2[PedModel2["s_m_y_blackops_03"] = 1349953339] = "s_m_y_blackops_03";
-  PedModel2[PedModel2["s_m_y_busboy_01"] = 3640249671] = "s_m_y_busboy_01";
-  PedModel2[PedModel2["s_m_y_casino_01"] = 337826907] = "s_m_y_casino_01";
-  PedModel2[PedModel2["s_m_y_chef_01"] = 261586155] = "s_m_y_chef_01";
-  PedModel2[PedModel2["s_m_y_clown_01"] = 71929310] = "s_m_y_clown_01";
-  PedModel2[PedModel2["s_m_y_clubbar_01"] = 1299424319] = "s_m_y_clubbar_01";
-  PedModel2[PedModel2["s_m_y_construct_01"] = 3621428889] = "s_m_y_construct_01";
-  PedModel2[PedModel2["s_m_y_construct_02"] = 3321821918] = "s_m_y_construct_02";
-  PedModel2[PedModel2["s_m_y_cop_01"] = 1581098148] = "s_m_y_cop_01";
-  PedModel2[PedModel2["s_m_y_dealer_01"] = 3835149295] = "s_m_y_dealer_01";
-  PedModel2[PedModel2["s_m_y_devinsec_01"] = 2606068340] = "s_m_y_devinsec_01";
-  PedModel2[PedModel2["s_m_y_dockwork_01"] = 2255894993] = "s_m_y_dockwork_01";
-  PedModel2[PedModel2["s_m_y_doorman_01"] = 579932932] = "s_m_y_doorman_01";
-  PedModel2[PedModel2["s_m_y_dwservice_01"] = 1976765073] = "s_m_y_dwservice_01";
-  PedModel2[PedModel2["s_m_y_dwservice_02"] = 4119890438] = "s_m_y_dwservice_02";
-  PedModel2[PedModel2["s_m_y_factory_01"] = 1097048408] = "s_m_y_factory_01";
-  PedModel2[PedModel2["s_m_y_fireman_01"] = 3065114024] = "s_m_y_fireman_01";
-  PedModel2[PedModel2["s_m_y_garbage"] = 4000686095] = "s_m_y_garbage";
-  PedModel2[PedModel2["s_m_y_grip_01"] = 815693290] = "s_m_y_grip_01";
-  PedModel2[PedModel2["s_m_y_hwaycop_01"] = 1939545845] = "s_m_y_hwaycop_01";
-  PedModel2[PedModel2["s_m_y_marine_01"] = 1702441027] = "s_m_y_marine_01";
-  PedModel2[PedModel2["s_m_y_marine_02"] = 1490458366] = "s_m_y_marine_02";
-  PedModel2[PedModel2["s_m_y_marine_03"] = 1925237458] = "s_m_y_marine_03";
-  PedModel2[PedModel2["s_m_y_mime"] = 1021093698] = "s_m_y_mime";
-  PedModel2[PedModel2["s_m_y_pestcont_01"] = 1209091352] = "s_m_y_pestcont_01";
-  PedModel2[PedModel2["s_m_y_pilot_01"] = 2872052743] = "s_m_y_pilot_01";
-  PedModel2[PedModel2["s_m_y_prismuscl_01"] = 1596003233] = "s_m_y_prismuscl_01";
-  PedModel2[PedModel2["s_m_y_prisoner_01"] = 2981862233] = "s_m_y_prisoner_01";
-  PedModel2[PedModel2["s_m_y_ranger_01"] = 4017173934] = "s_m_y_ranger_01";
-  PedModel2[PedModel2["s_m_y_robber_01"] = 3227390873] = "s_m_y_robber_01";
-  PedModel2[PedModel2["s_m_y_sheriff_01"] = 2974087609] = "s_m_y_sheriff_01";
-  PedModel2[PedModel2["s_m_y_shop_mask"] = 1846684678] = "s_m_y_shop_mask";
-  PedModel2[PedModel2["s_m_y_strvend_01"] = 2457805603] = "s_m_y_strvend_01";
-  PedModel2[PedModel2["s_m_y_swat_01"] = 2374966032] = "s_m_y_swat_01";
-  PedModel2[PedModel2["s_m_y_uscg_01"] = 3389018345] = "s_m_y_uscg_01";
-  PedModel2[PedModel2["s_m_y_valet_01"] = 999748158] = "s_m_y_valet_01";
-  PedModel2[PedModel2["s_m_y_waiter_01"] = 2907468364] = "s_m_y_waiter_01";
-  PedModel2[PedModel2["s_m_y_waretech_01"] = 1221043248] = "s_m_y_waretech_01";
-  PedModel2[PedModel2["s_m_y_westsec_01"] = 2719478597] = "s_m_y_westsec_01";
-  PedModel2[PedModel2["s_m_y_westsec_02"] = 3200789669] = "s_m_y_westsec_02";
-  PedModel2[PedModel2["s_m_y_winclean_01"] = 1426951581] = "s_m_y_winclean_01";
-  PedModel2[PedModel2["s_m_y_xmech_01"] = 1142162924] = "s_m_y_xmech_01";
-  PedModel2[PedModel2["s_m_y_xmech_02"] = 3189832196] = "s_m_y_xmech_02";
-  PedModel2[PedModel2["s_m_y_xmech_02_mp"] = 1762949645] = "s_m_y_xmech_02_mp";
-  PedModel2[PedModel2["slod_human"] = 1057201338] = "slod_human";
-  PedModel2[PedModel2["slod_large_quadped"] = 2238511874] = "slod_large_quadped";
-  PedModel2[PedModel2["slod_small_quadped"] = 762327283] = "slod_small_quadped";
-  PedModel2[PedModel2["u_f_m_casinocash_01"] = 3138220789] = "u_f_m_casinocash_01";
-  PedModel2[PedModel2["u_f_m_casinoshop_01"] = 338154536] = "u_f_m_casinoshop_01";
-  PedModel2[PedModel2["u_f_m_corpse_01"] = 773063444] = "u_f_m_corpse_01";
-  PedModel2[PedModel2["u_f_m_debbie_01"] = 223828550] = "u_f_m_debbie_01";
-  PedModel2[PedModel2["u_f_m_drowned_01"] = 3623056905] = "u_f_m_drowned_01";
-  PedModel2[PedModel2["u_f_m_miranda"] = 1095737979] = "u_f_m_miranda";
-  PedModel2[PedModel2["u_f_m_miranda_02"] = 3954904244] = "u_f_m_miranda_02";
-  PedModel2[PedModel2["u_f_m_promourn_01"] = 2718472679] = "u_f_m_promourn_01";
-  PedModel2[PedModel2["u_f_o_carol"] = 1415150394] = "u_f_o_carol";
-  PedModel2[PedModel2["u_f_o_eileen"] = 2630685688] = "u_f_o_eileen";
-  PedModel2[PedModel2["u_f_o_moviestar"] = 894928436] = "u_f_o_moviestar";
-  PedModel2[PedModel2["u_f_o_prolhost_01"] = 3306347811] = "u_f_o_prolhost_01";
-  PedModel2[PedModel2["u_f_y_beth"] = 2503965067] = "u_f_y_beth";
-  PedModel2[PedModel2["u_f_y_bikerchic"] = 4198014287] = "u_f_y_bikerchic";
-  PedModel2[PedModel2["u_f_y_comjane"] = 3064628686] = "u_f_y_comjane";
-  PedModel2[PedModel2["u_f_y_corpse_01"] = 2624589981] = "u_f_y_corpse_01";
-  PedModel2[PedModel2["u_f_y_corpse_02"] = 228356856] = "u_f_y_corpse_02";
-  PedModel2[PedModel2["u_f_y_danceburl_01"] = 222643882] = "u_f_y_danceburl_01";
-  PedModel2[PedModel2["u_f_y_dancelthr_01"] = 130590395] = "u_f_y_dancelthr_01";
-  PedModel2[PedModel2["u_f_y_dancerave_01"] = 2900533745] = "u_f_y_dancerave_01";
-  PedModel2[PedModel2["u_f_y_hotposh_01"] = 2526768638] = "u_f_y_hotposh_01";
-  PedModel2[PedModel2["u_f_y_jewelass_01"] = 4040474158] = "u_f_y_jewelass_01";
-  PedModel2[PedModel2["u_f_y_lauren"] = 967594628] = "u_f_y_lauren";
-  PedModel2[PedModel2["u_f_y_mistress"] = 1573528872] = "u_f_y_mistress";
-  PedModel2[PedModel2["u_f_y_poppymich"] = 602513566] = "u_f_y_poppymich";
-  PedModel2[PedModel2["u_f_y_poppymich_02"] = 1823868411] = "u_f_y_poppymich_02";
-  PedModel2[PedModel2["u_f_y_princess"] = 3538133636] = "u_f_y_princess";
-  PedModel2[PedModel2["u_f_y_spyactress"] = 1535236204] = "u_f_y_spyactress";
-  PedModel2[PedModel2["u_f_y_taylor"] = 450271392] = "u_f_y_taylor";
-  PedModel2[PedModel2["u_m_m_aldinapoli"] = 4042020578] = "u_m_m_aldinapoli";
-  PedModel2[PedModel2["u_m_m_bankman"] = 3272005365] = "u_m_m_bankman";
-  PedModel2[PedModel2["u_m_m_bikehire_01"] = 1984382277] = "u_m_m_bikehire_01";
-  PedModel2[PedModel2["u_m_m_blane"] = 2543361176] = "u_m_m_blane";
-  PedModel2[PedModel2["u_m_m_curtis"] = 4161104501] = "u_m_m_curtis";
-  PedModel2[PedModel2["u_m_m_doa_01"] = 1646160893] = "u_m_m_doa_01";
-  PedModel2[PedModel2["u_m_m_edtoh"] = 712602007] = "u_m_m_edtoh";
-  PedModel2[PedModel2["u_m_m_fibarchitect"] = 874722259] = "u_m_m_fibarchitect";
-  PedModel2[PedModel2["u_m_m_filmdirector"] = 728636342] = "u_m_m_filmdirector";
-  PedModel2[PedModel2["u_m_m_glenstank_01"] = 1169888870] = "u_m_m_glenstank_01";
-  PedModel2[PedModel2["u_m_m_griff_01"] = 3293887675] = "u_m_m_griff_01";
-  PedModel2[PedModel2["u_m_m_jesus_01"] = 3459037009] = "u_m_m_jesus_01";
-  PedModel2[PedModel2["u_m_m_jewelsec_01"] = 2899099062] = "u_m_m_jewelsec_01";
-  PedModel2[PedModel2["u_m_m_jewelthief"] = 3872144604] = "u_m_m_jewelthief";
-  PedModel2[PedModel2["u_m_m_markfost"] = 479578891] = "u_m_m_markfost";
-  PedModel2[PedModel2["u_m_m_partytarget"] = 2180468199] = "u_m_m_partytarget";
-  PedModel2[PedModel2["u_m_m_prolsec_01"] = 1888624839] = "u_m_m_prolsec_01";
-  PedModel2[PedModel2["u_m_m_promourn_01"] = 3465937675] = "u_m_m_promourn_01";
-  PedModel2[PedModel2["u_m_m_rivalpap"] = 1624626906] = "u_m_m_rivalpap";
-  PedModel2[PedModel2["u_m_m_spyactor"] = 2886641112] = "u_m_m_spyactor";
-  PedModel2[PedModel2["u_m_m_streetart_01"] = 1813637474] = "u_m_m_streetart_01";
-  PedModel2[PedModel2["u_m_m_vince"] = 2526968950] = "u_m_m_vince";
-  PedModel2[PedModel2["u_m_m_willyfist"] = 2423691919] = "u_m_m_willyfist";
-  PedModel2[PedModel2["u_m_o_dean"] = 4188740747] = "u_m_o_dean";
-  PedModel2[PedModel2["u_m_o_filmnoir"] = 732742363] = "u_m_o_filmnoir";
-  PedModel2[PedModel2["u_m_o_finguru_01"] = 1189322339] = "u_m_o_finguru_01";
-  PedModel2[PedModel2["u_m_o_taphillbilly"] = 2585681490] = "u_m_o_taphillbilly";
-  PedModel2[PedModel2["u_m_o_tramp_01"] = 1787764635] = "u_m_o_tramp_01";
-  PedModel2[PedModel2["u_m_y_abner"] = 4037813798] = "u_m_y_abner";
-  PedModel2[PedModel2["u_m_y_antonb"] = 3479321132] = "u_m_y_antonb";
-  PedModel2[PedModel2["u_m_y_babyd"] = 3658575486] = "u_m_y_babyd";
-  PedModel2[PedModel2["u_m_y_baygor"] = 1380197501] = "u_m_y_baygor";
-  PedModel2[PedModel2["u_m_y_burgerdrug_01"] = 2340239206] = "u_m_y_burgerdrug_01";
-  PedModel2[PedModel2["u_m_y_caleb"] = 4150317356] = "u_m_y_caleb";
-  PedModel2[PedModel2["u_m_y_chip"] = 610290475] = "u_m_y_chip";
-  PedModel2[PedModel2["u_m_y_corpse_01"] = 2495782975] = "u_m_y_corpse_01";
-  PedModel2[PedModel2["u_m_y_croupthief_01"] = 2145640135] = "u_m_y_croupthief_01";
-  PedModel2[PedModel2["u_m_y_cyclist_01"] = 755956971] = "u_m_y_cyclist_01";
-  PedModel2[PedModel2["u_m_y_danceburl_01"] = 1443057394] = "u_m_y_danceburl_01";
-  PedModel2[PedModel2["u_m_y_dancelthr_01"] = 4202382694] = "u_m_y_dancelthr_01";
-  PedModel2[PedModel2["u_m_y_dancerave_01"] = 2145639711] = "u_m_y_dancerave_01";
-  PedModel2[PedModel2["u_m_y_fibmugger_01"] = 2243544680] = "u_m_y_fibmugger_01";
-  PedModel2[PedModel2["u_m_y_gabriel"] = 1278330017] = "u_m_y_gabriel";
-  PedModel2[PedModel2["u_m_y_guido_01"] = 3333724719] = "u_m_y_guido_01";
-  PedModel2[PedModel2["u_m_y_gunvend_01"] = 3005388626] = "u_m_y_gunvend_01";
-  PedModel2[PedModel2["u_m_y_hippie_01"] = 4030826507] = "u_m_y_hippie_01";
-  PedModel2[PedModel2["u_m_y_imporage"] = 880829941] = "u_m_y_imporage";
-  PedModel2[PedModel2["u_m_y_juggernaut_01"] = 2431602996] = "u_m_y_juggernaut_01";
-  PedModel2[PedModel2["u_m_y_juggernaut_02"] = 2738943447] = "u_m_y_juggernaut_02";
-  PedModel2[PedModel2["u_m_y_justin"] = 2109968527] = "u_m_y_justin";
-  PedModel2[PedModel2["u_m_y_mani"] = 3367706194] = "u_m_y_mani";
-  PedModel2[PedModel2["u_m_y_militarybum"] = 1191548746] = "u_m_y_militarybum";
-  PedModel2[PedModel2["u_m_y_paparazzi"] = 1346941736] = "u_m_y_paparazzi";
-  PedModel2[PedModel2["u_m_y_party_01"] = 921110016] = "u_m_y_party_01";
-  PedModel2[PedModel2["u_m_y_pogo_01"] = 3696858125] = "u_m_y_pogo_01";
-  PedModel2[PedModel2["u_m_y_prisoner_01"] = 2073775040] = "u_m_y_prisoner_01";
-  PedModel2[PedModel2["u_m_y_proldriver_01"] = 2237544099] = "u_m_y_proldriver_01";
-  PedModel2[PedModel2["u_m_y_rsranger_01"] = 1011059922] = "u_m_y_rsranger_01";
-  PedModel2[PedModel2["u_m_y_sbike"] = 1794381917] = "u_m_y_sbike";
-  PedModel2[PedModel2["u_m_y_smugmech_01"] = 3446096293] = "u_m_y_smugmech_01";
-  PedModel2[PedModel2["u_m_y_staggrm_01"] = 2442448387] = "u_m_y_staggrm_01";
-  PedModel2[PedModel2["u_m_y_tattoo_01"] = 2494442380] = "u_m_y_tattoo_01";
-  PedModel2[PedModel2["u_m_y_ushi"] = 4218162071] = "u_m_y_ushi";
-  PedModel2[PedModel2["u_m_y_zombie_01"] = 2890614022] = "u_m_y_zombie_01";
-  return PedModel2;
-})(PedModel || {});
+import { on, onClient, emitClientRaw, log, Player, logError, emitAllClients } from 'alt-server';
 
 function processMessage(message) {
   const toHTML = message.replace(/</g, "&lt;").replace(/'/g, "&#39").replace(/"/g, "&#34").replace(/\*\*(.+?)\*\*/gim, "<b>$1</b>").replace(/\*(.+?)\*/gim, "<i>$1</i>").replace(/~~(.+?)~~/gim, "<del>$1</del>").replace(/__(.+?)__/gim, "<ins>$1</ins>").replace(/\{([A-Fa-f0-9]{3}|[A-Fa-f0-9]{6})\}(.*?){\/\1}/gim, '<span style="color: #$1;">$2</span>');
@@ -1002,6 +6,7 @@ function processMessage(message) {
 }
 
 const PREFIX = "/";
+const WAIT_FOR_MOUNT_TIMEOUT = 1e4;
 
 var MessageType = /* @__PURE__ */ ((MessageType2) => {
   MessageType2[MessageType2["Default"] = 0] = "Default";
@@ -1014,16 +19,83 @@ var MessageType = /* @__PURE__ */ ((MessageType2) => {
 
 const cmdHandlers = /* @__PURE__ */ new Map();
 const mutedPlayers = /* @__PURE__ */ new Set();
+const mountedListeners = /* @__PURE__ */ new Map();
 const mountedPlayers = /* @__PURE__ */ new Set();
+const mountedFreeIds = [];
+let currentMountedId = -1;
 function invokeCommand(player, cmdName, args) {
   cmdName = cmdName.toLowerCase();
   const callback = cmdHandlers.get(cmdName);
-  if (callback)
-    callback(player, args);
-  else
-    send(player, `Unknown command ${PREFIX}${cmdName}`, MessageType.Error);
+  callback ? callback(player, args) : send(player, `Unknown command ${PREFIX}${cmdName}`, MessageType.Error);
 }
-let chatHandler = (player, message) => {
+function validateMessage(message, type) {
+  if (typeof message !== "string") {
+    logError(`[vchat:send] Message is not a string: ${message}`);
+    return false;
+  }
+  if (!MessageType.hasOwnProperty(type)) {
+    logError(`[vchat:send] Unknown message type: ${type}`);
+    return false;
+  }
+  return true;
+}
+function validateCommandName(cmdName) {
+  if (typeof cmdName !== "string") {
+    logError(`[vchat:registerCommand] Command name is not a string: ${cmdName}`);
+    return false;
+  }
+  if (cmdName.length === 0) {
+    logError(`[vchat:registerCommand] Command name is empty`);
+    return false;
+  }
+  if (cmdName.startsWith(PREFIX)) {
+    logError(`[vchat:registerCommand] Command name cannot start with ${PREFIX}`);
+    return false;
+  }
+  return true;
+}
+function validateSuggestion(suggestion) {
+  if (typeof suggestion !== "object")
+    return false;
+  if (!suggestion.name || typeof suggestion.name !== "string")
+    return false;
+  if (suggestion.description && typeof suggestion.description !== "string")
+    return false;
+  if (suggestion.params && !Array.isArray(suggestion.params))
+    return false;
+  if (suggestion.params) {
+    for (const param of suggestion.params) {
+      if (!param.name || typeof param.name !== "string")
+        return false;
+      if (param.description && typeof param.description !== "string")
+        return false;
+    }
+  }
+  return true;
+}
+async function waitForMount(player) {
+  if (mountedPlayers.has(player))
+    return true;
+  return new Promise((resolve, reject) => {
+    let id = onMounted((_player, mounted) => {
+      if (player === _player && mounted) {
+        resolve();
+        id = offMounted(id);
+      }
+    });
+    setTimeout(() => {
+      offMounted(id);
+      reject();
+    }, WAIT_FOR_MOUNT_TIMEOUT);
+  });
+}
+on("playerDisconnect", (player) => {
+  if (mountedPlayers.has(player)) {
+    mountedPlayers.delete(player);
+    mountedListeners.forEach((listener) => listener(player, false));
+  }
+});
+const DEFAULT_CHAT_HANDLER = (player, message) => {
   if (typeof message !== "string")
     return;
   if (message.startsWith("/")) {
@@ -1047,30 +119,75 @@ let chatHandler = (player, message) => {
     }
   }
 };
+let chatHandler = DEFAULT_CHAT_HANDLER;
 function mount(player, mounted) {
-  if (mounted && !mountedPlayers.has(player))
+  if (!mounted && !mountedPlayers.has(player))
     return;
   mountedPlayers.add(player);
+  mountedListeners.forEach((listener) => listener(player, mounted));
 }
-onClient("vchat:message", (player, message) => chatHandler(player, message));
+onClient("vchat:message", (player, message) => chatHandler && chatHandler(player, message));
 onClient("vchat:mounted", mount);
-function clearHistory(player) {
-  emitClient(player, "vchat:clearHistory");
+function send(player, message, type = MessageType.Default) {
+  if (!validateMessage(message, type))
+    return;
+  waitForMount(player).then(() => emitClientRaw(player, "vchat:message", message, type)).catch(() => log(`[vchat:addSuggestion] Timeout: Player ${player.name} is not mounted`));
 }
-function clear(player) {
-  emitClient(player, "vchat:clear");
+function broadcast(message, type = MessageType.Default) {
+  if (!validateMessage(message, type))
+    return;
+  Player.all.forEach((player) => send(player, message, type));
 }
 function addSuggestion(player, suggestion) {
-  emitClient(player, "vchat:addSuggestion", suggestion);
+  if (!validateSuggestion(suggestion)) {
+    log(`[vchat:addSuggestion] Invalid suggestion`);
+    return;
+  }
+  waitForMount(player).then(() => emitClientRaw(player, "vchat:addSuggestion", suggestion)).catch(() => log(`[vchat:addSuggestion] Timeout: Player ${player.name} is not mounted`));
 }
 function addSuggestions(player, suggestions) {
-  emitClient(player, "vchat:addSuggestions", suggestions);
+  if (!Array.isArray(suggestions)) {
+    log(`[vchat:addSuggestions] Invalid suggestions`);
+    return;
+  } else {
+    for (const suggestion of suggestions) {
+      if (validateSuggestion(suggestion))
+        continue;
+      log(`[vchat:addSuggestions] Invalid suggestion`);
+      return;
+    }
+  }
+  waitForMount(player).then(() => emitClientRaw(player, "vchat:addSuggestions", suggestions)).catch(() => log(`[vchat:addSuggestion] Timeout: Player ${player.name} is not mounted`));
+}
+function toggleFocusEnabled(player, enabled) {
+  waitForMount(player).then(() => emitClientRaw(player, "vchat:focusEnabled", enabled)).catch(() => log(`[vchat:addSuggestion] Timeout: Player ${player.name} is not mounted`));
+}
+function focus(player) {
+  waitForMount(player).then(() => emitClientRaw(player, "vchat:focus", true)).catch(() => log(`[vchat:addSuggestion] Timeout: Player ${player.name} is not mounted`));
+}
+function unfocus(player) {
+  waitForMount(player).then(() => emitClientRaw(player, "vchat:focus", false)).catch(() => log(`[vchat:addSuggestion] Timeout: Player ${player.name} is not mounted`));
+}
+function clearHistory(player) {
+  emitClientRaw(player, "vchat:clearHistory");
+}
+function clear(player) {
+  waitForMount(player).then(() => emitClientRaw(player, "vchat:clear")).catch(() => log(`[vchat:addSuggestion] Timeout: Player ${player.name} is not mounted`));
 }
 function onMounted(fn) {
-  onClient("vchat:mounted", fn);
+  mountedFreeIds.length > 0 ? currentMountedId = mountedFreeIds.pop() : currentMountedId++;
+  mountedListeners.set(currentMountedId, fn);
+  return currentMountedId;
 }
-function offMounted(fn) {
-  offClient("vchat:mounted", fn);
+function offMounted(id) {
+  if (id === -1)
+    return id;
+  if (mountedListeners.delete(id)) {
+    mountedFreeIds.push(id);
+    return -1;
+  }
+  log(`[vchat:offMounted] No mount event with id ${id} found`);
+  return -1;
 }
 function isMounted(player) {
   return mountedPlayers.has(player);
@@ -1081,74 +198,29 @@ function mutePlayer(player) {
 function unmutePlayer(player) {
   mutedPlayers.delete(player);
 }
-function send(player, message, type = MessageType.Default) {
-  emitClient(player, "vchat:message", message, type);
-}
-function broadcast(message, type = MessageType.Default) {
-  emitAllClients("vchat:message", message, type);
+function isMuted(player) {
+  return mutedPlayers.has(player);
 }
 function registerCmd(cmdName, handler) {
+  if (!validateCommandName(cmdName))
+    return;
   cmdName = cmdName.toLocaleLowerCase();
-  if (cmdHandlers.has(cmdName))
-    logError(`Failed to register command /${cmdName}, already registered`);
-  else
-    cmdHandlers.set(cmdName, handler);
+  cmdHandlers.has(cmdName) ? logError(`Failed to register command ${PREFIX}${cmdName}, already registered`) : cmdHandlers.set(cmdName, handler);
 }
-function setHandler(fn) {
+function unregisterCmd(cmdName) {
+  if (!validateCommandName(cmdName))
+    return;
+  cmdName = cmdName.toLocaleLowerCase();
+  !cmdHandlers.has(cmdName) ? logError(`Failed to unregister command /${cmdName}, not registered`) : cmdHandlers.delete(cmdName);
+}
+function setMessageHandler(fn) {
   chatHandler = fn;
 }
-function setup(player) {
+function removeMessageHandler() {
+  chatHandler = void 0;
 }
-const models = Object.keys(PedModel);
-on("playerConnect", (player) => {
-  player.spawn(0, 0, 72);
-  player.model = models[Math.floor(Math.random() * models.length)];
-});
-registerCmd("spawn", (player, args) => {
-  if (args.length < 1)
-    return;
-  if (!args[0])
-    return;
-  new Vehicle(args[0], player.pos, Vector3.zero);
-});
-registerCmd("info", (player) => {
-  console.log("info");
-  send(player, "This is a test", MessageType.Info);
-});
-registerCmd("success", (player) => {
-  console.log("success");
-  send(player, "This is a test", MessageType.Success);
-});
-registerCmd("warning", (player) => {
-  console.log("warning");
-  send(player, "This is a test", MessageType.Warning);
-});
-registerCmd("error", (player) => {
-  console.log("error");
-  send(player, "This is a test", MessageType.Error);
-});
-onMounted((player, _mounted) => {
-  addSuggestions(player, [
-    { name: "help", description: "Show this help !" },
-    {
-      name: "help",
-      description: "Show this help #",
-      parameters: [{ name: "page", description: "Help page" }]
-    },
-    {
-      name: "ban",
-      description: "Ban a player",
-      parameters: [
-        { name: "player", description: "Player's name" },
-        { name: "reason", description: "Reason" }
-      ]
-    },
-    {
-      name: "heal",
-      description: "Heal a player",
-      parameters: [{ name: "player", description: "Player's name" }]
-    }
-  ]);
-});
+function restoreMessageHandler() {
+  chatHandler = DEFAULT_CHAT_HANDLER;
+}
 
-export { addSuggestion, addSuggestions, broadcast, clear, clearHistory, isMounted, mutePlayer, offMounted, onMounted, processMessage, registerCmd, send, setHandler, setup, unmutePlayer };
+export { addSuggestion, addSuggestions, broadcast, clear, clearHistory, focus, isMounted, isMuted, mutePlayer, offMounted, onMounted, processMessage, registerCmd, removeMessageHandler, restoreMessageHandler, send, setMessageHandler, toggleFocusEnabled, unfocus, unmutePlayer, unregisterCmd };

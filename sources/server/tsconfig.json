@@ -22,5 +22,5 @@
         "checkJs": true,
         "typeRoots": ["./node_modules/@types", "./node_modules/@altv"]
     },
-    "include": ["src/**/*"]
+    "include": ["src/**/*.ts", "src/**/*.d.ts"]
 }

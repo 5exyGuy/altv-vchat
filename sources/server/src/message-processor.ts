@@ -1,8 +1,11 @@
+/**
+ * Processes the message to HTML.
+ */
 export function processMessage(message: string) {
     const toHTML = message
-        .replace(/</g, '&lt;')
-        .replace(/'/g, '&#39')
-        .replace(/"/g, '&#34')
+        .replace(/</g, '&lt;') // <
+        .replace(/'/g, '&#39') // '
+        .replace(/"/g, '&#34') // "
         .replace(/\*\*(.+?)\*\*/gim, '<b>$1</b>') // Bold text
         .replace(/\*(.+?)\*/gim, '<i>$1</i>') // Italic text
         .replace(/~~(.+?)~~/gim, '<del>$1</del>') // Deleted text

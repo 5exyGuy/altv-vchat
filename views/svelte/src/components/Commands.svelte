@@ -33,18 +33,21 @@
     }
 
     function selectCommand(event: KeyboardEvent) {
-        // Only allow arrow keys and tab
-        if (event.key !== 'ArrowDown' && event.key !== 'ArrowUp' && event.key !== 'Tab') return;
-        event.preventDefault();
-
         // Select previous command
-        if (event.key === 'ArrowUp' && matchedCommands.length > 1) selected = Math.max(0, selected - 1);
+        if (event.key === 'ArrowUp' && matchedCommands.length > 1) {
+            event.preventDefault();
+            selected = Math.max(0, selected - 1);
+        }
         // Select next command
-        else if (event.key === 'ArrowDown' && matchedCommands.length > 1)
+        else if (event.key === 'ArrowDown' && matchedCommands.length > 1) {
+            event.preventDefault();
             selected = Math.min(matchedCommands.length - 1, selected + 1);
+        }
         // Select the selected command to the chat box input
-        else if (event.key === 'Tab' && selected >= 0 && !(matchedCommands[selected].currentParam > -1))
+        else if (event.key === 'Tab' && selected >= 0 && !(matchedCommands[selected].currentParam > -1)) {
+            event.preventDefault();
             message = addPrefix(matchedCommands[selected].name);
+        }
     }
 
     function updateMatchedCommands(message: string) {
@@ -63,7 +66,7 @@
                 return (
                     cmdName.length > 0 &&
                     command.name.startsWith(cmdName) &&
-                    words.length - 1 <= (command.parameters?.length ?? 0)
+                    words.length - 1 <= (command.params?.length ?? 0)
                 );
             }) // Filter commands that match the message
             .splice(0, max) // Only show the first 3 commands
@@ -72,8 +75,9 @@
                 const cmdName = addPrefix(command.name); // The command name with the prefix
                 // If there is only one word, it's the command name
                 if (words.length === 1 && words[0] === cmdName) currentParam = 0;
+
                 // If there are more words, check if they are parameters
-                if (words.length > 1 && words.length - 1 <= (command.parameters.length ?? 0))
+                if (words.length > 1 && words.length - 1 <= (command.params.length ?? 0))
                     currentParam = words.length - 1; // The last word is the current parameter
 
                 return { currentParam, ...command };
@@ -93,8 +97,9 @@
 
     onMount(() => {
         if (!window.alt) return;
+
         window.alt.on('vchat:focus', (_focus) => (focus = _focus));
-        window.alt.on('vhat:addSuggestion', (suggestion: CommandSuggestion) => {
+        window.alt.on('vchat:addSuggestion', (suggestion: CommandSuggestion) => {
             commands = [...commands, suggestion];
             updateMatchedCommands(message);
         });
@@ -123,16 +128,16 @@
                 <span class:font-bold={matchedCommand.currentParam === 0}>
                     {matchedCommand.name}
                 </span>
-                {#each matchedCommand.parameters ?? [] as param, paramIndex}
+                {#each matchedCommand.params ?? [] as param, paramIndex}
                     <span class="ml-1" class:font-bold={matchedCommand.currentParam === paramIndex + 1}>
                         [{param.name}]
                     </span>
                 {/each}
             </div>
             <div class="text-xs text-white text-opacity-50">
-                {matchedCommand.currentParam <= 0
+                {(matchedCommand.currentParam <= 0
                     ? matchedCommand.description
-                    : matchedCommand.parameters[matchedCommand.currentParam - 1].description}
+                    : matchedCommand.params[matchedCommand.currentParam - 1].description) ?? ''}
             </div>
         </div>
     {/each}
