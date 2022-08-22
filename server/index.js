@@ -1,8 +1,10 @@
 import { on, onClient, emitClientRaw, log, Player, logError, emitAllClients } from 'alt-server';
 
-function processMessage(message) {
-  const toHTML = message.replace(/</g, "&lt;").replace(/'/g, "&#39").replace(/"/g, "&#34").replace(/\*\*(.+?)\*\*/gim, "<b>$1</b>").replace(/\*(.+?)\*/gim, "<i>$1</i>").replace(/~~(.+?)~~/gim, "<del>$1</del>").replace(/__(.+?)__/gim, "<ins>$1</ins>").replace(/\{([A-Fa-f0-9]{3}|[A-Fa-f0-9]{6})\}(.*?){\/\1}/gim, '<span style="color: #$1;">$2</span>');
-  return toHTML.trim();
+function processMessage(message, removeHtml = true) {
+  if (removeHtml)
+    message = message.replace(/</g, "&lt;").replace(/'/g, "&#39").replace(/"/g, "&#34");
+  message = message.replace(/\*\*(.+?)\*\*/gim, "<b>$1</b>").replace(/\*(.+?)\*/gim, "<i>$1</i>").replace(/~~(.+?)~~/gim, "<del>$1</del>").replace(/__(.+?)__/gim, "<ins>$1</ins>").replace(/\{([A-Fa-f0-9]{3}|[A-Fa-f0-9]{6})\}(.*?){\/\1}/gim, '<span style="color: #$1;">$2</span>');
+  return message.trim();
 }
 
 const PREFIX = "/";

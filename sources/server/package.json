@@ -2,7 +2,6 @@
     "name": "@altv-chat/server",
     "version": "1.0.0",
     "author": "5exyGuy (Aurėjus Remeika)",
-    "license": "MIT",
     "scripts": {
         "dev": "rollup -c -w",
         "build": "rollup -c"

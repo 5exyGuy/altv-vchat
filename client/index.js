@@ -13,7 +13,7 @@ var MessageType = /* @__PURE__ */ ((MessageType2) => {
   return MessageType2;
 })(MessageType || {});
 
-const chatWebView = new WebView("http://resource/client/svelte-view/index.html");
+const chatWebView = new WebView("http://resource/client/view/index.html");
 const chatHistory = LocalStorage.get("chatHistory") ?? [];
 if (chatHistory.length > MAX_HISTORY_LENGTH)
   chatHistory.splice(0, chatHistory.length - MAX_HISTORY_LENGTH);

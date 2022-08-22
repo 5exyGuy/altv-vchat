@@ -155,33 +155,33 @@ make mouse clicks in any position. There is a prevention for the input field fro
 
 #### Bold text
 
-Before: `**Lorem Ipsum is simply dummy text of the printing and typesetting industry**`
-</br>
-After: **Lorem Ipsum is simply dummy text of the printing and typesetting industry**
+`**Lorem Ipsum is simply dummy text of the printing and typesetting industry**`
+
+**Lorem Ipsum is simply dummy text of the printing and typesetting industry**
 
 #### Italic text
 
-Before: `*Lorem Ipsum is simply dummy text of the printing and typesetting industry*`
-</br>
-After: _Lorem Ipsum is simply dummy text of the printing and typesetting industry_
+`*Lorem Ipsum is simply dummy text of the printing and typesetting industry*`
+
+_Lorem Ipsum is simply dummy text of the printing and typesetting industry_
 
 #### Deleted text
 
-Before: `~~Lorem Ipsum is simply dummy text of the printing and typesetting industry~~`
-</br>
-After: ~~Lorem Ipsum is simply dummy text of the printing and typesetting industry~~
+`~~Lorem Ipsum is simply dummy text of the printing and typesetting industry~~`
+
+~~Lorem Ipsum is simply dummy text of the printing and typesetting industry~~
 
 #### Underlined text
 
-Before: `__Lorem Ipsum is simply dummy text of the printing and typesetting industry__`
-</br>
-After: <u>Lorem Ipsum is simply dummy text of the printing and typesetting industry</u>
+`__Lorem Ipsum is simply dummy text of the printing and typesetting industry__`
+
+<u>Lorem Ipsum is simply dummy text of the printing and typesetting industry</u>
 
 #### Colors
 
-Before: `{b82a42}Lorem Ipsum is simply{/b82a42} dummy text of the {716dbf}printing{/716dbf} and typesetting industry`
-</br>
-After: <span style="color: #b82a42;">Lorem Ipsum is simply</span> dummy text of the
+`{b82a42}Lorem Ipsum is simply{/b82a42} dummy text of the {716dbf}printing{/716dbf} and typesetting industry`
+
+<span style="color: #b82a42;">Lorem Ipsum is simply</span> dummy text of the
 <span style="color: #716dbf;">printing</span> and typesetting industry`
 
 ### Command Suggestions
@@ -194,7 +194,7 @@ After: <span style="color: #b82a42;">Lorem Ipsum is simply</span> dummy text of 
 
 ### Messaging
 
-To message 
+To message
 
 ```ts
 export function send(player: Player, message: string, type: MessageType = MessageType.Default): void;
@@ -212,10 +212,6 @@ alt.on('playerConnect', (player) => {
     chat.send(player, welcomeMessage, 1);
 });
 ```
-
-### Command Registration
-
-...
 
 ### Command Suggestions
 
@@ -238,7 +234,7 @@ import * as chat from 'vchat';
 const suggestion = {
     name: 'spawn',
     description: 'Teleport a player to the spawnpoint or to the specified coordinates.',
-    params: [{ name: 'x' }, { name: 'y' }, { name: 'z' }]
+    params: [{ name: 'x' }, { name: 'y' }, { name: 'z' }],
 };
 
 alt.on('playerConnect', (player) => {
@@ -246,13 +242,7 @@ alt.on('playerConnect', (player) => {
 });
 ```
 
-### Chat Focus
-
-...
-
-### Chat Mount
-
-...
+### Command Registration
 
 ### Message Handler
 
@@ -293,7 +283,6 @@ export function broadcast(message: string, type: MessageType = MessageType.Defau
 export function registerCmd(cmdName: string, handler: CommandHandler): void;
 export function unregisterCmd(cmdName: string): void;
 ```
-
 
 #### Adding command suggestions
 
@@ -347,9 +336,9 @@ export function isMounted(player: Player): void;
 
 #### Changing the message handler
 
->```ts
->export type MessageHandler = (player: Player, message: string) => void;
->```
+> ```ts
+> export type MessageHandler = (player: Player, message: string) => void;
+> ```
 
 ```ts
 export function setMessageHandler(fn: MessageHandler): void;
@@ -359,9 +348,9 @@ export function restoreMessageHandler(): void;
 
 #### Changing the message processor
 
->```ts
->export type MessageProcessor = (message: string) => void;
->```
+> ```ts
+> export type MessageProcessor = (message: string) => void;
+> ```
 
 ```ts
 export function setMessageProcessor(fn: MessageProcessor): void;

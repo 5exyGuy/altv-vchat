@@ -8,7 +8,7 @@ import type { Message } from './interfaces/message.interface';
 // Variables
 // --------------------------------------------------------------
 
-const chatWebView: WebView = new WebView('http://resource/client/svelte-view/index.html'); // The webview that contains the chat.
+const chatWebView: WebView = new WebView('http://resource/client/view/index.html'); // The webview that contains the chat.
 const chatHistory: Array<Message> = LocalStorage.get('chatHistory') ?? []; // The chat history.
 if (chatHistory.length > MAX_HISTORY_LENGTH) chatHistory.splice(0, chatHistory.length - MAX_HISTORY_LENGTH);
 let focusEnabled: boolean = true; // Whether the chat can be focused.
