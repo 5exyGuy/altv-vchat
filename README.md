@@ -103,7 +103,7 @@ get some ideas for your own project.
 
 ## Usage (Player)
 
-### Keyboard and Mouse Support
+### 1. Keyboard and Mouse Support
 
 Chat has keyboard support, which allows you to control the chat. Also, the input field is always in focus, so you can
 make mouse clicks in any position. There is a prevention for the input field from losing it's focus.
@@ -121,7 +121,7 @@ make mouse clicks in any position. There is a prevention for the input field fro
 
 > **_NOTE:_** Only right mouse button and mouse wheel is supported to avoid unnecessary actions.
 
-### Chat Formatting (Default Message Processor)
+### 2. Chat Formatting (Default Message Processor)
 
 > **_NOTE:_** By default the chat resource uses it's own message processor. To use your own processor you have to
 > overwrite the current chat handler.
@@ -157,7 +157,7 @@ _Lorem Ipsum is simply dummy text of the printing and typesetting industry_
 <span style="color: #b82a42;">Lorem Ipsum is simply</span> dummy text of the
 <span style="color: #716dbf;">printing</span> and typesetting industry`
 
-### Command Suggestions
+### 3. Command Suggestions
 
 The default command prefix is `/`.
 
