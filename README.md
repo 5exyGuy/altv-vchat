@@ -77,22 +77,31 @@ get some ideas for your own project.
     ```sh
     git clone https://github.com/5exyGuy/altv-vchat.git vchat
     ```
-2. If you have cloned the repository, follow these steps 2.1. Inside the resource's folder install required packages
+2. If you have cloned the repository, follow these steps
+
+    2.1. Inside the resource's folder install required packages
+
     ```sh
     pnpm install
     ```
+
     2.2. Change to your preferred implementation of the front-end framework example by adding `filter` flag in the
     `package.json` **(optional)**
+
     > **_NOTE:_** Make sure to remove the ones you don't need, because if you don't put the flags the right way, you may
     > end up with building multiple examples in one folder.
+
     ```json
     "build": "turbo run build --filter=!@altv-chat/react --filter=!@altv-chat/vue",
     "dev": "turbo run dev --filter=!@altv-chat/react --filter=!@altv-chat/vue"
     ```
+
     2.3. Build the project
+
     ```sh
     pnpm run build
     ```
+
 3. Add the chat resource as a dependency in the `resource.cfg` file inside your resource folder
     > **_NOTE:_** Make sure that the name you insert matches the name of the resource folder.
     ```
