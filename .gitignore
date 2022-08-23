@@ -23,5 +23,5 @@ dist
 *.sw?
 
 # Build output
-./client
-./server
+/client
+/server
