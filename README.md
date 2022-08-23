@@ -35,7 +35,7 @@
 ## About
 
 **altV-vChat** is a chat resource for [alt:V](https://altv.mp) server that offers more functionality than the usual
-example chat resource. The resource includes full keyboard support, a default message processor, synced functions,
+example chat resource. The resource includes full keyboard support, a default message processor, more functions,
 autocompletion of command by typing part of the command name in the input field and more.
 
 **Features:**
@@ -43,8 +43,8 @@ autocompletion of command by typing part of the command name in the input field 
 -   Keyboard and mouse support
 -   Command suggestions
 -   Replaceable message handler
--   Default message processor
--   Synced server-side functions
+-   Replaceable message processor
+-   More sever-side functions
 
 It is also included in the project together with other examples of front-end framework implementations, if you want to
 get some ideas for your own project.
@@ -194,10 +194,31 @@ _Lorem Ipsum is simply dummy text of the printing and typesetting industry_
 
 ### Messaging
 
-To message
+Before sending messages, you should first familiarise yourself with types of messages. There are 6 message types, which
+decide how the message will appear in the chat window.
+
+```ts
+export enum MessageType {
+    Default = 0, // With padding
+    Empty = 1, // Without any padding
+    Info = 2, // With padding and blue background
+    Success = 3, // With padding and green background
+    Warning = 4, // With padding and orange background
+    Error = 5, // With padding and red background
+}
+```
+
+There are two ways of sending a message. One way is to use the `send` function, which requires you to specify a specific
+player to whom the message will be sent
 
 ```ts
 export function send(player: Player, message: string, type: MessageType = MessageType.Default): void;
+```
+
+**OR** use the `broadcast` function to send a single message to all players
+
+```ts
+export function broadcast(message: string, type: MessageType = MessageType.Default): void;
 ```
 
 **Example**
@@ -207,15 +228,20 @@ import * as alt from 'alt-server';
 import * as chat from 'vchat';
 
 alt.on('playerConnect', (player) => {
-    const name = player.name;
-    const welcomeMessage = `Welcome to the server ${name}!`;
-    chat.send(player, welcomeMessage, 1);
+    // Sends a message to the logged-in player
+    chat.send(player, `Welcome to the server ${player.name}`, 1);
+    // Sends a message to all players as well as the one who joined
+    chat.broadcast(`Player ${player.name} has joined the server`, 1);
 });
 ```
 
 ### Command Suggestions
 
-To add command line suggestions to chat, you need to follow the specified data structure:
+> **_NOTE:_** I recommend inserting some of the commands statically in one of the `WebView` examples to avoid
+> unnecessary event dispatches. Each `WebView` example has a `commands.json` file where you can insert your own
+> commands.
+
+To add command line suggestions to chat, you need to follow the specified data structure
 
 ```ts
 export interface CommandSuggestion {
@@ -223,6 +249,18 @@ export interface CommandSuggestion {
     description?: string; // The description of the command.
     params?: Array<{ name: string; description?: string }>; // The parameters of the command.
 }
+```
+
+Adding command suggestions is quite simple, just specify the player and the command suggestion(s)
+
+```ts
+export function addSuggestion(player: Player, suggestion: CommandSuggestion | Array<CommandSuggestion>): void;
+```
+
+It is also possible to add offers to all players currently connected to the server
+
+```ts
+export function addSuggestionAll(suggestion: CommandSuggestion | Array<CommandSuggestion>): void;
 ```
 
 **Example**
@@ -244,118 +282,232 @@ alt.on('playerConnect', (player) => {
 
 ### Command Registration
 
+To register a command, you must follow the structure of the function
+
+```ts
+export type CommandHandler = (player: Player, args: Array<string>) => void;
+```
+
+Each command name is unique, so there can only be one command handler/callback for a particular command name. The
+registration includes the name of the team and its handler
+
+```ts
+export function registerCmd(cmdName: string, handler: CommandHandler): void;
+```
+
+To remove a command, all you need to specify is the command name
+
+```ts
+export function unregisterCmd(cmdName: string): void;
+```
+
+**Example**
+
+```js
+import * as alt from 'alt-server';
+import * as chat from 'vchat';
+
+chat.registerCmd('spawn', (player, args) => {
+    if (args.length === 0) player.spawn(0, 0, 72);
+    else if (args.length === 3) {
+        const [x, y, z] = args;
+        player.spawn(parseFloat(x), parseFloat(y), parseFloat(z));
+    }
+});
+```
+
+### Muting Players
+
+> **_NOTE:_** If the default message handler is used, a muted player trying to send a message will receive an `Error`
+> message that he is muted.
+
+Use the `mutePlayer` function to mute the player
+
+```ts
+export function mutePlayer(player: Player): void;
+```
+
+To unmute a player, use the `unmutePlayer` function
+
+```ts
+export function unmutePlayer(player: Player): void;
+```
+
+To check if a player is silenced, use the `isMuted` function
+
+```ts
+export function isMuted(player: Player): void;
+```
+
+### Controlling Player's Chat Focus
+
+The resource also allows you to control the opening of a player's chat window. To prevent the player from opening the
+chat window, use the `toggleFocusEnabled` function
+
+```ts
+export function toggleFocusEnabled(player: Player, enabled: boolean): void;
+```
+
+Use the `focus` function to focus the chat window of the desired player (focus will work even if player focus is
+disabled with `toggleFocusEnabled`)
+
+```ts
+export function focus(player: Player): void;
+```
+
+Use the `unfocus` function to unfocus the desired player's chat window (unfocus will work even if player focus is
+disabled with `toggleFocusEnabled`)
+
+```ts
+export function unfocus(player: Player): void;
+```
+
+### Player Chat Mount Events
+
+> **_NOTE:_** If the `mounted` variable is false, it may mean that the player has disconnected or failed to mount.
+
+```ts
+export type MountCallback = (player: Player, mounted: boolean) => void;
+```
+
+To know when a player's chat window has been mounted, you can use the `onMounted` function, which will return an `id`
+that can later be used in the `offMounted` function
+
+```ts
+export function onMounted(fn: MountCallback): number;
+```
+
+To remove a particular callback, you need its `id` that `onMounted` returns
+
+```ts
+export function offMounted(id: number): number;
+```
+
+To check if a player's chat window has been loaded, use the `isMounted` function
+
+```ts
+export function isMounted(player: Player): void;
+```
+
 ### Message Handler
 
-...
+If you're not happy with the default message handling, you can set it to your own. Since the default message handler
+manages commands and player correspondence, you will need to set up your own command registration and player
+communication.
+
+```ts
+export type MessageHandler = (player: Player, message: string) => void;
+```
+
+To set the handler to your own, use the `setMessageHandler` function
+
+```ts
+export function setMessageHandler(fn: MessageHandler): void;
+```
+
+To remove the current handler, use the `removeMessageHandler` function
+
+```ts
+export function removeMessageHandler(): void;
+```
+
+To restore the handler to its default, use the `restoreMessageHandler` function
+
+```ts
+export function restoreMessageHandler(): void;
+```
 
 ### Message Processor
 
-...
+If there is a need to change the message processor in the default message handler, this is quite simple. And if you
+don't need it, you can simply remove it.
+
+```ts
+export type MessageProcessor = (message: string) => void;
+```
+
+To change the message processor in the default widget, use `setMessageProcessor` function
+
+```ts
+export function setMessageProcessor(fn: MessageProcessor): void;
+```
+
+To remove the message processor, use the `removeMessageProcessor` function
+
+```ts
+export function removeMessageProcessor(): void;
+```
+
+To restore the message processor to the default, use the `restoreMessageProcessor` function
+
+```ts
+export function restoreMessageProcessor(): void;
+```
+
+You can also use the internally used message processor as required (this is the default message processor)
+
+```ts
+export function processMessage(message: string): string;
+```
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
 ## Exported Functions
 
-#### Sending messages
+### Types
 
-> ```ts
-> export enum MessageType {
->     Default = 0,
->     Info = 1,
->     Success = 2,
->     Warning = 3,
->     Error = 4,
-> }
-> ```
+```ts
+// Iterfaces
+export interface CommandSuggestion {
+    name: string;
+    description?: string;
+    params?: Array<{ name: string; description?: string }>;
+}
+// Enums
+export enum MessageType {
+    Default = 0,
+    Empty = 1,
+    Info = 2,
+    Success = 3,
+    Warning = 4,
+    Error = 5,
+}
+// Types
+export type CommandHandler = (player: Player, args: Array<string>) => void;
+export type MountCallback = (player: Player, mounted: boolean) => void;
+export type MessageHandler = (player: Player, message: string) => void;
+export type MessageProcessor = (message: string) => void;
+```
+
+### Funcions
 
 ```ts
 export function send(player: Player, message: string, type: MessageType = MessageType.Default): void;
 export function broadcast(message: string, type: MessageType = MessageType.Default): void;
-```
-
-#### Registering commands
-
-> ```ts
-> export type CommandHandler = (player: Player, args: Array<string>) => void;
-> ```
-
-```ts
 export function registerCmd(cmdName: string, handler: CommandHandler): void;
 export function unregisterCmd(cmdName: string): void;
-```
-
-#### Adding command suggestions
-
-> ```ts
-> export interface CommandSuggestion {
->     name: string;
->     description?: string;
->     params?: Array<{ name: string; description?: string }>;
-> }
-> ```
-
-```ts
-export function addSuggestion(player: Player, suggestion: CommandSuggestion): void;
-export function addSuggestions(player: Player, suggestions: Array<CommandSuggestion>): void;
-```
-
-#### Controlling player's chat focus
-
-```ts
+export function addSuggestion(player: Player, suggestion: CommandSuggestion | Array<CommandSuggestion>): void;
+export function addSuggestionAll(suggestion: CommandSuggestion | Array<CommandSuggestion>): void;
 export function toggleFocusEnabled(player: Player, enabled: boolean): void;
+export function toggleFocusEnabledAll(enabled: boolean): void;
 export function focus(player: Player): void;
 export function unfocus(player: Player): void;
-```
-
-#### Clearing the chat
-
-```ts
 export function clearHistory(player: Player): void;
 export function clear(player: Player): void;
-```
-
-#### Muting players
-
-```ts
 export function mutePlayer(player: Player): void;
+export function muteAllPlayers(): void;
 export function unmutePlayer(player: Player): void;
 export function isMuted(player: Player): void;
-```
-
-#### Subscribing to player chat mounting events
-
-> ```ts
-> export type MountCallback = (player: Player, mounted: boolean) => void;
-> ```
-
-```ts
 export function onMounted(fn: MountCallback): number;
 export function offMounted(id: number): number;
 export function isMounted(player: Player): void;
-```
-
-#### Changing the message handler
-
-> ```ts
-> export type MessageHandler = (player: Player, message: string) => void;
-> ```
-
-```ts
 export function setMessageHandler(fn: MessageHandler): void;
 export function removeMessageHandler(): void;
 export function restoreMessageHandler(): void;
-```
-
-#### Changing the message processor
-
-> ```ts
-> export type MessageProcessor = (message: string) => void;
-> ```
-
-```ts
 export function setMessageProcessor(fn: MessageProcessor): void;
 export function removeMessageProcessor(): void;
 export function restoreMessageProcessor(): void;
+export function processMessage(message: string): string;
 ```
 
 <p align="right">(<a href="#top">back to top</a>)</p>
@@ -382,6 +534,6 @@ simply open an issue with the tag "enhancement". Don't forget to give the projec
 
 ## License
 
-There's no license, so you can do whatever you want with the repository.
+There's no license, so you can do whatever you want with the source code.
 
 <p align="right">(<a href="#top">back to top</a>)</p>
