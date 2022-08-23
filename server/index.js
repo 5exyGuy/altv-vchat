@@ -10,10 +10,11 @@ const WAIT_FOR_MOUNT_TIMEOUT = 1e4;
 
 var MessageType = /* @__PURE__ */ ((MessageType2) => {
   MessageType2[MessageType2["Default"] = 0] = "Default";
-  MessageType2[MessageType2["Info"] = 1] = "Info";
-  MessageType2[MessageType2["Success"] = 2] = "Success";
-  MessageType2[MessageType2["Warning"] = 3] = "Warning";
-  MessageType2[MessageType2["Error"] = 4] = "Error";
+  MessageType2[MessageType2["Empty"] = 1] = "Empty";
+  MessageType2[MessageType2["Info"] = 2] = "Info";
+  MessageType2[MessageType2["Success"] = 3] = "Success";
+  MessageType2[MessageType2["Warning"] = 4] = "Warning";
+  MessageType2[MessageType2["Error"] = 5] = "Error";
   return MessageType2;
 })(MessageType || {});
 
@@ -158,17 +159,32 @@ function addSuggestion(player, suggestion) {
 function toggleFocusEnabled(player, enabled) {
   waitForMount(player).then(() => emitClientRaw(player, "vchat:focusEnabled", enabled)).catch(() => log(`[vchat:addSuggestion] Timeout: Player ${player.name} is not mounted`));
 }
+function toggleFocusEnabledAll(enabled) {
+  Player.all.forEach((player) => toggleFocusEnabled(player, enabled));
+}
 function focus(player) {
   waitForMount(player).then(() => emitClientRaw(player, "vchat:focus", true)).catch(() => log(`[vchat:addSuggestion] Timeout: Player ${player.name} is not mounted`));
+}
+function focusAll() {
+  Player.all.forEach((player) => focus(player));
 }
 function unfocus(player) {
   waitForMount(player).then(() => emitClientRaw(player, "vchat:focus", false)).catch(() => log(`[vchat:addSuggestion] Timeout: Player ${player.name} is not mounted`));
 }
+function unfocusAll() {
+  Player.all.forEach((player) => unfocus(player));
+}
 function clearHistory(player) {
   emitClientRaw(player, "vchat:clearHistory");
 }
+function clearHistoryAll() {
+  Player.all.forEach((player) => clearHistory(player));
+}
 function clear(player) {
   waitForMount(player).then(() => emitClientRaw(player, "vchat:clear")).catch(() => log(`[vchat:addSuggestion] Timeout: Player ${player.name} is not mounted`));
+}
+function clearAll() {
+  Player.all.forEach((player) => clear(player));
 }
 function onMounted(fn) {
   mountedFreeIds.length > 0 ? currentMountedId = mountedFreeIds.pop() : currentMountedId++;
@@ -191,8 +207,14 @@ function isMounted(player) {
 function mutePlayer(player) {
   mutedPlayers.add(player);
 }
+function muteAllPlayers() {
+  Player.all.forEach((player) => mutePlayer(player));
+}
 function unmutePlayer(player) {
   mutedPlayers.delete(player);
+}
+function unmuteAllPlayers() {
+  mutedPlayers.clear();
 }
 function isMuted(player) {
   return mutedPlayers.has(player);
@@ -228,4 +250,4 @@ function restoreMessageProcessor() {
   messageProcessor = processMessage;
 }
 
-export { addSuggestion, broadcast, clear, clearHistory, focus, isMounted, isMuted, mutePlayer, offMounted, onMounted, processMessage, registerCmd, removeMessageHandler, removeMessageProcessor, restoreMessageHandler, restoreMessageProcessor, send, setMessageHandler, setMessageProcessor, toggleFocusEnabled, unfocus, unmutePlayer, unregisterCmd };
+export { addSuggestion, broadcast, clear, clearAll, clearHistory, clearHistoryAll, focus, focusAll, isMounted, isMuted, muteAllPlayers, mutePlayer, offMounted, onMounted, processMessage, registerCmd, removeMessageHandler, removeMessageProcessor, restoreMessageHandler, restoreMessageProcessor, send, setMessageHandler, setMessageProcessor, toggleFocusEnabled, toggleFocusEnabledAll, unfocus, unfocusAll, unmuteAllPlayers, unmutePlayer, unregisterCmd };

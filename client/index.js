@@ -6,10 +6,11 @@ const MAX_HISTORY_LENGTH = 100;
 
 var MessageType = /* @__PURE__ */ ((MessageType2) => {
   MessageType2[MessageType2["Default"] = 0] = "Default";
-  MessageType2[MessageType2["Info"] = 1] = "Info";
-  MessageType2[MessageType2["Success"] = 2] = "Success";
-  MessageType2[MessageType2["Warning"] = 3] = "Warning";
-  MessageType2[MessageType2["Error"] = 4] = "Error";
+  MessageType2[MessageType2["Empty"] = 1] = "Empty";
+  MessageType2[MessageType2["Info"] = 2] = "Info";
+  MessageType2[MessageType2["Success"] = 3] = "Success";
+  MessageType2[MessageType2["Warning"] = 4] = "Warning";
+  MessageType2[MessageType2["Error"] = 5] = "Error";
   return MessageType2;
 })(MessageType || {});
 

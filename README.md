@@ -199,6 +199,8 @@ export function send(player: Player, message: string, type: MessageType = Messag
 export function broadcast(message: string, type: MessageType = MessageType.Default): void;
 ```
 
+---
+
 #### Example
 
 ```js
@@ -212,6 +214,8 @@ alt.on('playerConnect', (player) => {
     chat.broadcast(`Player ${player.name} has joined the server`, 1);
 });
 ```
+
+---
 
 ### Command Suggestions
 
@@ -241,6 +245,8 @@ It is also possible to add offers to all players currently connected to the serv
 export function addSuggestionAll(suggestion: CommandSuggestion | Array<CommandSuggestion>): void;
 ```
 
+---
+
 #### Example
 
 ```js
@@ -257,6 +263,8 @@ alt.on('playerConnect', (player) => {
     chat.addSuggestion(player, suggestion);
 });
 ```
+
+---
 
 ### Command Registration
 
@@ -279,6 +287,8 @@ To remove a command, all you need to specify is the command name
 export function unregisterCmd(cmdName: string): void;
 ```
 
+---
+
 #### Example
 
 ```js
@@ -294,10 +304,20 @@ chat.registerCmd('spawn', (player, args) => {
 });
 ```
 
+---
+
 ### Muting Players
 
 > **_NOTE:_** If the default message handler is used, a muted player trying to send a message will receive an `Error`
 > message that he is muted.
+
+To check if a player is silenced, use the `isMuted` function
+
+```ts
+export function isMuted(player: Player): void;
+```
+
+---
 
 #### Mute
 
@@ -313,6 +333,8 @@ export function mutePlayer(player: Player): void;
 export function muteAllPlayers(): void;
 ```
 
+---
+
 #### Unmute
 
 To unmute a player, use the `unmutePlayer` function
@@ -327,15 +349,11 @@ export function unmutePlayer(player: Player): void;
 export function muteAllPlayers(): void;
 ```
 
-#### Other
-
-To check if a player is silenced, use the `isMuted` function
-
-```ts
-export function isMuted(player: Player): void;
-```
+---
 
 ### Controlling Player's Chat Focus
+
+---
 
 #### Focus Activation
 
@@ -352,6 +370,8 @@ export function toggleFocusEnabled(player: Player, enabled: boolean): void;
 export function toggleFocusEnabledAll(eanbled: boolean): void;
 ```
 
+---
+
 #### Focus
 
 Use the `focus` function to focus the chat window of the desired player (focus will work even if player focus is
@@ -367,6 +387,8 @@ export function focus(player: Player): void;
 export function focusAll(): void;
 ```
 
+---
+
 #### Unfocus
 
 Use the `unfocus` function to unfocus the desired player's chat window (unfocus will work even if player focus is
@@ -381,6 +403,8 @@ export function unfocus(player: Player): void;
 ```ts
 export function unfocusAll(): void;
 ```
+
+---
 
 ### Player Chat Mount Events
 
@@ -494,7 +518,7 @@ export function processMessage(message: string): string;
 
 ## Exported Functions
 
-### Types
+### Interfaces, Enumerators and Types
 
 ```ts
 // Iterfaces

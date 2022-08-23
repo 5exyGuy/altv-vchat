@@ -9,8 +9,9 @@
 </script>
 
 <div
-    class="flex flex-row items-center gap-[8px] text-white text-base select-none fade-in px-[8px]"
-    class:py-[4px]={type !== MessageType.Default}
+    class="flex flex-row items-center gap-[8px] text-white text-base select-none fade-in"
+    class:py-[4px]={type !== MessageType.Default && type !== MessageType.Empty}
+    class:px-[8px]={type !== MessageType.Empty}
     class:info={type === MessageType.Info}
     class:success={type === MessageType.Success}
     class:warning={type === MessageType.Warning}
