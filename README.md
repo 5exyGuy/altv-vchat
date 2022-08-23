@@ -119,6 +119,8 @@ make mouse clicks in any position. There is a prevention for the input field fro
 | <kbd>↑</kbd>                                 | Selects command suggestion (if there are any) **OR**</br> Selects a previously entered message (if there are any) |
 | <kbd>↓</kbd>                                 | Selects command suggestion (if there are any) **OR**</br>Selects a previously entered message (if there are any)  |
 
+![Keyboard Support Preview](./preview/keyboard-support-preview.gif)
+
 > **_NOTE:_** Only right mouse button and mouse wheel is supported to avoid unnecessary actions.
 
 ### 2. Chat Formatting (Default Message Processor)
@@ -132,11 +134,15 @@ make mouse clicks in any position. There is a prevention for the input field fro
 
 **Lorem Ipsum is simply dummy text of the printing and typesetting industry**
 
+![Bold Text Preview](./preview/bold-text-preview.gif)
+
 #### Italic text
 
 `*Lorem Ipsum is simply dummy text of the printing and typesetting industry*`
 
 _Lorem Ipsum is simply dummy text of the printing and typesetting industry_
+
+![Italic Text Preview](./preview/italic-text-preview.gif)
 
 #### Deleted text
 
@@ -144,18 +150,24 @@ _Lorem Ipsum is simply dummy text of the printing and typesetting industry_
 
 ~~Lorem Ipsum is simply dummy text of the printing and typesetting industry~~
 
+![Deleted Text Preview](./preview/deleted-text-preview.gif)
+
 #### Underlined text
 
 `__Lorem Ipsum is simply dummy text of the printing and typesetting industry__`
 
 <u>Lorem Ipsum is simply dummy text of the printing and typesetting industry</u>
 
-#### Colors
+![Underlined Text Preview](./preview/underlined-text-preview.gif)
+
+#### Colored text
 
 `{b82a42}Lorem Ipsum is simply{/b82a42} dummy text of the {716dbf}printing{/716dbf} and typesetting industry`
 
 <span style="color: #b82a42;">Lorem Ipsum is simply</span> dummy text of the
-<span style="color: #716dbf;">printing</span> and typesetting industry`
+<span style="color: #716dbf;">printing</span> and typesetting industry
+
+![Colored Text Preview](./preview/colored-text-preview.gif)
 
 ### 3. Command Suggestions
 
@@ -163,6 +175,8 @@ The default command prefix is `/`.
 
 To get command suggestions, you need to enter the prefix as the first character in the input field and at least one
 character after the prefix.
+
+![Command Suggestion Preview](./preview/command-suggestion-preview.gif)
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
@@ -185,6 +199,8 @@ export enum MessageType {
     Error = 5, // With padding and red background
 }
 ```
+
+![Message Type Preview](./preview/message-type-preview.gif)
 
 There are two ways of sending a message. One way is to use the `send` function, which requires you to specify a specific
 player to whom the message will be sent
@@ -262,6 +278,8 @@ alt.on('playerConnect', (player) => {
 });
 ```
 
+![Command Suggestion Example Preview](./preview/command-suggestion-example-preview.gif)
+
 ### 3. Command Registration
 
 To register a command, you must follow the structure of the function
@@ -304,6 +322,8 @@ chat.registerCmd('spawn', (player, args) => {
 
 > **_NOTE:_** If the default message handler is used, a muted player trying to send a message will receive an `Error`
 > message that he is muted.
+
+![Mute Preview](./preview/mute-preview.gif)
 
 To check if a player is silenced, use the `isMuted` function
 
