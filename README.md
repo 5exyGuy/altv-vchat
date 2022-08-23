@@ -65,38 +65,36 @@ get some ideas for your own project.
 > **_NOTE:_** Before starting to use a chat resource make sure that _ESMAScript_ modules are enabled in your server
 > project or else the resource won't start.
 
-Resource does not require any _NPM_ dependencies
-
 ### Prerequisites (Optional)
 
 [pnpm](https://pnpm.io/) is required if you want to make changes in the project because it uses
-[Workspaces](https://pnpm.io/workspaces) to manage multiple packages.
-
--   pnpm
-    ```sh
-    npm install -g pnpm
-    ```
+[Workspaces](https://pnpm.io/workspaces) to manage multiple packages. To make changes, follow the
+[installation instructions](https://pnpm.io/installation).
 
 ### Installation
 
-1. Clone the repository into your server's resources folder
+1. Download [the latest version]() of the resource **OR** clone the repository into your server's resources folder
     ```sh
     git clone https://github.com/5exyGuy/altv-vchat.git vchat
     ```
-2. Inside the resource's folder install required packages **(optional)**
+2. If you have cloned the repository, follow these steps 2.1. Inside the resource's folder install required packages
     ```sh
     pnpm install
     ```
-3. Change to build the preffered front-end framework in the `package.json` **(optional)**
+    2.2. Change to your preferred implementation of the front-end framework example by adding `filter` flag in the
+    `package.json` **(optional)**
+    > **_NOTE:_** Make sure to remove the ones you don't need, because if you don't put the flags the right way, you may
+    > end up with building multiple examples in one folder.
     ```json
     "build": "turbo run build --filter=!@altv-chat/react --filter=!@altv-chat/vue",
     "dev": "turbo run dev --filter=!@altv-chat/react --filter=!@altv-chat/vue"
     ```
-4. Build the project **(optional)**
+    2.3. Build the project
     ```sh
     pnpm run build
     ```
-5. Add the chat resource as a dependency in the `resource.cfg` file inside your resource folder
+3. Add the chat resource as a dependency in the `resource.cfg` file inside your resource folder
+    > **_NOTE:_** Make sure that the name you insert matches the name of the resource folder.
     ```
     deps: [vchat]
     ```
@@ -104,25 +102,14 @@ Resource does not require any _NPM_ dependencies
     ```
     resources: [vchat]
     ```
-6. Import the chat library in your server-side code
+4. Import the chat library in your server-side code
+    > **_NOTE:_** Make sure that the name of the library you insert matches the name of the resource folder.
     ```js
     import * as chat from 'vchat';
     ```
     > **_NOTE:_** If you are using C#, it is recommended to see how to insert functions in the C# environment
     > ([Resource communication in C#](https://docs.altv.mp/cs/articles/getting-started/resource-communication.html)).
-7. Start the server
-
-    _Windows_
-
-    ```sh
-    ./altv-server.exe
-    ```
-
-    _Linux_
-
-    ```sh
-    ./altv-server.sh
-    ```
+5. Start the server.
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
@@ -221,7 +208,7 @@ export function send(player: Player, message: string, type: MessageType = Messag
 export function broadcast(message: string, type: MessageType = MessageType.Default): void;
 ```
 
-**Example**
+Example
 
 ```js
 import * as alt from 'alt-server';
@@ -263,7 +250,7 @@ It is also possible to add offers to all players currently connected to the serv
 export function addSuggestionAll(suggestion: CommandSuggestion | Array<CommandSuggestion>): void;
 ```
 
-**Example**
+Example
 
 ```js
 import * as alt from 'alt-server';
@@ -301,7 +288,7 @@ To remove a command, all you need to specify is the command name
 export function unregisterCmd(cmdName: string): void;
 ```
 
-**Example**
+Example
 
 ```js
 import * as alt from 'alt-server';
@@ -387,6 +374,24 @@ To check if a player's chat window has been loaded, use the `isMounted` function
 
 ```ts
 export function isMounted(player: Player): void;
+```
+
+Example
+
+```js
+import * as alt from 'alt-server';
+import * as chat from 'vchat';
+
+const id = chat.onMounted((player, mounted) => {
+    alt.log(`${player.name}'s chat just mounted`);
+});
+
+chat.offMounted(id);
+
+alt.on('playerConnect', (player) => {
+    if (!chat.isMounted(player)) return;
+    alt.log(`${player.name}'s chat is mounted`);
+});
 ```
 
 ### Message Handler
