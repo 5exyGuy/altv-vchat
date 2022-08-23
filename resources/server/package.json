@@ -1,9 +1,0 @@
-{
-    "name": "@altv-chat/server",
-    "version": "1.0.0",
-    "scripts": {
-        "test": "echo \"Error: no test specified\" && exit 1"
-    },
-    "author": "5exyGuy (Aurėjus Remeika)",
-    "license": "MIT"
-}

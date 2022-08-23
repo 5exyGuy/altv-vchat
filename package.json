@@ -1,9 +1,13 @@
 {
     "name": "altv-vchat",
     "version": "1.0.0",
-    "scripts": {
-        "test": "echo \"Error: no test specified\" && exit 1"
-    },
     "author": "5exyGuy (Aurėjus Remeika)",
-    "license": "MIT"
+    "type": "module",
+    "scripts": {
+        "build": "turbo run build --filter=!@altv-chat/react --filter=!@altv-chat/vue",
+        "dev": "turbo run dev --filter=!@altv-chat/react --filter=!@altv-chat/vue"
+    },
+    "devDependencies": {
+        "turbo": "^1.4.3"
+    }
 }
