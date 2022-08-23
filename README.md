@@ -7,6 +7,8 @@
   </p>
 </div>
 
+> :warning: Current version might be unstable and have bugs
+
 <!-- ABOUT -->
 
 ## About
