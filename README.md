@@ -170,7 +170,7 @@ character after the prefix.
 
 ## Usage (Developer)
 
-### Messaging
+### 1. Messaging
 
 Before sending messages, you should first familiarise yourself with types of messages. There are 6 message types, which
 decide how the message will appear in the chat window.
@@ -215,9 +215,7 @@ alt.on('playerConnect', (player) => {
 });
 ```
 
----
-
-### Command Suggestions
+### 2. Command Suggestions
 
 > **_NOTE:_** I recommend inserting some of the commands statically in one of the `WebView` examples to avoid
 > unnecessary event dispatches. Each `WebView` example has a `commands.json` file where you can insert your own
@@ -264,9 +262,7 @@ alt.on('playerConnect', (player) => {
 });
 ```
 
----
-
-### Command Registration
+### 3. Command Registration
 
 To register a command, you must follow the structure of the function
 
@@ -304,9 +300,7 @@ chat.registerCmd('spawn', (player, args) => {
 });
 ```
 
----
-
-### Muting Players
+### 4. Muting Players
 
 > **_NOTE:_** If the default message handler is used, a muted player trying to send a message will receive an `Error`
 > message that he is muted.
@@ -349,11 +343,7 @@ export function unmutePlayer(player: Player): void;
 export function muteAllPlayers(): void;
 ```
 
----
-
-### Controlling Player's Chat Focus
-
----
+### 5. Controlling Player's Chat Focus
 
 #### Focus Activation
 
@@ -404,9 +394,7 @@ export function unfocus(player: Player): void;
 export function unfocusAll(): void;
 ```
 
----
-
-### Player Chat Mount Events
+### 6. Player Chat Mount Events
 
 > **_NOTE:_** If the `mounted` variable is false, it may mean that the player has disconnected or failed to mount.
 
@@ -433,6 +421,8 @@ To check if a player's chat window has been loaded, use the `isMounted` function
 export function isMounted(player: Player): void;
 ```
 
+---
+
 #### Example
 
 ```js
@@ -451,7 +441,7 @@ alt.on('playerConnect', (player) => {
 });
 ```
 
-### Message Handler
+### 7. Message Handler
 
 If you're not happy with the default message handling, you can set it to your own. Since the default message handler
 manages commands and player correspondence, you will need to set up your own command registration and player
@@ -479,7 +469,7 @@ To restore the handler to its default, use the `restoreMessageHandler` function
 export function restoreMessageHandler(): void;
 ```
 
-### Message Processor
+### 8. Message Processor
 
 If there is a need to change the message processor in the default message handler, this is quite simple. And if you
 don't need it, you can simply remove it.
