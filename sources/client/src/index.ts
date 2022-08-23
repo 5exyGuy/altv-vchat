@@ -103,15 +103,8 @@ function addMessage(message: string, type: MessageType = MessageType.Default) {
 /**
  * Adds a command suggestion.
  */
-function addSuggestion(suggestion: CommandSuggestion) {
+function addSuggestion(suggestion: CommandSuggestion | Array<CommandSuggestion>) {
     chatWebView.emit('vchat:addSuggestion', suggestion); // Sends an event to the webview to add the command suggestion.
-}
-
-/**
- * Adds a multiple command suggestions.
- */
-function addSuggestions(suggestions: Array<CommandSuggestion>) {
-    chatWebView.emit('vchat:addSuggestions', suggestions); // Sends an event to the webview to add the command suggestions.
 }
 
 /**
@@ -127,7 +120,6 @@ onServer('vchat:clearHistory', clearHistory);
 onServer('vchat:clear', clear);
 onServer('vchat:message', addMessage);
 onServer('vchat:addSuggestion', addSuggestion);
-onServer('vchat:addSuggestions', addSuggestions);
 onServer('vchat:focusEnabled', toggleFocusEnabled);
 
 // --------------------------------------------------------------

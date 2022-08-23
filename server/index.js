@@ -1,8 +1,6 @@
 import { on, onClient, emitClientRaw, log, Player, logError, emitAllClients } from 'alt-server';
 
-function processMessage(message, removeHtml = true) {
-  if (removeHtml)
-    message = message.replace(/</g, "&lt;").replace(/'/g, "&#39").replace(/"/g, "&#34");
+function processMessage(message) {
   message = message.replace(/\*\*(.+?)\*\*/gim, "<b>$1</b>").replace(/\*(.+?)\*/gim, "<i>$1</i>").replace(/~~(.+?)~~/gim, "<del>$1</del>").replace(/__(.+?)__/gim, "<ins>$1</ins>").replace(/\{([A-Fa-f0-9]{3}|[A-Fa-f0-9]{6})\}(.*?){\/\1}/gim, '<span style="color: #$1;">$2</span>');
   return message.trim();
 }
@@ -77,18 +75,18 @@ function validateSuggestion(suggestion) {
 }
 async function waitForMount(player) {
   if (mountedPlayers.has(player))
-    return true;
+    return;
   return new Promise((resolve, reject) => {
-    let id = onMounted((_player, mounted) => {
-      if (player === _player && mounted) {
+    const deadline = new Date().getTime() + WAIT_FOR_MOUNT_TIMEOUT;
+    const id = setInterval(() => {
+      if (mountedPlayers.has(player)) {
+        clearInterval(id);
         resolve();
-        id = offMounted(id);
+      } else if (deadline < new Date().getTime()) {
+        clearInterval(id);
+        reject();
       }
-    });
-    setTimeout(() => {
-      offMounted(id);
-      reject();
-    }, WAIT_FOR_MOUNT_TIMEOUT);
+    }, 10);
   });
 }
 on("playerDisconnect", (player) => {
@@ -97,6 +95,7 @@ on("playerDisconnect", (player) => {
     mountedListeners.forEach((listener) => listener(player, false));
   }
 });
+let messageProcessor = processMessage;
 const DEFAULT_CHAT_HANDLER = (player, message) => {
   if (typeof message !== "string")
     return;
@@ -116,19 +115,21 @@ const DEFAULT_CHAT_HANDLER = (player, message) => {
     message = message.trim();
     if (message.length > 0) {
       log(`[vchat:message] ${player.name}: ${message}`);
-      message = processMessage(`**${player.name}:** ${message}`);
+      message = message.replace(/</g, "&lt;").replace(/'/g, "&#39").replace(/"/g, "&#34");
+      if (messageProcessor)
+        message = messageProcessor(`<b>${player.name}:</b> ${message}`);
       emitAllClients("vchat:message", message);
     }
   }
 };
-let chatHandler = DEFAULT_CHAT_HANDLER;
+let messageHandler = DEFAULT_CHAT_HANDLER;
 function mount(player, mounted) {
   if (!mounted && !mountedPlayers.has(player))
     return;
   mountedPlayers.add(player);
   mountedListeners.forEach((listener) => listener(player, mounted));
 }
-onClient("vchat:message", (player, message) => chatHandler && chatHandler(player, message));
+onClient("vchat:message", (player, message) => messageHandler && messageHandler(player, message));
 onClient("vchat:mounted", mount);
 function send(player, message, type = MessageType.Default) {
   if (!validateMessage(message, type))
@@ -141,25 +142,18 @@ function broadcast(message, type = MessageType.Default) {
   Player.all.forEach((player) => send(player, message, type));
 }
 function addSuggestion(player, suggestion) {
-  if (!validateSuggestion(suggestion)) {
-    log(`[vchat:addSuggestion] Invalid suggestion`);
+  if (!Array.isArray(suggestion) && !validateSuggestion(suggestion)) {
+    log(`[vchat:addSuggestions] Invalid suggestion`);
     return;
-  }
-  waitForMount(player).then(() => emitClientRaw(player, "vchat:addSuggestion", suggestion)).catch(() => log(`[vchat:addSuggestion] Timeout: Player ${player.name} is not mounted`));
-}
-function addSuggestions(player, suggestions) {
-  if (!Array.isArray(suggestions)) {
-    log(`[vchat:addSuggestions] Invalid suggestions`);
-    return;
-  } else {
-    for (const suggestion of suggestions) {
-      if (validateSuggestion(suggestion))
+  } else if (Array.isArray(suggestion)) {
+    for (const cmd of suggestion) {
+      if (validateSuggestion(cmd))
         continue;
       log(`[vchat:addSuggestions] Invalid suggestion`);
       return;
     }
   }
-  waitForMount(player).then(() => emitClientRaw(player, "vchat:addSuggestions", suggestions)).catch(() => log(`[vchat:addSuggestion] Timeout: Player ${player.name} is not mounted`));
+  waitForMount(player).then(() => emitClientRaw(player, "vchat:addSuggestion", suggestion)).catch(() => log(`[vchat:addSuggestion] Timeout: Player ${player.name} is not mounted`));
 }
 function toggleFocusEnabled(player, enabled) {
   waitForMount(player).then(() => emitClientRaw(player, "vchat:focusEnabled", enabled)).catch(() => log(`[vchat:addSuggestion] Timeout: Player ${player.name} is not mounted`));
@@ -216,13 +210,22 @@ function unregisterCmd(cmdName) {
   !cmdHandlers.has(cmdName) ? logError(`Failed to unregister command /${cmdName}, not registered`) : cmdHandlers.delete(cmdName);
 }
 function setMessageHandler(fn) {
-  chatHandler = fn;
+  messageHandler = fn;
 }
 function removeMessageHandler() {
-  chatHandler = void 0;
+  messageHandler = void 0;
 }
 function restoreMessageHandler() {
-  chatHandler = DEFAULT_CHAT_HANDLER;
+  messageHandler = DEFAULT_CHAT_HANDLER;
+}
+function setMessageProcessor(fn) {
+  messageProcessor = fn;
+}
+function removeMessageProcessor() {
+  messageProcessor = void 0;
+}
+function restoreMessageProcessor() {
+  messageProcessor = processMessage;
 }
 
-export { addSuggestion, addSuggestions, broadcast, clear, clearHistory, focus, isMounted, isMuted, mutePlayer, offMounted, onMounted, processMessage, registerCmd, removeMessageHandler, restoreMessageHandler, send, setMessageHandler, toggleFocusEnabled, unfocus, unmutePlayer, unregisterCmd };
+export { addSuggestion, broadcast, clear, clearHistory, focus, isMounted, isMuted, mutePlayer, offMounted, onMounted, processMessage, registerCmd, removeMessageHandler, removeMessageProcessor, restoreMessageHandler, restoreMessageProcessor, send, setMessageHandler, setMessageProcessor, toggleFocusEnabled, unfocus, unmutePlayer, unregisterCmd };

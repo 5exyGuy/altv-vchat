@@ -61,9 +61,6 @@ function addMessage(message, type = MessageType.Default) {
 function addSuggestion(suggestion) {
   chatWebView.emit("vchat:addSuggestion", suggestion);
 }
-function addSuggestions(suggestions) {
-  chatWebView.emit("vchat:addSuggestions", suggestions);
-}
 function toggleFocusEnabled(enabled) {
   focusEnabled = enabled;
   if (!enabled)
@@ -74,7 +71,6 @@ onServer("vchat:clearHistory", clearHistory);
 onServer("vchat:clear", clear);
 onServer("vchat:message", addMessage);
 onServer("vchat:addSuggestion", addSuggestion);
-onServer("vchat:addSuggestions", addSuggestions);
 onServer("vchat:focusEnabled", toggleFocusEnabled);
 function toggleChatWithKey(keyCode) {
   if (keyCode === ESC_KEY && chatWebView.focused)

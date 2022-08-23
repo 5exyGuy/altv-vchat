@@ -7,29 +7,6 @@
   </p>
 </div>
 
-<!-- TABLE OF CONTENTS -->
-<details>
-  <summary>Table of Contents</summary>
-  <ol>
-    <li>
-      <a href="#about">About</a>
-      <ul>
-        <li><a href="#built-with">Built With</a></li>
-      </ul>
-    </li>
-    <li>
-      <a href="#getting-started">Getting Started</a>
-      <ul>
-        <li><a href="#prerequisites">Prerequisites</a></li>
-        <li><a href="#installation">Installation</a></li>
-      </ul>
-    </li>
-    <li><a href="#usage">Usage</a></li>
-    <li><a href="#contributing">Contributing</a></li>
-    <li><a href="#license">License</a></li>
-  </ol>
-</details>
-
 <!-- ABOUT -->
 
 ## About
@@ -122,7 +99,7 @@ get some ideas for your own project.
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
-<!-- USAGE EXAMPLES -->
+<!-- USAGE EXAMPLES FOR PLAYER -->
 
 ## Usage (Player)
 
@@ -182,9 +159,14 @@ _Lorem Ipsum is simply dummy text of the printing and typesetting industry_
 
 ### Command Suggestions
 
-...
+The default command prefix is `/`.
+
+To get command suggestions, you need to enter the prefix as the first character in the input field and at least one
+character after the prefix.
 
 <p align="right">(<a href="#top">back to top</a>)</p>
+
+<!-- USAGE EXAMPLES FOR DEVELOPER -->
 
 ## Usage (Developer)
 
@@ -217,7 +199,7 @@ export function send(player: Player, message: string, type: MessageType = Messag
 export function broadcast(message: string, type: MessageType = MessageType.Default): void;
 ```
 
-Example
+#### Example
 
 ```js
 import * as alt from 'alt-server';
@@ -259,7 +241,7 @@ It is also possible to add offers to all players currently connected to the serv
 export function addSuggestionAll(suggestion: CommandSuggestion | Array<CommandSuggestion>): void;
 ```
 
-Example
+#### Example
 
 ```js
 import * as alt from 'alt-server';
@@ -297,7 +279,7 @@ To remove a command, all you need to specify is the command name
 export function unregisterCmd(cmdName: string): void;
 ```
 
-Example
+#### Example
 
 ```js
 import * as alt from 'alt-server';
@@ -317,17 +299,35 @@ chat.registerCmd('spawn', (player, args) => {
 > **_NOTE:_** If the default message handler is used, a muted player trying to send a message will receive an `Error`
 > message that he is muted.
 
+#### Mute
+
 Use the `mutePlayer` function to mute the player
 
 ```ts
 export function mutePlayer(player: Player): void;
 ```
 
+**OR** mute all connected players
+
+```ts
+export function muteAllPlayers(): void;
+```
+
+#### Unmute
+
 To unmute a player, use the `unmutePlayer` function
 
 ```ts
 export function unmutePlayer(player: Player): void;
 ```
+
+**OR** unmute all connected players
+
+```ts
+export function muteAllPlayers(): void;
+```
+
+#### Other
 
 To check if a player is silenced, use the `isMuted` function
 
@@ -337,12 +337,22 @@ export function isMuted(player: Player): void;
 
 ### Controlling Player's Chat Focus
 
+#### Focus Activation
+
 The resource also allows you to control the opening of a player's chat window. To prevent the player from opening the
 chat window, use the `toggleFocusEnabled` function
 
 ```ts
 export function toggleFocusEnabled(player: Player, enabled: boolean): void;
 ```
+
+**OR** use the `toggleFocusEnabledAll` to toggle every player's chat focus activation
+
+```ts
+export function toggleFocusEnabledAll(eanbled: boolean): void;
+```
+
+#### Focus
 
 Use the `focus` function to focus the chat window of the desired player (focus will work even if player focus is
 disabled with `toggleFocusEnabled`)
@@ -351,11 +361,25 @@ disabled with `toggleFocusEnabled`)
 export function focus(player: Player): void;
 ```
 
+**OR** or use `focusAll` to focus all players' chat windows
+
+```ts
+export function focusAll(): void;
+```
+
+#### Unfocus
+
 Use the `unfocus` function to unfocus the desired player's chat window (unfocus will work even if player focus is
 disabled with `toggleFocusEnabled`)
 
 ```ts
 export function unfocus(player: Player): void;
+```
+
+**OR** or use `unfocusAll` to unfocus all players' chat windows
+
+```ts
+export function unfocusAll(): void;
 ```
 
 ### Player Chat Mount Events
@@ -385,7 +409,7 @@ To check if a player's chat window has been loaded, use the `isMounted` function
 export function isMounted(player: Player): void;
 ```
 
-Example
+#### Example
 
 ```js
 import * as alt from 'alt-server';
@@ -466,6 +490,8 @@ export function processMessage(message: string): string;
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
+<!-- EXPORTED FUNCTIONS -->
+
 ## Exported Functions
 
 ### Types
@@ -505,12 +531,17 @@ export function addSuggestionAll(suggestion: CommandSuggestion | Array<CommandSu
 export function toggleFocusEnabled(player: Player, enabled: boolean): void;
 export function toggleFocusEnabledAll(enabled: boolean): void;
 export function focus(player: Player): void;
+export function focusAll(): void;
 export function unfocus(player: Player): void;
+export function unfocusAll(): void;
 export function clearHistory(player: Player): void;
+export function clearHistoryAll(): void;
 export function clear(player: Player): void;
+export function clearAll(): void;
 export function mutePlayer(player: Player): void;
 export function muteAllPlayers(): void;
 export function unmutePlayer(player: Player): void;
+export function unmuteAllPlayer(player: Player): void;
 export function isMuted(player: Player): void;
 export function onMounted(fn: MountCallback): number;
 export function offMounted(id: number): number;

@@ -99,12 +99,10 @@
         if (!window.alt) return;
 
         window.alt.on('vchat:focus', (_focus) => (focus = _focus));
-        window.alt.on('vchat:addSuggestion', (suggestion: CommandSuggestion) => {
-            commands = [...commands, suggestion];
-            updateMatchedCommands(message);
-        });
-        window.alt.on('vchat:addSuggestions', (suggestions: Array<CommandSuggestion>) => {
-            commands = [...commands, ...suggestions];
+        window.alt.on('vchat:addSuggestion', (suggestion: CommandSuggestion | Array<CommandSuggestion>) => {
+            Array.isArray(suggestion)
+                ? (commands = [...commands, ...suggestion])
+                : (commands = [...commands, suggestion]);
             updateMatchedCommands(message);
         });
     });
