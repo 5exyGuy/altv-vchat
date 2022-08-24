@@ -37,22 +37,22 @@
 <style lang="scss">
     .info {
         background-color: hsla(198, 93%, 60%, 0.6);
-        color: hsl(200, 100%, 5%);
+        color: hsl(0, 0%, 100%);
     }
 
     .success {
         background-color: hsla(158, 64%, 52%, 0.6);
-        color: hsl(160, 100%, 5%);
+        color: hsl(0, 0%, 100%);
     }
 
     .warning {
         background-color: hsla(43, 100%, 46%, 0.6);
-        color: hsl(50, 100%, 5%);
+        color: hsl(0, 0%, 100%);
     }
 
     .error {
         background-color: hsla(0, 100%, 58%, 0.6);
-        color: hsl(0, 100%, 5%);
+        color: hsl(0, 0%, 100%);
     }
 
     .fade-in {
