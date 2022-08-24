@@ -123,6 +123,7 @@ make mouse clicks in any position. There is a prevention for the input field fro
 | <kbd>End</kbd>                               | Scrolls to the end (the lastest message)                                                                          |
 | <kbd>↑</kbd>                                 | Selects command suggestion (if there are any) **OR**</br> Selects a previously entered message (if there are any) |
 | <kbd>↓</kbd>                                 | Selects command suggestion (if there are any) **OR**</br>Selects a previously entered message (if there are any)  |
+| <kbd>Tab</kbd>                               | Finish typing the selected command suggestion                                                                     |
 
 ![Keyboard Support Preview](./preview/keyboard-support-preview.gif)
 
