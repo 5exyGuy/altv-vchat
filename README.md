@@ -504,7 +504,7 @@ don't need it, you can simply remove it.
 export type MessageProcessor = (message: string) => void;
 ```
 
-To change the message processor in the default widget, use `setMessageProcessor` function
+To change the message processor in the default message handler, use `setMessageProcessor` function
 
 ```ts
 export function setMessageProcessor(fn: MessageProcessor): void;
