@@ -1,7 +1,7 @@
 <script lang="ts">
     import type { CommandSuggestion, MatchedCommand } from '../interfaces';
     import commandsJson from '../commands.json';
-    import { onMount } from 'svelte';
+    import { onDestroy, onMount } from 'svelte';
 
     // --------------------------------------------------------------
     // Props
@@ -88,6 +88,15 @@
         matchedCommands.length === 0 ? (selected = -1) : (selected = 0); // Reset selected if no commands are found
     }
 
+    function toggleFocus(_focus: boolean) {
+        focus = _focus;
+    }
+
+    function addSuggestion(suggestion: CommandSuggestion | Array<CommandSuggestion>) {
+        Array.isArray(suggestion) ? (commands = [...commands, ...suggestion]) : (commands = [...commands, suggestion]);
+        updateMatchedCommands(message);
+    }
+
     // --------------------------------------------------------------
     // Reactive Statments
     // --------------------------------------------------------------
@@ -99,15 +108,13 @@
     // --------------------------------------------------------------
 
     onMount(() => {
-        if (!window.alt) return;
+        window?.alt?.on('vchat:focus', toggleFocus);
+        window?.alt?.on('vchat:addSuggestion', addSuggestion);
+    });
 
-        window.alt.on('vchat:focus', (_focus) => (focus = _focus));
-        window.alt.on('vchat:addSuggestion', (suggestion: CommandSuggestion | Array<CommandSuggestion>) => {
-            Array.isArray(suggestion)
-                ? (commands = [...commands, ...suggestion])
-                : (commands = [...commands, suggestion]);
-            updateMatchedCommands(message);
-        });
+    onDestroy(() => {
+        window?.alt?.off('vchat:focus', toggleFocus);
+        window?.alt?.off('vchat:addSuggestion', addSuggestion);
     });
 </script>
 

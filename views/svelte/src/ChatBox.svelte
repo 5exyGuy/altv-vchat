@@ -8,10 +8,7 @@
     const prefix: string = '/';
     const maxCmds: number = 3;
 
-    onMount(() => {
-        if (!window.alt) return;
-        window.alt.emit('vchat:mounted');
-    });
+    onMount(() => window?.alt?.emit('vchat:mounted'));
 </script>
 
 <div class="fixed top-[16px] left-[16px] w-[640px]">

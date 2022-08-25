@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { onMount, tick } from 'svelte';
+    import { onDestroy, onMount, tick } from 'svelte';
 
     // --------------------------------------------------------------
     // Props
@@ -26,7 +26,7 @@
     async function sendMessage(event: KeyboardEvent) {
         if (event.key === 'Enter') {
             event.preventDefault();
-            if (window.alt) window.alt.emit('vchat:message', message);
+            window?.alt?.emit('vchat:message', message);
 
             if (buffer.length > 100) buffer.shift();
             buffer = [message, ...buffer];
@@ -56,21 +56,24 @@
         }
     }
 
+    async function toggleFocus(_focus: boolean) {
+        focus = _focus;
+        if (_focus) {
+            await tick();
+            ref?.focus();
+        } else currentBufferIndex = -1;
+    }
+
     // --------------------------------------------------------------
     // Hooks
     // --------------------------------------------------------------
 
     onMount(() => {
-        if (!window.alt) return;
-        window.alt.on('vchat:focus', async (_focus) => {
-            focus = _focus;
-            if (_focus) {
-                await tick();
-                if (ref) ref.focus();
-            } else {
-                currentBufferIndex = -1;
-            }
-        });
+        window?.alt?.on('vchat:focus', toggleFocus);
+    });
+
+    onDestroy(() => {
+        window?.alt?.off('vchat:focus', toggleFocus);
     });
 </script>
 
@@ -85,11 +88,4 @@
     on:blur={() => ref.focus()}
 />
 
-<!-- <svelte:body
-    on:click|preventDefault={() => {
-        if (ref) ref.focus();
-    }}
-    on:contextmenu|preventDefault={() => {
-        if (ref) ref.focus();
-    }} /> -->
 <svelte:window on:keydown={handleKeydown} />

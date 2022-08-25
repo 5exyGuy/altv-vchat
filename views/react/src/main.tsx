@@ -1,9 +1,11 @@
-import React from 'react';
 import ReactDOM from 'react-dom/client';
-import App from './App';
+import { chatStore } from './stores/chat.store';
+import { Provider } from 'react-redux';
+import { ChatBox } from './ChatBox';
+import './app.scss';
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
-    <React.StrictMode>
-        <App />
-    </React.StrictMode>,
+    <Provider store={chatStore}>
+        <ChatBox />
+    </Provider>,
 );

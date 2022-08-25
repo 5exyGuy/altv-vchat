@@ -1,6 +1,6 @@
 <script lang="ts">
     import type { Message as MessageData } from '../interfaces';
-    import { onMount, tick } from 'svelte';
+    import { onDestroy, onMount, tick } from 'svelte';
     import Message from './Message.svelte';
     import { MessageType } from '../enums';
 
@@ -50,12 +50,12 @@
 
     function scrollToTop(behavior: ScrollBehavior = 'smooth') {
         currentScroll = 0;
-        if (ref) ref.scrollTo({ top: 0, behavior });
+        ref?.scrollTo({ top: 0, behavior });
     }
 
     function scrollToBottom(behavior: ScrollBehavior = 'smooth') {
         currentScroll = boxHeight;
-        if (ref) ref.scroll({ top: boxHeight, behavior });
+        ref?.scroll({ top: boxHeight, behavior });
     }
 
     function scrollUp() {
@@ -110,12 +110,17 @@
         boxHeight = ref.scrollHeight - ref.clientHeight;
         scrollToBottom('auto');
 
-        if (!window.alt) return;
+        window?.alt?.on('vchat:loadHistory', setMessages);
+        window?.alt?.on('vchat:message', addMessage);
+        window?.alt?.on('vchat:focus', toggleFocus);
+        window?.alt?.on('vchat:clear', clearMessages);
+    });
 
-        window.alt.on('vchat:loadHistory', setMessages);
-        window.alt.on('vchat:message', addMessage);
-        window.alt.on('vchat:focus', toggleFocus);
-        window.alt.on('vchat:clear', clearMessages);
+    onDestroy(() => {
+        window?.alt?.off('vchat:loadHistory', setMessages);
+        window?.alt?.off('vchat:message', addMessage);
+        window?.alt?.off('vchat:focus', toggleFocus);
+        window?.alt?.off('vchat:clear', clearMessages);
     });
 </script>
 

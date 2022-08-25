@@ -19,14 +19,11 @@
 >
     {#if type === MessageType.Info}
         <InfoIcon />
-    {/if}
-    {#if type === MessageType.Success}
+    {:else if type === MessageType.Success}
         <SuccessIcon />
-    {/if}
-    {#if type === MessageType.Warning}
+    {:else if type === MessageType.Warning}
         <WarningIcon />
-    {/if}
-    {#if type === MessageType.Error}
+    {:else if type === MessageType.Error}
         <ErrorIcon />
     {/if}
     <div>
@@ -35,36 +32,5 @@
 </div>
 
 <style lang="scss">
-    .info {
-        background-color: hsla(198, 93%, 60%, 0.6);
-        color: hsl(0, 0%, 100%);
-    }
-
-    .success {
-        background-color: hsla(158, 64%, 52%, 0.6);
-        color: hsl(0, 0%, 100%);
-    }
-
-    .warning {
-        background-color: hsla(43, 100%, 46%, 0.6);
-        color: hsl(0, 0%, 100%);
-    }
-
-    .error {
-        background-color: hsla(0, 100%, 58%, 0.6);
-        color: hsl(0, 0%, 100%);
-    }
-
-    .fade-in {
-        animation: fade-in 500ms;
-    }
-
-    @keyframes fade-in {
-        from {
-            opacity: 0;
-        }
-        to {
-            opacity: 1;
-        }
-    }
+    @import 'Message.scss';
 </style>
