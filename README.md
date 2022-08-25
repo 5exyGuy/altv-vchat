@@ -33,7 +33,7 @@ get some ideas for your own project.
 **`WebView` examples:**
 
 -   [x] [Svelte](https://github.com/5exyGuy/altv-vchat/tree/master/views/svelte)
--   [ ] React
+-   [x] [React](https://github.com/5exyGuy/altv-vchat/tree/master/views/react)
 -   [ ] Vue.js
 -   [ ] SolidJS
 
