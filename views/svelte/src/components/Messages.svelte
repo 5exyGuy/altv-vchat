@@ -128,7 +128,7 @@
     class="flex flex-col gap-[4px] h-[320px] w-full mask mb-[16px] pr-2"
     class:opacity-50={!focus}
     class:opacity-100={focus}
-    class:overflow-y-scroll={focus && ref?.scrollHeight > ref?.clientHeight}
+    class:overflow-y-scroll={focus && ref.scrollHeight > ref.clientHeight}
     class:overflow-y-hidden={!focus}
     style:--mask-top-height={maskTopHeight}
     style:--mask-bottom-height={maskBottomHeight}
