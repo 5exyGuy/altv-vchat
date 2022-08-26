@@ -1,10 +1,11 @@
-import { createSignal, onCleanup, onMount } from 'solid-js';
-// import { Commands } from './components/Commands';
-// import { MessageInput } from './components/MessageInput';
+import { onCleanup, onMount } from 'solid-js';
+import { Commands } from './components/Commands';
+import { MessageInput } from './components/MessageInput';
 import { Messages } from './components/Messages';
+import { chatStore } from './stores';
 
 export function ChatBox() {
-    const [focus, setFocus] = createSignal(false);
+    const { setFocus } = chatStore;
 
     function toggleFocus(focus: boolean) {
         setFocus(focus);
@@ -21,9 +22,9 @@ export function ChatBox() {
 
     return (
         <div class="fixed top-[16px] left-[16px] w-[640px]">
-            <Messages focus={focus()} scrollStep={20} />
-            {/* <MessageInput /> */}
-            {/* <Commands /> */}
+            <Messages />
+            <MessageInput />
+            <Commands />
         </div>
     );
 }

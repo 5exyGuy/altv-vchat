@@ -34,8 +34,8 @@ get some ideas for your own project.
 
 -   [x] [Svelte](https://github.com/5exyGuy/altv-vchat/tree/master/views/svelte)
 -   [x] [React](https://github.com/5exyGuy/altv-vchat/tree/master/views/react)
--   [ ] Vue.js
--   [ ] SolidJS
+-   [x] [Vue.js](https://github.com/5exyGuy/altv-vchat/tree/master/views/vue)
+-   [x] [SolidJS](https://github.com/5exyGuy/altv-vchat/tree/master/views/solid)
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 

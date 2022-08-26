@@ -1,17 +1,16 @@
 import { MessageType } from '../enums';
-import { Message as MessageData } from '../interfaces';
+import type { Message as MessageData } from '../interfaces';
 import { Message } from './Message';
+import { createSignal, For, JSX, onCleanup, onMount, createMemo, on, createEffect } from 'solid-js';
+import { chatStore } from '../stores';
 import './Messages.scss';
-import { createEffect, createSignal, For, JSX, onCleanup, onMount, mergeProps, createMemo } from 'solid-js';
-import { createStore } from 'solid-js/store';
 
-export function Messages(props: { focus: boolean; scrollStep: number }) {
-    const merged = mergeProps({ focus: false, scrollStep: 20 }, props);
-
+export function Messages() {
     // --------------------------------------------------------------
     // States
     // --------------------------------------------------------------
 
+    const { focus, options } = chatStore;
     const [messages, setMessages] = createSignal<Array<MessageData>>([]);
     const [boxHeight, setBoxHeight] = createSignal(0);
     const [currentScroll, setCurrentScroll] = createSignal(0);
@@ -44,14 +43,14 @@ export function Messages(props: { focus: boolean; scrollStep: number }) {
     }
 
     function scrollUp() {
-        const scrollTo = currentScroll() - merged.scrollStep < 0 ? 0 : currentScroll() - merged.scrollStep;
+        const scrollTo = currentScroll() - options.scrollStep < 0 ? 0 : currentScroll() - options.scrollStep;
         ref!.scrollTop = scrollTo;
         setCurrentScroll(scrollTo);
     }
 
     function scrollDown() {
         const scrollTo =
-            currentScroll() + merged.scrollStep > boxHeight() ? boxHeight() : currentScroll() + merged.scrollStep;
+            currentScroll() + options.scrollStep > boxHeight() ? boxHeight() : currentScroll() + options.scrollStep;
         ref!.scrollTop = scrollTo;
         setCurrentScroll(scrollTo);
     }
@@ -74,7 +73,7 @@ export function Messages(props: { focus: boolean; scrollStep: number }) {
 
     function processScroll(event: WheelEvent) {
         event.preventDefault();
-        if (!merged.focus) return;
+        if (!focus()) return;
         if (event.deltaY === 0) return;
         event.deltaY < 0 ? scrollUp() : scrollDown();
     }
@@ -101,20 +100,15 @@ export function Messages(props: { focus: boolean; scrollStep: number }) {
         window?.alt?.off('vchat:clear', clearMessages);
     });
 
-    createEffect(() => {
-        !merged.focus && scrollToBottom();
-    });
+    createEffect(on(focus, (focus) => !focus && scrollToBottom()));
 
-    createEffect(() => {
-        const test = messages();
-        // console.log(`length: ${test.length} scrollHeight: ${ref!.scrollHeight} boxHeight: ${ref!.clientHeight}`);
-        setBoxHeight(ref!.scrollHeight - ref!.clientHeight); // TODO: Sets the wrong height. Is this a bug?
-    });
-
-    // createEffect(() => {
-    //     if (merged.focus || (merged.focus && currentScroll() !== boxHeight()) || boxHeight() === 0) return;
-    //     scrollToBottom();
-    // });
+    createEffect(
+        on(messages, () => {
+            setBoxHeight(ref!.scrollHeight - ref!.clientHeight);
+            if (focus() || (focus() && currentScroll() !== boxHeight()) || boxHeight() === 0) return;
+            scrollToBottom();
+        }),
+    );
 
     // --------------------------------------------------------------
     // Computed values using useMemo hook
@@ -128,28 +122,23 @@ export function Messages(props: { focus: boolean; scrollStep: number }) {
     );
 
     return (
-        <>
-            <div class="bg-white text-black">
-                {currentScroll()}/{boxHeight()} | {ref?.scrollHeight}
-            </div>
-            <div
-                class="flex flex-col gap-[4px] h-[320px] w-full mask mb-[16px] pr-2 overflow-y-scroll"
-                // classList={{
-                //     'opacity-50': !merged.focus,
-                //     'opacity-100': merged.focus,
-                //     'overflow-y-scroll': merged.focus && ref!.scrollHeight > ref!.clientHeight,
-                //     'overflow-y-hidden': !merged.focus,
-                // }}
-                style={
-                    {
-                        '--mask-top-height': maskTopHeight(),
-                        '--mask-bottom-height': maskBottomHeight(),
-                    } as JSX.CSSProperties
-                }
-                ref={ref}
-            >
-                <For each={messages()}>{(message) => <Message content={message.content} type={message.type} />}</For>
-            </div>
-        </>
+        <div
+            class="flex flex-col gap-[4px] h-[320px] w-full mask mb-[16px] pr-2 overflow-y-scroll"
+            classList={{
+                'opacity-50': !focus(),
+                'opacity-100': focus(),
+                'overflow-y-scroll': focus() && ref!.scrollHeight > ref!.clientHeight,
+                'overflow-y-hidden': !focus(),
+            }}
+            style={
+                {
+                    '--mask-top-height': maskTopHeight(),
+                    '--mask-bottom-height': maskBottomHeight(),
+                } as JSX.CSSProperties
+            }
+            ref={ref}
+        >
+            <For each={messages()}>{(message) => <Message content={message.content} type={message.type} />}</For>
+        </div>
     );
 }

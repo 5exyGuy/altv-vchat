@@ -15,8 +15,10 @@
         "isolatedModules": true,
         "noEmit": true,
         "jsx": "preserve",
-        "jsxImportSource": "solid-js"
+        "jsxImportSource": "solid-js",
+        "baseUrl": "./",
+        "importsNotUsedAsValues": "error"
     },
-    "include": ["src"],
+    "include": ["src/**/*.ts", "src/**/*.tsx", "src/**/*.json", "src/**/*.d.ts"],
     "references": [{ "path": "./tsconfig.node.json" }]
 }
