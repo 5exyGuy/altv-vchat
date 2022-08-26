@@ -98,8 +98,7 @@ export function Messages({ focus = false, scrollStep = 20 }) {
 
     useEffect(() => {
         if (messages.length === 0) return;
-        const newBoxHeight = (ref?.current?.scrollHeight ?? 0) - (ref?.current?.clientHeight ?? 0);
-        setBoxHeight(newBoxHeight);
+        setBoxHeight(ref!.current!.scrollHeight - ref!.current!.clientHeight);
     }, [messages]);
 
     useEffect(() => {
@@ -140,7 +139,7 @@ export function Messages({ focus = false, scrollStep = 20 }) {
             className={classnames('flex flex-col gap-[4px] h-[320px] w-full mask mb-[16px] pr-2', {
                 'opacity-50': !focus,
                 'opacity-100': focus,
-                'overflow-y-scroll': focus && (ref?.current?.scrollHeight ?? 0) > (ref?.current?.clientHeight ?? 0),
+                'overflow-y-scroll': focus && ref!.current!.scrollHeight > ref!.current!.clientHeight,
                 'overflow-y-hidden': !focus,
             })}
             style={

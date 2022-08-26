@@ -15,7 +15,7 @@
     // --------------------------------------------------------------
 
     let messages: Array<MessageData> = [];
-    let ref: HTMLDivElement;
+    let ref: HTMLDivElement | undefined;
     let focus: boolean = false;
     let boxHeight: number = 0;
     let currentScroll: number = 0;
@@ -35,7 +35,7 @@
     async function setMessages(_messages: Array<MessageData>) {
         messages = _messages;
         await tick();
-        if (ref) boxHeight = ref.scrollHeight - ref.clientHeight;
+        boxHeight = ref!.scrollHeight - ref!.clientHeight;
         if (!focus || (focus && currentScroll === boxHeight)) scrollToBottom('auto');
     }
 
