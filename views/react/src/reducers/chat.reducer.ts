@@ -3,11 +3,25 @@ import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
 export interface ChatState {
     message: string;
     focus: boolean;
+    options: {
+        scrollStep: number;
+        inputPlaceholder: string;
+        cmdPrefix: string;
+        maxMessageBufferLength: number;
+        maxCmdSuggestions: number;
+    };
 }
 
 const initialState: ChatState = {
     message: '',
     focus: false,
+    options: {
+        scrollStep: 20,
+        inputPlaceholder: 'Type a message...',
+        cmdPrefix: '/',
+        maxMessageBufferLength: 100,
+        maxCmdSuggestions: 3,
+    },
 };
 
 export const chatSlice = createSlice({
@@ -23,6 +37,6 @@ export const chatSlice = createSlice({
     },
 });
 
-export const { setMessage } = chatSlice.actions;
+export const { setMessage, setFocus } = chatSlice.actions;
 
 export const chatReducer = chatSlice.reducer;

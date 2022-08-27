@@ -20,6 +20,17 @@ export function Messages() {
     const [currentScroll, setCurrentScroll] = createSignal<number>(0);
 
     // --------------------------------------------------------------
+    // Computed Local Values
+    // --------------------------------------------------------------
+
+    const maskTopHeight = createMemo(() =>
+        currentScroll() === 0 ? '0px' : `${Math.floor((64 * currentScroll()) / boxHeight())}px`,
+    );
+    const maskBottomHeight = createMemo(() =>
+        currentScroll === boxHeight ? '0px' : `${Math.floor((64 * (boxHeight() - currentScroll())) / boxHeight())}px`,
+    );
+
+    // --------------------------------------------------------------
     // Refs
     // --------------------------------------------------------------
 
@@ -162,17 +173,6 @@ export function Messages() {
         window?.alt?.off('vchat:message', addMessage);
         window?.alt?.off('vchat:clear', clearMessages);
     });
-
-    // --------------------------------------------------------------
-    // Computed values using useMemo hook
-    // --------------------------------------------------------------
-
-    const maskTopHeight = createMemo(() =>
-        currentScroll() === 0 ? '0px' : `${Math.floor((64 * currentScroll()) / boxHeight())}px`,
-    );
-    const maskBottomHeight = createMemo(() =>
-        currentScroll === boxHeight ? '0px' : `${Math.floor((64 * (boxHeight() - currentScroll())) / boxHeight())}px`,
-    );
 
     // --------------------------------------------------------------
     // Render

@@ -105,7 +105,7 @@ export function CommandSuggestions() {
     // Effects ------------------------------------------------------
 
     // Listens for message changes and updates the matched commands.
-    createEffect(on(message, (message) => updateMatchedCommands(message)));
+    createEffect(on([message, commands], ([message]) => updateMatchedCommands(message)));
 
     // Mount --------------------------------------------------------
 
@@ -130,7 +130,7 @@ export function CommandSuggestions() {
             class="mt-[4px] text-white flex flex-col transition origin-top"
             classList={{
                 'scale-y-0': !focus() || matchedCommands().length === 0,
-                'scale-y-100': matchedCommands().length > 0 && focus(),
+                'scale-y-100': focus() && matchedCommands().length > 0,
             }}
         >
             <For each={matchedCommands()}>

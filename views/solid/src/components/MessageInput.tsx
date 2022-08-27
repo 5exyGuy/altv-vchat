@@ -34,12 +34,14 @@ export function MessageInput() {
      */
     function sendMessage(event: KeyboardEvent) {
         if (event.key !== 'Enter') return;
+
         window?.alt?.emit('vchat:message', message());
         batch(() => {
             setBuffer((buffer) => [message(), ...buffer].splice(0, options.maxMessageBufferLength));
             setCurrentBufferIndex(-1);
             setMessage('');
         });
+
         event.preventDefault();
     }
 
