@@ -3,7 +3,7 @@ import { createEffect, createSignal, For, on, onCleanup, onMount } from 'solid-j
 import { chatStore } from '../stores';
 import commandsJson from '../commands.json';
 
-export function Commands() {
+export function CommandSuggestions() {
     // --------------------------------------------------------------
     // Chat Store
     // --------------------------------------------------------------
@@ -11,44 +11,43 @@ export function Commands() {
     const { focus, message, setMessage, options } = chatStore;
 
     // --------------------------------------------------------------
-    // States
+    // Local Variables
     // --------------------------------------------------------------
 
-    const [commands, setCommands] = createSignal(commandsJson as Array<CommandSuggestion>);
-    const [matchedCommands, setMatchedCommands] = createSignal([] as Array<MatchedCommand>);
-    const [selected, setSelected] = createSignal(-1);
+    const [commands, setCommands] = createSignal<Array<CommandSuggestion>>(commandsJson);
+    const [matchedCommands, setMatchedCommands] = createSignal<Array<MatchedCommand>>([]);
+    const [selected, setSelected] = createSignal<number>(-1);
 
     // --------------------------------------------------------------
     // Functions
     // --------------------------------------------------------------
 
-    function addPrefix(message: string): string {
-        return options.prefix + message;
-    }
+    // Command suggestion selection ---------------------------------
 
-    function removePrefix(message: string): string {
-        return message.startsWith(options.prefix) ? message.substring(1) : message;
-    }
-
+    /**
+     * Selects the command suggestion depending on the key pressed.
+     * @param event The keyboard event.
+     */
     function selectCommand(event: KeyboardEvent) {
         if (event.key !== 'ArrowDown' && event.key !== 'ArrowUp' && event.key !== 'Tab') return;
         if (matchedCommands().length === 0) return;
 
-        // Select previous command
-        if (event.key === 'ArrowUp' && matchedCommands().length > 1) {
+        if (event.key === 'ArrowUp' && matchedCommands().length > 1)
             setSelected((selected) => Math.max(0, selected - 1));
-        }
-        // Select next command
-        else if (event.key === 'ArrowDown' && matchedCommands().length > 1) {
+        else if (event.key === 'ArrowDown' && matchedCommands().length > 1)
             setSelected((selected) => Math.min(matchedCommands().length - 1, selected + 1));
-        }
-        // Select the selected command to the chat box input
         else if (event.key === 'Tab' && selected() >= 0 && !(matchedCommands()[selected()].currentParam > -1))
-            setMessage(addPrefix(matchedCommands()[selected()].name));
+            setMessage(matchedCommands()[selected()].name);
 
         event.preventDefault();
     }
 
+    // Command suggestion matching ----------------------------------
+
+    /**
+     * Matches the current message against the available command suggestions.
+     * @param message The message to match against.
+     */
     function updateMatchedCommands(message: string) {
         if (!message) {
             setMatchedCommands([]);
@@ -56,7 +55,7 @@ export function Commands() {
         }
 
         const words = message.split(' ');
-        if (!words[0].startsWith(options.prefix)) {
+        if (!words[0].startsWith(options.cmdPrefix)) {
             setMatchedCommands([]);
             return;
         }
@@ -64,31 +63,35 @@ export function Commands() {
         setMatchedCommands(
             commands()
                 .filter((command) => {
-                    const cmdName = removePrefix(words[0]);
+                    const cmdName = words[0].startsWith(options.cmdPrefix) ? words[0].substring(1) : words[0];
 
                     return (
                         cmdName.length > 0 &&
                         command.name.startsWith(cmdName) &&
                         words.length - 1 <= (command.params?.length ?? 0)
                     );
-                }) // Filter commands that match the message
-                .splice(0, options.maxSuggestions) // Only show the first 3 commands
+                })
+                .splice(0, options.maxCmdSuggestions)
                 .map((command) => {
-                    let currentParam = -1; // The current parameter we are looking at
-                    const cmdName = addPrefix(command.name); // The command name with the prefix
-                    // If there is only one word, it's the command name
+                    let currentParam = -1;
+                    const cmdName = options.cmdPrefix + command.name;
+
                     if (words.length === 1 && words[0] === cmdName) currentParam = 0;
-
-                    // If there are more words, check if they are parameters
                     if (words.length > 1 && words.length - 1 <= (command?.params?.length ?? 0))
-                        currentParam = words.length - 1; // The last word is the current parameter
+                        currentParam = words.length - 1;
 
-                    return { currentParam, ...command };
-                }), // Map the commands to include the current parameter
+                    return { currentParam, ...command, name: cmdName };
+                }),
         );
-        matchedCommands().length === 0 ? setSelected(-1) : setSelected(0); // Reset selected if no commands are found
+        matchedCommands().length === 0 ? setSelected(-1) : setSelected(0);
     }
 
+    // Adding the command suggestion --------------------------------
+
+    /**
+     * Adds the command suggestion sent by the server.
+     * @param suggestion The command suggestion to add.
+     */
     function addSuggestion(suggestion: CommandSuggestion | Array<CommandSuggestion>) {
         Array.isArray(suggestion)
             ? setCommands((commands) => [...commands, ...suggestion])
@@ -99,17 +102,28 @@ export function Commands() {
     // Hooks
     // --------------------------------------------------------------
 
+    // Effects ------------------------------------------------------
+
+    // Listens for message changes and updates the matched commands.
+    createEffect(on(message, (message) => updateMatchedCommands(message)));
+
+    // Mount --------------------------------------------------------
+
     onMount(() => {
         window.addEventListener('keydown', selectCommand);
         window?.alt?.on('vchat:addSuggestion', addSuggestion);
     });
+
+    // Unmount ------------------------------------------------------
 
     onCleanup(() => {
         window.removeEventListener('keydown', selectCommand);
         window?.alt?.off('vchat:addSuggestion', addSuggestion);
     });
 
-    createEffect(on(message, (message) => updateMatchedCommands(message)));
+    // --------------------------------------------------------------
+    // Render
+    // --------------------------------------------------------------
 
     return (
         <div
@@ -130,7 +144,7 @@ export function Commands() {
                         }}
                     >
                         <div class="flex text-base text-white text-opacity-100">
-                            <span>{options.prefix}</span>
+                            <span>{options.cmdPrefix}</span>
                             <span classList={{ 'font-bold': matchedCommand.currentParam === 0 }}>
                                 {matchedCommand.name}
                             </span>

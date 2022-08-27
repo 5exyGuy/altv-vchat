@@ -7,47 +7,86 @@ import './Messages.scss';
 
 export function Messages() {
     // --------------------------------------------------------------
-    // States
+    // Chat Store
+    // --------------------------------------------------------------
+    const { focus, options } = chatStore;
+
+    // --------------------------------------------------------------
+    // Local Variables
     // --------------------------------------------------------------
 
-    const { focus, options } = chatStore;
     const [messages, setMessages] = createSignal<Array<MessageData>>([]);
-    const [boxHeight, setBoxHeight] = createSignal(0);
-    const [currentScroll, setCurrentScroll] = createSignal(0);
+    const [boxHeight, setBoxHeight] = createSignal<number>(0);
+    const [currentScroll, setCurrentScroll] = createSignal<number>(0);
+
+    // --------------------------------------------------------------
+    // Refs
+    // --------------------------------------------------------------
+
     let ref: HTMLDivElement | undefined;
 
     // --------------------------------------------------------------
     // Functions
     // --------------------------------------------------------------
 
+    // Messages -----------------------------------------------------
+
+    /**
+     * Adds a message to the chat box sent by the server.
+     * @param message The message to add.
+     * @param type The type of message.
+     */
     function addMessage(message: string, type: MessageType = MessageType.Default) {
         setMessages((messages) => [...messages, { content: message, type }]);
     }
 
+    /**
+     * Loads the messages from the client's local storage.
+     * @param messages The messages to load.
+     */
     function loadMessages(messages: Array<MessageData>) {
         setMessages(messages);
     }
 
+    /**
+     * Clears the messages from the chat box sent by the server.
+     */
     function clearMessages() {
         setMessages([]);
     }
 
+    // Scrolling ----------------------------------------------------
+
+    /**
+     * Scrolls the chat box to the top.
+     * @param behavior Whether or not to scroll smoothly.
+     */
     function scrollToTop(behavior: ScrollBehavior = 'smooth') {
         ref!.scrollTo({ top: 0, behavior });
         setCurrentScroll(0);
     }
 
+    /**
+     * Scrolls the chat box to the bottom.
+     * @param behavior Whether or not to scroll smoothly.
+     */
     function scrollToBottom(behavior: ScrollBehavior = 'smooth') {
         ref!.scroll({ top: boxHeight(), behavior });
         setCurrentScroll(boxHeight());
     }
 
+    /**
+     * Scrolls the chat box up by the specified amount in the chat store.
+     */
     function scrollUp() {
         const scrollTo = currentScroll() - options.scrollStep < 0 ? 0 : currentScroll() - options.scrollStep;
         ref!.scrollTop = scrollTo;
         setCurrentScroll(scrollTo);
     }
 
+    /**
+     * Scrolls the chat box down by the specified amount in the chat store.
+     */
     function scrollDown() {
         const scrollTo =
             currentScroll() + options.scrollStep > boxHeight() ? boxHeight() : currentScroll() + options.scrollStep;
@@ -55,22 +94,25 @@ export function Messages() {
         setCurrentScroll(scrollTo);
     }
 
+    /**
+     * Scrolls the chat box to the specified position.
+     * @param event The keyboard event.
+     */
     function handleKeydown(event: KeyboardEvent) {
-        if (event.key === 'PageUp') {
-            event.preventDefault();
-            scrollUp();
-        } else if (event.key === 'PageDown') {
-            event.preventDefault();
-            scrollDown();
-        } else if (event.key === 'Home') {
-            event.preventDefault();
-            scrollToTop();
-        } else if (event.key === 'End') {
-            event.preventDefault();
-            scrollToBottom();
-        }
+        if (event.key !== 'PageUp' && event.key !== 'PageDown' && event.key !== 'Home' && event.key !== 'End') return;
+
+        if (event.key === 'PageUp') scrollUp();
+        else if (event.key === 'PageDown') scrollDown();
+        else if (event.key === 'Home') scrollToTop();
+        else if (event.key === 'End') scrollToBottom();
+
+        event.preventDefault();
     }
 
+    /**
+     * Scrolls the chat box to the specified position.
+     * @param event The mouse wheel event.
+     */
     function processScroll(event: WheelEvent) {
         event.preventDefault();
         if (!focus()) return;
@@ -82,6 +124,25 @@ export function Messages() {
     // Hooks
     // --------------------------------------------------------------
 
+    // Effects ------------------------------------------------------
+
+    // Listens to focus changes.
+    // If the chat box is not focused, it scrolls to the bottom.
+    createEffect(on(focus, (focus) => !focus && scrollToBottom()));
+
+    // Listens to messages changes.
+    // Sets the new height of the chat box.
+    // Scrolls to the bottom if the chat box is not focused.
+    createEffect(
+        on(messages, () => {
+            setBoxHeight(ref!.scrollHeight - ref!.clientHeight);
+            if (focus() || (focus() && currentScroll() !== boxHeight()) || boxHeight() === 0) return;
+            scrollToBottom();
+        }),
+    );
+
+    // Mount --------------------------------------------------------
+
     onMount(() => {
         window.addEventListener('keydown', handleKeydown);
         window.addEventListener('wheel', processScroll, { passive: false });
@@ -91,6 +152,8 @@ export function Messages() {
         window?.alt?.on('vchat:clear', clearMessages);
     });
 
+    // Unmount ------------------------------------------------------
+
     onCleanup(() => {
         window.removeEventListener('keydown', handleKeydown);
         window.removeEventListener('wheel', processScroll);
@@ -99,16 +162,6 @@ export function Messages() {
         window?.alt?.off('vchat:message', addMessage);
         window?.alt?.off('vchat:clear', clearMessages);
     });
-
-    createEffect(on(focus, (focus) => !focus && scrollToBottom()));
-
-    createEffect(
-        on(messages, () => {
-            setBoxHeight(ref!.scrollHeight - ref!.clientHeight);
-            if (focus() || (focus() && currentScroll() !== boxHeight()) || boxHeight() === 0) return;
-            scrollToBottom();
-        }),
-    );
 
     // --------------------------------------------------------------
     // Computed values using useMemo hook
@@ -120,6 +173,10 @@ export function Messages() {
     const maskBottomHeight = createMemo(() =>
         currentScroll === boxHeight ? '0px' : `${Math.floor((64 * (boxHeight() - currentScroll())) / boxHeight())}px`,
     );
+
+    // --------------------------------------------------------------
+    // Render
+    // --------------------------------------------------------------
 
     return (
         <div
