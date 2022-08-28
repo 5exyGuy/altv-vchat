@@ -2,15 +2,27 @@
 import { computed, nextTick, onMounted, onUnmounted, ref } from 'vue';
 import { MessageType } from '../enums';
 import type { Message as MessageData } from '../interfaces';
-import { chatStore } from '../stores';
+import { useChatStore } from '../stores';
 import Message from './Message.vue';
 
-const scrollStep = 20;
+// --------------------------------------------------------------
+// Chat Store
+// --------------------------------------------------------------
+
+const { focus, options } = useChatStore();
+
+// --------------------------------------------------------------
+// Local Variables
+// --------------------------------------------------------------
 
 const messages = ref([] as Array<MessageData>);
 const boxHeight = ref(0);
 const currentScroll = ref(0);
-const messagesRef = ref<HTMLDivElement>();
+
+// --------------------------------------------------------------
+// Computed Local Values
+// --------------------------------------------------------------
+
 const maskTopHeight = computed(() =>
     currentScroll.value === 0 ? '0px' : `${Math.floor((64 * currentScroll.value) / boxHeight.value)}px`,
 );
@@ -20,73 +32,119 @@ const maskBottomHeight = computed(() =>
         : `${Math.floor((64 * (boxHeight.value - currentScroll.value)) / boxHeight.value)}px`,
 );
 
+// --------------------------------------------------------------
+// Refs
+// --------------------------------------------------------------
+
+const messagesRef = ref<HTMLDivElement>();
+
+// --------------------------------------------------------------
+// Functions
+// --------------------------------------------------------------
+
+// Messages -----------------------------------------------------
+
+/**
+ * Adds a message to the chat box sent by the server.
+ * @param message The message to add.
+ * @param type The type of message.
+ */
 async function addMessage(message: string, type: MessageType = MessageType.Default) {
-    messages.value = [...messages.value, { content: message, type }]; // Add message to array
-    await nextTick(); // Wait for next tick
-    boxHeight.value = messagesRef!.value!.scrollHeight - messagesRef!.value!.clientHeight; // Get height of box
-    // If the box is focused and previous scroll was at the bottom, scroll to the bottom again
-    if (!chatStore.focus || (chatStore.focus && currentScroll === boxHeight)) scrollToBottom();
+    messages.value = [...messages.value, { content: message, type }];
+    await nextTick();
+    boxHeight.value = messagesRef!.value!.scrollHeight - messagesRef!.value!.clientHeight;
+    if (!focus.value || (focus.value && currentScroll === boxHeight)) scrollToBottom();
 }
 
-async function setMessages(_messages: Array<MessageData>) {
+/**
+ * Loads the messages from the client's local storage.
+ * @param messages The messages to load.
+ */
+async function loadMessages(_messages: Array<MessageData>) {
     messages.value = _messages;
     await nextTick();
     boxHeight.value = messagesRef!.value!.scrollHeight - messagesRef!.value!.clientHeight;
-    if (!chatStore.focus || (chatStore.focus && currentScroll.value === boxHeight.value)) scrollToBottom('auto');
+    if (!focus.value || (focus.value && currentScroll.value === boxHeight.value)) scrollToBottom('auto');
 }
 
+/**
+ * Clears the messages from the chat box sent by the server.
+ */
 function clearMessages() {
-    setMessages([]);
+    messages.value = [];
 }
 
-function toggleFocus(focus: boolean) {
-    chatStore.focus = focus;
-    if (!focus) scrollToBottom();
-}
-
+/**
+ * Scrolls the chat box to the top.
+ * @param behavior Whether or not to scroll smoothly.
+ */
 function scrollToTop(behavior: ScrollBehavior = 'smooth') {
-    currentScroll.value = 0;
     messagesRef?.value?.scrollTo({ top: 0, behavior });
+    currentScroll.value = 0;
 }
 
+/**
+ * Scrolls the chat box to the bottom.
+ * @param behavior Whether or not to scroll smoothly.
+ */
 function scrollToBottom(behavior: ScrollBehavior = 'smooth') {
-    currentScroll.value = boxHeight.value;
     messagesRef?.value?.scroll({ top: boxHeight.value, behavior });
+    currentScroll.value = boxHeight.value;
 }
 
+/**
+ * Scrolls the chat box up by the specified amount in the chat store.
+ */
 function scrollUp() {
-    const scroll = currentScroll.value - scrollStep;
-    currentScroll.value = scroll < 0 ? 0 : scroll;
-    messagesRef!.value!.scrollTop = scroll;
+    const scrollTo = currentScroll.value - options.scrollStep < 0 ? 0 : currentScroll.value - options.scrollStep;
+    messagesRef!.value!.scrollTop = scrollTo;
+    currentScroll.value = scrollTo;
 }
 
+/**
+ * Scrolls the chat box down by the specified amount in the chat store.
+ */
 function scrollDown() {
-    const scroll = currentScroll.value + scrollStep;
-    currentScroll.value = scroll > boxHeight.value ? boxHeight.value : scroll;
-    messagesRef!.value!.scrollTop = scroll;
+    const scrollTo =
+        currentScroll.value + options.scrollStep > boxHeight.value
+            ? boxHeight.value
+            : currentScroll.value + options.scrollStep;
+    messagesRef!.value!.scrollTop = scrollTo;
+    currentScroll.value = scrollTo;
 }
 
+/**
+ * Scrolls the chat box to the specified position.
+ * @param event The keyboard event.
+ */
 function handleKeydown(event: KeyboardEvent) {
-    if (!chatStore.focus) return;
-    if (event.key === 'PageUp') {
-        event.preventDefault();
-        scrollUp();
-    } else if (event.key === 'PageDown') {
-        event.preventDefault();
-        scrollDown();
-    } else if (event.key === 'Home') {
-        event.preventDefault();
-        scrollToTop();
-    } else if (event.key === 'End') {
-        event.preventDefault();
-        scrollToBottom();
-    }
+    if (event.key !== 'PageUp' && event.key !== 'PageDown' && event.key !== 'Home' && event.key !== 'End') return;
+
+    if (event.key === 'PageUp') scrollUp();
+    else if (event.key === 'PageDown') scrollDown();
+    else if (event.key === 'Home') scrollToTop();
+    else if (event.key === 'End') scrollToBottom();
+
+    event.preventDefault();
 }
 
+/**
+ * Scrolls the chat box to the specified position.
+ * @param event The mouse wheel event.
+ */
 async function processScroll(event: WheelEvent) {
-    if (!chatStore.focus) return;
-    event.deltaY > 0 ? scrollDown() : scrollUp();
+    event.preventDefault();
+    if (!focus.value) return;
+    event.deltaY < 0 ? scrollUp() : scrollDown();
 }
+
+// --------------------------------------------------------------
+// Hooks
+// --------------------------------------------------------------
+
+// Effects ------------------------------------------------------
+
+// Mount --------------------------------------------------------
 
 onMounted(() => {
     boxHeight.value = messagesRef!.value!.scrollHeight - messagesRef!.value!.clientHeight;
@@ -95,19 +153,19 @@ onMounted(() => {
     window.addEventListener('keydown', handleKeydown);
     window.addEventListener('wheel', processScroll, { passive: false });
 
-    window?.alt?.on('vchat:loadHistory', setMessages);
+    window?.alt?.on('vchat:loadHistory', loadMessages);
     window?.alt?.on('vchat:message', addMessage);
-    window?.alt?.on('vchat:focus', toggleFocus);
     window?.alt?.on('vchat:clear', clearMessages);
 });
+
+// Unmount ------------------------------------------------------
 
 onUnmounted(() => {
     window.removeEventListener('keydown', handleKeydown);
     window.removeEventListener('wheel', processScroll);
 
-    window?.alt?.off('vchat:loadHistory', setMessages);
+    window?.alt?.off('vchat:loadHistory', loadMessages);
     window?.alt?.off('vchat:message', addMessage);
-    window?.alt?.off('vchat:focus', toggleFocus);
     window?.alt?.off('vchat:clear', clearMessages);
 });
 </script>
@@ -116,10 +174,10 @@ onUnmounted(() => {
     <div
         class="flex flex-col gap-[4px] h-[320px] w-full mask mb-[16px] pr-2"
         :class="{
-            'opacity-50': !chatStore.focus,
-            'opacity-100': chatStore.focus,
-            'overflow-y-scroll': chatStore.focus && messagesRef!.scrollHeight > messagesRef!.clientHeight,
-            'overflow-y-hidden': !chatStore.focus
+            'opacity-50': !focus,
+            'opacity-100': focus,
+            'overflow-y-scroll': focus && messagesRef!.scrollHeight > messagesRef!.clientHeight,
+            'overflow-y-hidden': !focus
         }"
         :style="{
             '--mask-top-height': maskTopHeight,

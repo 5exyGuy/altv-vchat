@@ -9,6 +9,7 @@ export function Messages() {
     // --------------------------------------------------------------
     // Chat Store
     // --------------------------------------------------------------
+
     const { focus, options } = chatStore;
 
     // --------------------------------------------------------------
@@ -127,7 +128,6 @@ export function Messages() {
     function processScroll(event: WheelEvent) {
         event.preventDefault();
         if (!focus()) return;
-        if (event.deltaY === 0) return;
         event.deltaY < 0 ? scrollUp() : scrollDown();
     }
 

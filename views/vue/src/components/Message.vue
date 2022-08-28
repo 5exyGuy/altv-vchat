@@ -4,7 +4,7 @@ import InfoIcon from './icons/InfoIcon.vue';
 import SuccessIcon from './icons/SuccessIcon.vue';
 import WarningIcon from './icons/WarningIcon.vue';
 import ErrorIcon from './icons/ErrorIcon.vue';
-import { PropType } from 'vue';
+import type { PropType } from 'vue';
 
 const props = defineProps({ type: Number as PropType<MessageType>, content: String });
 </script>
