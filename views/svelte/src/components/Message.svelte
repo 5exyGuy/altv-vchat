@@ -5,7 +5,8 @@
     import SuccessIcon from './icons/SuccessIcon.svelte';
     import WarningIcon from './icons/WarningIcon.svelte';
 
-    export let type: MessageType = MessageType.Default;
+    export let type: MessageType;
+    export let content: string;
 </script>
 
 <div
@@ -27,7 +28,7 @@
         <ErrorIcon />
     {/if}
     <div>
-        <slot />
+        {@html content}
     </div>
 </div>
 

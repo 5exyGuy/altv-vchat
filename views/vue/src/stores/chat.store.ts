@@ -1,8 +1,8 @@
 import { reactive, ref } from 'vue';
 
-export const focus = ref(false);
-export const message = ref('');
-export const options = reactive({
+const focus = ref(false);
+const message = ref('');
+const options = reactive({
     scrollStep: 20,
     inputPlaceholder: 'Type a message...',
     cmdPrefix: '/',

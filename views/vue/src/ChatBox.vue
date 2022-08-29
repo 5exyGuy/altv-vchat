@@ -30,6 +30,7 @@ function toggleFocus(focus: boolean) {
 // --------------------------------------------------------------
 
 // Mount --------------------------------------------------------
+
 onMounted(() => {
     window?.alt?.on('vchat:focus', toggleFocus);
     // window?.alt?.on('vchat:loadSettings', loadSettings);

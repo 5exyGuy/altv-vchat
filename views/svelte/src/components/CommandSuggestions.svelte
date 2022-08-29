@@ -2,54 +2,49 @@
     import type { CommandSuggestion, MatchedCommand } from '../interfaces';
     import commandsJson from '../commands.json';
     import { onDestroy, onMount } from 'svelte';
+    import { useChatStore } from '../stores';
 
     // --------------------------------------------------------------
-    // Props
+    // Chat Store
     // --------------------------------------------------------------
 
-    export let commands: Array<CommandSuggestion> = commandsJson; // commands
-    export let message: string = ''; // message
-    export let prefix: string = '/'; // prefix for commands
-    export let max = 3; // max number of commands to display
+    const { focus, message, options } = useChatStore();
 
     // --------------------------------------------------------------
-    // Variables
+    // Local Variables
     // --------------------------------------------------------------
 
-    let selected = -1; // -1 means no command is selected
-    let matchedCommands: Array<MatchedCommand> = [];
-    let focus: boolean = false;
+    let commands = commandsJson as Array<CommandSuggestion>;
+    let matchedCommands = [] as Array<MatchedCommand>;
+    let selected = -1;
 
     // --------------------------------------------------------------
     // Functions
     // --------------------------------------------------------------
 
-    function addPrefix(message: string): string {
-        return prefix + message;
-    }
+    // Command suggestion selection ---------------------------------
 
-    function removePrefix(message: string): string {
-        return message.startsWith(prefix) ? message.substring(1) : message;
-    }
-
+    /**
+     * Selects the command suggestion depending on the key pressed.
+     * @param event The keyboard event.
+     */
     function selectCommand(event: KeyboardEvent) {
-        // Select previous command
-        if (event.key === 'ArrowUp' && matchedCommands.length > 1) {
-            event.preventDefault();
-            selected = Math.max(0, selected - 1);
-        }
-        // Select next command
-        else if (event.key === 'ArrowDown' && matchedCommands.length > 1) {
-            event.preventDefault();
+        if (event.key !== 'ArrowDown' && event.key !== 'ArrowUp' && event.key !== 'Tab') return;
+        if (matchedCommands.length === 0) return;
+
+        if (event.key === 'ArrowUp' && matchedCommands.length > 1) selected = Math.max(0, selected - 1);
+        else if (event.key === 'ArrowDown' && matchedCommands.length > 1)
             selected = Math.min(matchedCommands.length - 1, selected + 1);
-        }
-        // Select the selected command to the chat box input
-        else if (event.key === 'Tab' && selected >= 0 && !(matchedCommands[selected].currentParam > -1)) {
-            event.preventDefault();
-            message = addPrefix(matchedCommands[selected].name);
-        }
+        else if (event.key === 'Tab' && selected >= 0 && !(matchedCommands[selected].currentParam > -1))
+            $message = matchedCommands[selected].name;
+
+        event.preventDefault();
     }
 
+    /**
+     * Matches the current message against the available command suggestions.
+     * @param message The message to match against.
+     */
     function updateMatchedCommands(message: string) {
         if (!message) {
             matchedCommands = [];
@@ -57,65 +52,61 @@
         }
 
         const words = message.split(' ');
-        if (!words[0].startsWith(prefix)) {
+        if (!words[0].startsWith($options.cmdPrefix)) {
             matchedCommands = [];
             return;
         }
 
         matchedCommands = commands
             .filter((command) => {
-                const cmdName = removePrefix(words[0]);
+                const cmdName = words[0].startsWith($options.cmdPrefix) ? words[0].substring(1) : words[0];
 
                 return (
                     cmdName.length > 0 &&
                     command.name.startsWith(cmdName) &&
                     words.length - 1 <= (command.params?.length ?? 0)
                 );
-            }) // Filter commands that match the message
-            .splice(0, max) // Only show the first 3 commands
+            })
+            .splice(0, $options.maxCmdSuggestions)
             .map((command) => {
-                let currentParam = -1; // The current parameter we are looking at
-                const cmdName = addPrefix(command.name); // The command name with the prefix
-                // If there is only one word, it's the command name
+                let currentParam = -1;
+                const cmdName = $options.cmdPrefix + command.name;
+
                 if (words.length === 1 && words[0] === cmdName) currentParam = 0;
-
-                // If there are more words, check if they are parameters
                 if (words.length > 1 && words.length - 1 <= (command.params.length ?? 0))
-                    currentParam = words.length - 1; // The last word is the current parameter
+                    currentParam = words.length - 1;
 
-                return { currentParam, ...command };
-            }); // Map the commands to include the current parameter
-        matchedCommands.length === 0 ? (selected = -1) : (selected = 0); // Reset selected if no commands are found
+                return { currentParam, ...command, name: cmdName };
+            });
+        matchedCommands.length === 0 ? (selected = -1) : (selected = 0);
     }
 
-    function toggleFocus(_focus: boolean) {
-        focus = _focus;
-    }
+    // Adding the command suggestion --------------------------------
 
+    /**
+     * Adds the command suggestion sent by the server.
+     * @param suggestion The command suggestion to add.
+     */
     function addSuggestion(suggestion: CommandSuggestion | Array<CommandSuggestion>) {
         Array.isArray(suggestion) ? (commands = [...commands, ...suggestion]) : (commands = [...commands, suggestion]);
-        updateMatchedCommands(message);
+        updateMatchedCommands($message);
     }
-
-    // --------------------------------------------------------------
-    // Reactive Statments
-    // --------------------------------------------------------------
-
-    $: updateMatchedCommands(message);
 
     // --------------------------------------------------------------
     // Hooks
     // --------------------------------------------------------------
 
-    onMount(() => {
-        window?.alt?.on('vchat:focus', toggleFocus);
-        window?.alt?.on('vchat:addSuggestion', addSuggestion);
-    });
+    // Effects ------------------------------------------------------
 
-    onDestroy(() => {
-        window?.alt?.off('vchat:focus', toggleFocus);
-        window?.alt?.off('vchat:addSuggestion', addSuggestion);
-    });
+    $: updateMatchedCommands($message);
+
+    // Mount --------------------------------------------------------
+
+    onMount(() => window?.alt?.on('vchat:addSuggestion', addSuggestion));
+
+    // Unmount ------------------------------------------------------
+
+    onDestroy(() => window?.alt?.off('vchat:addSuggestion', addSuggestion));
 </script>
 
 <div
@@ -131,7 +122,7 @@
         >
             <div class="flex text-base text-white text-opacity-100">
                 <span>
-                    {prefix}
+                    {$options.cmdPrefix}
                 </span>
                 <span class:font-bold={matchedCommand.currentParam === 0}>
                     {matchedCommand.name}

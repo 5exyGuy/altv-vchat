@@ -58,7 +58,7 @@ async function addMessage(message: string, type: MessageType = MessageType.Defau
 
 /**
  * Loads the messages from the client's local storage.
- * @param messages The messages to load.
+ * @param _messages The messages to load.
  */
 async function loadMessages(_messages: Array<MessageData>) {
     messages.value = _messages;
@@ -73,6 +73,8 @@ async function loadMessages(_messages: Array<MessageData>) {
 function clearMessages() {
     messages.value = [];
 }
+
+// Scrolling ----------------------------------------------------
 
 /**
  * Scrolls the chat box to the top.
@@ -147,9 +149,6 @@ async function processScroll(event: WheelEvent) {
 // Mount --------------------------------------------------------
 
 onMounted(() => {
-    boxHeight.value = messagesRef!.value!.scrollHeight - messagesRef!.value!.clientHeight;
-    scrollToBottom('auto');
-
     window.addEventListener('keydown', handleKeydown);
     window.addEventListener('wheel', processScroll, { passive: false });
 

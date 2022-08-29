@@ -73,7 +73,7 @@ function updateMatchedCommands(message: string) {
 
             if (words.length === 1 && words[0] === cmdName) currentParam = 0;
             if (words.length > 1 && words.length - 1 <= (command?.params?.length ?? 0)) currentParam = words.length - 1;
-            return { currentParam, ...command };
+            return { currentParam, ...command, name: cmdName };
         });
     matchedCommands.value.length === 0 ? (selected.value = -1) : (selected.value = 0);
 }

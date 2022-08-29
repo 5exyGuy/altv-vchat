@@ -106,6 +106,6 @@ onUnmounted(() => window.removeEventListener('keydown', handleKeydown));
         v-model="message"
         ref="inputRef"
         @keydown="sendMessage"
-        @blur="() => inputRef?.focus()"
+        @blur="() => inputRef!.focus()"
     />
 </template>
