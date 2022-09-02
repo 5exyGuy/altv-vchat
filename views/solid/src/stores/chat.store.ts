@@ -5,11 +5,13 @@ function createChatStore() {
     const [focus, setFocus] = createSignal(false);
     const [message, setMessage] = createSignal('');
     const [options, setOptions] = createStore({
-        scrollStep: 20,
-        inputPlaceholder: 'Type a message...',
-        cmdPrefix: '/',
+        prefix: '/',
+        placeholder: 'Type a message...',
+        maxCommandSuggestions: 3,
+        maxMessageLength: 100,
+        maxMessages: 100,
         maxMessageBufferLength: 100,
-        maxCmdSuggestions: 3,
+        scrollStep: 20,
     });
 
     return { focus, setFocus, message, setMessage, options, setOptions };

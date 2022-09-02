@@ -9,7 +9,7 @@ export function ChatBox() {
     // Chat Store
     // --------------------------------------------------------------
 
-    const { setFocus } = chatStore;
+    const { setFocus, options, setOptions } = chatStore;
 
     // --------------------------------------------------------------
     // Functions
@@ -25,6 +25,15 @@ export function ChatBox() {
         setFocus(focus);
     }
 
+    /**
+     * Syncs the client settings with the server settings.
+     * @param settings The chat window's settings.
+     */
+    function syncSettings(settings: typeof options) {
+        setOptions(settings);
+        window?.alt?.emit('vchat:mounted');
+    }
+
     // --------------------------------------------------------------
     // Hooks
     // --------------------------------------------------------------
@@ -33,15 +42,15 @@ export function ChatBox() {
 
     onMount(() => {
         window?.alt?.on('vchat:focus', toggleFocus);
-        // window?.alt?.on('vchat:loadSettings', loadSettings);
-        window?.alt?.emit('vchat:mounted');
+        window?.alt?.on('vchat:syncSettings', syncSettings);
+        window?.alt.emit('vchat:requestSettings');
     });
 
     // Unmount ------------------------------------------------------
 
     onCleanup(() => {
         window?.alt?.off('vchat:focus', toggleFocus);
-        // window?.alt?.off('vchat:loadSettings', loadSettings);
+        window?.alt?.off('vchat:loadSettings', syncSettings);
     });
 
     return (

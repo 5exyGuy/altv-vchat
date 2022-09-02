@@ -6,5 +6,6 @@ export default {
         file: '../../server/index.js',
         format: 'esm',
     },
+    external: ['alt-server', 'fs', 'path'],
     plugins: [esbuild()],
 };

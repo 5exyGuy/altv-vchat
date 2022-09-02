@@ -35,7 +35,7 @@ export function MessageInput() {
     function sendMessage(event: KeyboardEvent) {
         if (event.key !== 'Enter') return;
 
-        window?.alt?.emit('vchat:message', message());
+        window?.alt?.emit('vchat:addMessage', message());
         batch(() => {
             setBuffer((buffer) => [message(), ...buffer].splice(0, options.maxMessageBufferLength));
             setCurrentBufferIndex(-1);
@@ -53,7 +53,7 @@ export function MessageInput() {
      */
     function selectPreviousMessage(event: KeyboardEvent) {
         if (event.key !== 'ArrowUp' && event.key !== 'ArrowDown') return;
-        if (message() && message().startsWith(options.cmdPrefix)) return;
+        if (message() && message().startsWith(options.prefix)) return;
         if (buffer().length === 0) return;
 
         if (event.key === 'ArrowDown') {
@@ -108,7 +108,7 @@ export function MessageInput() {
         <input
             class="bg-black bg-opacity-50 text-base text-white px-[16px] py-[8px] focus:outline-none w-full"
             classList={{ invisible: !focus(), visible: focus() }}
-            placeholder={options.inputPlaceholder}
+            placeholder={options.placeholder}
             value={message()}
             onInput={(event) => setMessage(event.currentTarget.value)}
             ref={ref}

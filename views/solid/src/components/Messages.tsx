@@ -56,7 +56,7 @@ export function Messages() {
      * Loads the messages from the client's local storage.
      * @param messages The messages to load.
      */
-    function loadMessages(messages: Array<MessageData>) {
+    function loadMessageHistory(messages: Array<MessageData>) {
         setMessages(messages);
     }
 
@@ -158,9 +158,9 @@ export function Messages() {
         window.addEventListener('keydown', handleKeydown);
         window.addEventListener('wheel', processScroll, { passive: false });
 
-        window?.alt?.on('vchat:loadHistory', loadMessages);
-        window?.alt?.on('vchat:message', addMessage);
-        window?.alt?.on('vchat:clear', clearMessages);
+        window?.alt?.on('vchat:loadMessageHistory', loadMessageHistory);
+        window?.alt?.on('vchat:addMessage', addMessage);
+        window?.alt?.on('vchat:clearMessages', clearMessages);
     });
 
     // Unmount ------------------------------------------------------
@@ -169,9 +169,9 @@ export function Messages() {
         window.removeEventListener('keydown', handleKeydown);
         window.removeEventListener('wheel', processScroll);
 
-        window?.alt?.off('vchat:loadHistory', loadMessages);
-        window?.alt?.off('vchat:message', addMessage);
-        window?.alt?.off('vchat:clear', clearMessages);
+        window?.alt?.off('vchat:loadMessageHistory', loadMessageHistory);
+        window?.alt?.off('vchat:addMessage', addMessage);
+        window?.alt?.off('vchat:clearMessages', clearMessages);
     });
 
     // --------------------------------------------------------------

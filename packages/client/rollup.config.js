@@ -6,5 +6,6 @@ export default {
         file: '../../client/index.js',
         format: 'esm',
     },
+    external: ['alt-client'],
     plugins: [esbuild()],
 };
