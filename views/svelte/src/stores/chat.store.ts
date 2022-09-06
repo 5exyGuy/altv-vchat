@@ -3,11 +3,13 @@ import { writable } from 'svelte/store';
 const focus = writable(false);
 const message = writable('');
 const options = writable({
-    scrollStep: 20,
-    inputPlaceholder: 'Type a message...',
-    cmdPrefix: '/',
+    prefix: '/',
+    placeholder: 'Type a message...',
+    maxCommandSuggestions: 3,
+    maxMessageLength: 100,
+    maxMessages: 100,
     maxMessageBufferLength: 100,
-    maxCmdSuggestions: 3,
+    scrollStep: 20,
 });
 
 export function useChatStore() {
@@ -15,5 +17,22 @@ export function useChatStore() {
         focus,
         message,
         options,
+        setFocus(value: boolean) {
+            focus.set(value);
+        },
+        setMessage(value: string) {
+            message.set(value);
+        },
+        setOptions(value: {
+            prefix: string;
+            placeholder: string;
+            maxCommandSuggestions: number;
+            maxMessageLength: number;
+            maxMessages: number;
+            maxMessageBufferLength: number;
+            scrollStep: number;
+        }) {
+            options.set(value);
+        },
     };
 }

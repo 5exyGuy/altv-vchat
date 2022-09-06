@@ -52,14 +52,14 @@
         }
 
         const words = message.split(' ');
-        if (!words[0].startsWith($options.cmdPrefix)) {
+        if (!words[0].startsWith($options.prefix)) {
             matchedCommands = [];
             return;
         }
 
         matchedCommands = commands
             .filter((command) => {
-                const cmdName = words[0].startsWith($options.cmdPrefix) ? words[0].substring(1) : words[0];
+                const cmdName = words[0].startsWith($options.prefix) ? words[0].substring(1) : words[0];
 
                 return (
                     cmdName.length > 0 &&
@@ -67,10 +67,10 @@
                     words.length - 1 <= (command.params?.length ?? 0)
                 );
             })
-            .splice(0, $options.maxCmdSuggestions)
+            .splice(0, $options.maxCommandSuggestions)
             .map((command) => {
                 let currentParam = -1;
-                const cmdName = $options.cmdPrefix + command.name;
+                const cmdName = $options.prefix + command.name;
 
                 if (words.length === 1 && words[0] === cmdName) currentParam = 0;
                 if (words.length > 1 && words.length - 1 <= (command.params.length ?? 0))
@@ -121,9 +121,6 @@
             class:hover:bg-opacity-50={cmdIndex !== selected}
         >
             <div class="flex text-base text-white text-opacity-100">
-                <span>
-                    {$options.cmdPrefix}
-                </span>
                 <span class:font-bold={matchedCommand.currentParam === 0}>
                     {matchedCommand.name}
                 </span>

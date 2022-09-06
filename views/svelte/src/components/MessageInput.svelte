@@ -33,14 +33,14 @@
      * @param event The keyborad event.
      */
     async function sendMessage(event: KeyboardEvent) {
-        if (event.key === 'Enter') {
-            event.preventDefault();
-            window?.alt?.emit('vchat:message', message);
+        if (event.key !== 'Enter') return;
 
-            buffer = [$message, ...buffer].splice(0, $options.maxMessageBufferLength);
-            currentBufferIndex = -1;
-            $message = '';
-        }
+        window?.alt?.emit('vchat:addMessage', $message);
+        buffer = [$message, ...buffer].splice(0, $options.maxMessageBufferLength);
+        currentBufferIndex = -1;
+        $message = '';
+
+        event.preventDefault();
     }
 
     // Message buffer -----------------------------------------------
@@ -51,7 +51,7 @@
      */
     function handleKeydown(event: KeyboardEvent) {
         if (event.key !== 'ArrowUp' && event.key !== 'ArrowDown') return;
-        if ($message && $message.startsWith($options.cmdPrefix)) return;
+        if ($message && $message.startsWith($options.prefix)) return;
         if (buffer.length === 0) return;
 
         if (event.key === 'ArrowDown') {
@@ -83,7 +83,7 @@
     const unsubFocus = focus.subscribe(async (focus) => {
         if (focus) {
             await tick();
-            ref?.focus();
+            ref!.focus();
         } else currentBufferIndex = -1;
     });
 
@@ -96,7 +96,7 @@
     class="bg-black bg-opacity-50 text-base text-white px-[16px] py-[8px] focus:outline-none w-full"
     class:invisible={!$focus}
     class:visible={$focus}
-    placeholder={$options.inputPlaceholder}
+    placeholder={$options.placeholder}
     bind:value={$message}
     bind:this={ref}
     on:keydown={sendMessage}

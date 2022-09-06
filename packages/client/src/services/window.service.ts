@@ -10,7 +10,7 @@ export class WindowService {
         return WindowService.instance;
     }
 
-    private readonly webView = new WebView('http://localhost:4000');
+    private readonly webView = new WebView('http://resource/client/view/index.html'); // new WebView('http://localhost:4000');
     private focusEnabled = true;
 
     private constructor() {
@@ -51,6 +51,7 @@ export class WindowService {
     }
 
     public addMessage(message: string, type: MessageType = MessageType.Default) {
+        console.log('addMessage', message, type);
         this.webView.emit('vchat:addMessage', message, type);
     }
 
@@ -67,24 +68,44 @@ export class WindowService {
     }
 
     public syncSettings(settings: typeof DEFAULT_SETTINGS) {
-        const { prefix, placeholder, maxCommandSuggestions, maxMessageLength, maxMessages } = settings;
+        const {
+            prefix,
+            placeholder,
+            maxCommandSuggestions,
+            maxMessageLength,
+            maxMessages,
+            maxMessageBufferLength,
+            scrollStep,
+        } = settings;
         this.webView.emit('vchat:syncSettings', {
             prefix,
             placeholder,
             maxCommandSuggestions,
             maxMessageLength,
             maxMessages,
+            maxMessageBufferLength,
+            scrollStep,
         });
     }
 
     public updateSettings(settings: typeof DEFAULT_SETTINGS) {
-        const { prefix, placeholder, maxCommandSuggestions, maxMessageLength, maxMessages } = settings;
+        const {
+            prefix,
+            placeholder,
+            maxCommandSuggestions,
+            maxMessageLength,
+            maxMessages,
+            maxMessageBufferLength,
+            scrollStep,
+        } = settings;
         this.webView.emit('vchat:updateSettings', {
             prefix,
             placeholder,
             maxCommandSuggestions,
             maxMessageLength,
             maxMessages,
+            maxMessageBufferLength,
+            scrollStep,
         });
     }
 

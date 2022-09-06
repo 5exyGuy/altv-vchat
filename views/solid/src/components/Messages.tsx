@@ -184,7 +184,7 @@ export function Messages() {
             classList={{
                 'opacity-50': !focus(),
                 'opacity-100': focus(),
-                'overflow-y-scroll': focus() && ref!.scrollHeight > ref!.clientHeight,
+                'overflow-y-scroll': focus(),
                 'overflow-y-hidden': !focus(),
             }}
             style={

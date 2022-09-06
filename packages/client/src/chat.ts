@@ -18,6 +18,7 @@ export class Chat {
     ) {}
 
     public start() {
+        this.eventService.onServer('vchat:toggleVisibility', this.toggleWindowVisibility.bind(this));
         this.eventService.onServer('vchat:toggleFocus', this.toggleWindowFocus.bind(this));
         this.eventService.onServer('vchat:toggleFocusEnabled', this.toggleWindowFocusEnabled.bind(this));
         this.eventService.onServer('vchat:addMessage', this.addMessageToWindow.bind(this));
@@ -34,6 +35,10 @@ export class Chat {
         // Server <= [Client] <- Window
         this.eventService.onWindow('vchat:mounted', this.markAsMounted.bind(this));
         this.eventService.onWindow('vchat:addMessage', this.sendMessageToServer.bind(this));
+    }
+
+    public toggleWindowVisibility(enabled: boolean) {
+        enabled ? this.windowService.show() : this.windowService.hide();
     }
 
     public toggleWindowFocus(enabled: boolean) {

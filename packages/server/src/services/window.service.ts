@@ -27,11 +27,11 @@ export class WindowService {
     }
 
     public show(player: Player) {
-        this.mountService.waitForMount(player, () => emitClientRaw(player, 'vchat:show'));
+        this.mountService.waitForMount(player, () => emitClientRaw(player, 'vchat:toggleVisibility', true));
     }
 
     public hide(player: Player) {
-        this.mountService.waitForMount(player, () => emitClientRaw(player, 'vchat:hide'));
+        this.mountService.waitForMount(player, () => emitClientRaw(player, 'vchat:toggleVisibility', false));
     }
 
     public mute(player: Player) {

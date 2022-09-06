@@ -9,7 +9,7 @@
     // Chat Store
     // --------------------------------------------------------------
 
-    const { setFocus } = useChatStore();
+    const { focus, setFocus, options, setOptions } = useChatStore();
 
     // --------------------------------------------------------------
     // Functions
@@ -25,6 +25,15 @@
         setFocus(focus);
     }
 
+    /**
+     * Syncs the client settings with the server settings.
+     * @param settings The chat window's settings.
+     */
+    function syncSettings(settings: typeof $options) {
+        setOptions(settings);
+        window?.alt?.emit('vchat:mounted');
+    }
+
     // --------------------------------------------------------------
     // Hooks
     // --------------------------------------------------------------
@@ -33,15 +42,15 @@
 
     onMount(() => {
         window?.alt?.on('vchat:focus', toggleFocus);
-        // window?.alt?.on('vchat:loadSettings', loadSettings);
-        window?.alt?.emit('vchat:mounted');
+        window?.alt?.on('vchat:syncSettings', syncSettings);
+        window?.alt?.emit('vchat:requestSettings');
     });
 
     // Unmount ------------------------------------------------------
 
     onDestroy(() => {
         window?.alt?.off('vchat:focus', toggleFocus);
-        // window?.alt?.off('vchat:loadSettings', loadSettings);
+        window?.alt?.off('vchat:loadSettings', syncSettings);
     });
 </script>
 

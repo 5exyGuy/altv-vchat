@@ -16,8 +16,10 @@
     // --------------------------------------------------------------
 
     let messages: Array<MessageData> = [];
-    let boxHeight: number = 0;
     let currentScroll: number = 0;
+    let boxHeight: number = 0;
+    let clientHeight: number = 0;
+    let scrollHeight: number = 0;
 
     // --------------------------------------------------------------
     // Computed Local Values
@@ -32,7 +34,7 @@
     // Refs
     // --------------------------------------------------------------
 
-    let ref: HTMLDivElement | undefined;
+    let ref: HTMLDivElement;
 
     // --------------------------------------------------------------
     // Functions
@@ -46,11 +48,14 @@
      * @param type The type of message.
      */
     async function addMessage(message: string, type: MessageType = MessageType.Default) {
-        messages = [...messages, { content: message, type }]; // Add message to array
-        await tick(); // Wait for next tick
-        boxHeight = ref!.scrollHeight - ref!.clientHeight; // Get height of box
-        // If the box is focused and previous scroll was at the bottom, scroll to the bottom again
-        if (!focus || (focus && currentScroll === boxHeight)) scrollToBottom();
+        messages = [...messages, { content: message, type }];
+        await tick();
+        scrollHeight = ref.scrollHeight;
+        clientHeight = ref.clientHeight;
+        boxHeight = scrollHeight - clientHeight;
+        await tick();
+        if ($focus || (!$focus && currentScroll === boxHeight)) return;
+        scrollToBottom();
     }
 
     /**
@@ -60,8 +65,12 @@
     async function setMessages(_messages: Array<MessageData>) {
         messages = _messages;
         await tick();
-        boxHeight = ref!.scrollHeight - ref!.clientHeight;
-        if (!focus || (focus && currentScroll === boxHeight)) scrollToBottom('auto');
+        scrollHeight = ref.scrollHeight;
+        clientHeight = ref.clientHeight;
+        boxHeight = scrollHeight - clientHeight;
+        await tick();
+        if ($focus || (!$focus && currentScroll === boxHeight)) return;
+        scrollToBottom();
     }
 
     /**
@@ -78,7 +87,7 @@
      * @param behavior Whether or not to scroll smoothly.
      */
     function scrollToTop(behavior: ScrollBehavior = 'smooth') {
-        ref!.scrollTo({ top: 0, behavior });
+        ref.scrollTo({ top: 0, behavior });
         currentScroll = 0;
     }
 
@@ -86,8 +95,8 @@
      * Scrolls the chat box to the bottom.
      * @param behavior Whether or not to scroll smoothly.
      */
-    function scrollToBottom(behavior: ScrollBehavior = 'smooth') {
-        ref!.scroll({ top: boxHeight, behavior });
+    async function scrollToBottom(behavior: ScrollBehavior = 'smooth') {
+        ref.scroll({ top: boxHeight, behavior });
         currentScroll = boxHeight;
     }
 
@@ -139,28 +148,37 @@
     // Hooks
     // --------------------------------------------------------------
 
+    // Effects ------------------------------------------------------
+
+    const unsubFocus = focus.subscribe((focus) => {
+        if (focus || !ref) return;
+        scrollToBottom();
+    });
+
     // Mount --------------------------------------------------------
+
     onMount(() => {
-        window?.alt?.on('vchat:loadHistory', setMessages);
-        window?.alt?.on('vchat:message', addMessage);
-        window?.alt?.on('vchat:clear', clearMessages);
+        window?.alt?.on('vchat:loadMessageHistory', setMessages);
+        window?.alt?.on('vchat:addMessage', addMessage);
+        window?.alt?.on('vchat:clearMessages', clearMessages);
     });
 
     // Unmount ------------------------------------------------------
 
     onDestroy(() => {
-        window?.alt?.off('vchat:loadHistory', setMessages);
-        window?.alt?.off('vchat:message', addMessage);
-        window?.alt?.off('vchat:clear', clearMessages);
+        unsubFocus();
+
+        window?.alt?.off('vchat:loadMessageHistory', setMessages);
+        window?.alt?.off('vchat:addMessage', addMessage);
+        window?.alt?.off('vchat:clearMessages', clearMessages);
     });
 </script>
 
 <div
-    class="flex flex-col gap-[4px] h-[320px] w-full mask mb-[16px] pr-2"
-    class:opacity-50={!focus}
-    class:opacity-100={focus}
-    class:overflow-y-scroll={focus && ref.scrollHeight > ref.clientHeight}
-    class:overflow-y-hidden={!focus}
+    class="scrollbar mask flex flex-col gap-[4px] h-[320px] w-full mb-[16px] pr-2"
+    class:opacity-50={!$focus}
+    class:opacity-100={$focus}
+    style:--scrollbar-opacity={$focus && scrollHeight > clientHeight ? 1 : 0}
     style:--mask-top-height={maskTopHeight}
     style:--mask-bottom-height={maskBottomHeight}
     bind:this={ref}
