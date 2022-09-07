@@ -10,7 +10,8 @@ export class WindowService {
         return WindowService.instance;
     }
 
-    private readonly webView = new WebView('http://resource/client/view/index.html'); // new WebView('http://localhost:4000');
+    // private readonly webView = new WebView('http://resource/client/view/index.html');
+    private readonly webView = new WebView('http://localhost:4000');
     private focusEnabled = true;
 
     private constructor() {
@@ -51,7 +52,6 @@ export class WindowService {
     }
 
     public addMessage(message: string, type: MessageType = MessageType.Default) {
-        console.log('addMessage', message, type);
         this.webView.emit('vchat:addMessage', message, type);
     }
 

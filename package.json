@@ -4,8 +4,8 @@
     "author": "5exyGuy (Aurėjus Remeika)",
     "type": "module",
     "scripts": {
-        "build": "turbo run build --filter=!@altv-chat/react --filter=!@altv-chat/vue --filter=!@altv-chat/solid",
-        "dev": "turbo run dev --filter=!@altv-chat/react --filter=!@altv-chat/vue --filter=!@altv-chat/solid"
+        "build": "turbo run build --filter=!@altv-chat/react --filter=!@altv-chat/svelte --filter=!@altv-chat/solid",
+        "dev": "turbo run dev --filter=!@altv-chat/react --filter=!@altv-chat/svelte --filter=!@altv-chat/solid"
     },
     "devDependencies": {
         "turbo": "^1.4.3"

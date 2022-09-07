@@ -3,13 +3,14 @@
     import CommandSuggestions from './components/CommandSuggestions.svelte';
     import MessageInput from './components/MessageInput.svelte';
     import Messages from './components/Messages.svelte';
+    import type { Options } from './interfaces';
     import { useChatStore } from './stores';
 
     // --------------------------------------------------------------
     // Chat Store
     // --------------------------------------------------------------
 
-    const { focus, setFocus, options, setOptions } = useChatStore();
+    const { setFocus, setOptions } = useChatStore();
 
     // --------------------------------------------------------------
     // Functions
@@ -29,7 +30,7 @@
      * Syncs the client settings with the server settings.
      * @param settings The chat window's settings.
      */
-    function syncSettings(settings: typeof $options) {
+    function syncSettings(settings: Options) {
         setOptions(settings);
         window?.alt?.emit('vchat:mounted');
     }

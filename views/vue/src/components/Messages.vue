@@ -16,8 +16,10 @@ const { focus, options } = useChatStore();
 // --------------------------------------------------------------
 
 const messages = ref([] as Array<MessageData>);
-const boxHeight = ref(0);
 const currentScroll = ref(0);
+const boxHeight = ref(0);
+const clientHeight = ref(0);
+const scrollHeight = ref(0);
 
 // --------------------------------------------------------------
 // Computed Local Values
@@ -52,8 +54,11 @@ const messagesRef = ref<HTMLDivElement>();
 async function addMessage(message: string, type: MessageType = MessageType.Default) {
     messages.value = [...messages.value, { content: message, type }];
     await nextTick();
-    boxHeight.value = messagesRef!.value!.scrollHeight - messagesRef!.value!.clientHeight;
-    if (!focus.value || (focus.value && currentScroll === boxHeight)) scrollToBottom();
+    scrollHeight.value = messagesRef.value!.scrollHeight;
+    clientHeight.value = messagesRef.value!.clientHeight;
+    boxHeight.value = scrollHeight.value - clientHeight.value;
+    if (focus.value || (!focus.value && currentScroll.value === boxHeight.value)) return;
+    scrollToBottom();
 }
 
 /**
@@ -63,15 +68,18 @@ async function addMessage(message: string, type: MessageType = MessageType.Defau
 async function loadMessages(_messages: Array<MessageData>) {
     messages.value = _messages;
     await nextTick();
-    boxHeight.value = messagesRef!.value!.scrollHeight - messagesRef!.value!.clientHeight;
-    if (!focus.value || (focus.value && currentScroll.value === boxHeight.value)) scrollToBottom('auto');
+    scrollHeight.value = messagesRef.value!.scrollHeight;
+    clientHeight.value = messagesRef.value!.clientHeight;
+    boxHeight.value = scrollHeight.value - clientHeight.value;
+    if (focus.value || (!focus.value && currentScroll.value === boxHeight.value)) return;
+    scrollToBottom();
 }
 
 /**
  * Clears the messages from the chat box sent by the server.
  */
 function clearMessages() {
-    messages.value = [];
+    loadMessages([]);
 }
 
 // Scrolling ----------------------------------------------------
@@ -81,7 +89,7 @@ function clearMessages() {
  * @param behavior Whether or not to scroll smoothly.
  */
 function scrollToTop(behavior: ScrollBehavior = 'smooth') {
-    messagesRef?.value?.scrollTo({ top: 0, behavior });
+    messagesRef.value!.scrollTo({ top: 0, behavior });
     currentScroll.value = 0;
 }
 
@@ -90,7 +98,7 @@ function scrollToTop(behavior: ScrollBehavior = 'smooth') {
  * @param behavior Whether or not to scroll smoothly.
  */
 function scrollToBottom(behavior: ScrollBehavior = 'smooth') {
-    messagesRef?.value?.scroll({ top: boxHeight.value, behavior });
+    messagesRef.value!.scroll({ top: boxHeight.value, behavior });
     currentScroll.value = boxHeight.value;
 }
 
@@ -99,7 +107,7 @@ function scrollToBottom(behavior: ScrollBehavior = 'smooth') {
  */
 function scrollUp() {
     const scrollTo = currentScroll.value - options.scrollStep < 0 ? 0 : currentScroll.value - options.scrollStep;
-    messagesRef!.value!.scrollTop = scrollTo;
+    messagesRef.value!.scrollTop = scrollTo;
     currentScroll.value = scrollTo;
 }
 
@@ -111,7 +119,7 @@ function scrollDown() {
         currentScroll.value + options.scrollStep > boxHeight.value
             ? boxHeight.value
             : currentScroll.value + options.scrollStep;
-    messagesRef!.value!.scrollTop = scrollTo;
+    messagesRef.value!.scrollTop = scrollTo;
     currentScroll.value = scrollTo;
 }
 
@@ -152,9 +160,9 @@ onMounted(() => {
     window.addEventListener('keydown', handleKeydown);
     window.addEventListener('wheel', processScroll, { passive: false });
 
-    window?.alt?.on('vchat:loadHistory', loadMessages);
-    window?.alt?.on('vchat:message', addMessage);
-    window?.alt?.on('vchat:clear', clearMessages);
+    window?.alt?.on('vchat:loadMessageHistory', loadMessages);
+    window?.alt?.on('vchat:addMessage', addMessage);
+    window?.alt?.on('vchat:clearMessages', clearMessages);
 });
 
 // Unmount ------------------------------------------------------
@@ -163,22 +171,21 @@ onUnmounted(() => {
     window.removeEventListener('keydown', handleKeydown);
     window.removeEventListener('wheel', processScroll);
 
-    window?.alt?.off('vchat:loadHistory', loadMessages);
-    window?.alt?.off('vchat:message', addMessage);
-    window?.alt?.off('vchat:clear', clearMessages);
+    window?.alt?.off('vchat:loadMessageHistory', loadMessages);
+    window?.alt?.off('vchat:addMessage', addMessage);
+    window?.alt?.off('vchat:clearMessages', clearMessages);
 });
 </script>
 
 <template>
     <div
-        class="flex flex-col gap-[4px] h-[320px] w-full mask mb-[16px] pr-2"
+        class="scrollbar mask flex flex-col gap-[4px] h-[320px] w-full mask mb-[16px] pr-2"
         :class="{
             'opacity-50': !focus,
             'opacity-100': focus,
-            'overflow-y-scroll': focus && messagesRef!.scrollHeight > messagesRef!.clientHeight,
-            'overflow-y-hidden': !focus
         }"
         :style="{
+            '--scrollbar-opacity': focus && scrollHeight > clientHeight ? 1 : 0,
             '--mask-top-height': maskTopHeight,
             '--mask-bottom-height': maskBottomHeight,
         }"

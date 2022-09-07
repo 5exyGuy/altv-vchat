@@ -53,7 +53,6 @@
         scrollHeight = ref.scrollHeight;
         clientHeight = ref.clientHeight;
         boxHeight = scrollHeight - clientHeight;
-        await tick();
         if ($focus || (!$focus && currentScroll === boxHeight)) return;
         scrollToBottom();
     }
@@ -68,7 +67,6 @@
         scrollHeight = ref.scrollHeight;
         clientHeight = ref.clientHeight;
         boxHeight = scrollHeight - clientHeight;
-        await tick();
         if ($focus || (!$focus && currentScroll === boxHeight)) return;
         scrollToBottom();
     }

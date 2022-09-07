@@ -6,7 +6,7 @@
     // Chat Store
     // --------------------------------------------------------------
 
-    const { focus, message, options } = useChatStore();
+    const { focus, message, setMessage, options } = useChatStore();
 
     // --------------------------------------------------------------
     // Local Variables
@@ -38,7 +38,7 @@
         window?.alt?.emit('vchat:addMessage', $message);
         buffer = [$message, ...buffer].splice(0, $options.maxMessageBufferLength);
         currentBufferIndex = -1;
-        $message = '';
+        setMessage('');
 
         event.preventDefault();
     }
@@ -100,7 +100,7 @@
     bind:value={$message}
     bind:this={ref}
     on:keydown={sendMessage}
-    on:blur={() => ref.focus()}
+    on:blur={(event) => event.currentTarget.focus()}
 />
 
 <svelte:window on:keydown={handleKeydown} />

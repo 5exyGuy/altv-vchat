@@ -1,3 +1,4 @@
+import type { Options } from '../interfaces';
 import { writable } from 'svelte/store';
 
 const focus = writable(false);
@@ -23,15 +24,7 @@ export function useChatStore() {
         setMessage(value: string) {
             message.set(value);
         },
-        setOptions(value: {
-            prefix: string;
-            placeholder: string;
-            maxCommandSuggestions: number;
-            maxMessageLength: number;
-            maxMessages: number;
-            maxMessageBufferLength: number;
-            scrollStep: number;
-        }) {
+        setOptions(value: Options) {
             options.set(value);
         },
     };

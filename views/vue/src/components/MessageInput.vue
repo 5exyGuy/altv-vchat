@@ -35,7 +35,7 @@ const inputRef = ref<HTMLInputElement>();
 async function sendMessage(event: KeyboardEvent) {
     if (event.key !== 'Enter') return;
 
-    window?.alt?.emit('vchat:message', message.value);
+    window?.alt?.emit('vchat:addMessage', message.value);
     buffer.value = [message.value, ...buffer.value].splice(0, options.maxMessageBufferLength);
     currentBufferIndex.value = -1;
     setMessage('');
@@ -51,7 +51,7 @@ async function sendMessage(event: KeyboardEvent) {
  */
 function handleKeydown(event: KeyboardEvent) {
     if (event.key !== 'ArrowUp' && event.key !== 'ArrowDown') return;
-    if (message.value && message.value.startsWith(options.cmdPrefix)) return;
+    if (message.value && message.value.startsWith(options.prefix)) return;
     if (buffer.value.length === 0) return;
 
     if (event.key === 'ArrowDown') {
@@ -82,10 +82,11 @@ function handleKeydown(event: KeyboardEvent) {
 // Listens to focus changes.
 // When focus is true, the input is focused.
 // When focus is false, sets the current message buffer index to -1.
-watch(focus, async (_, focus) => {
+watch(focus, async (focus) => {
+    console.log('focus changed', focus);
     if (focus) {
         await nextTick();
-        inputRef!.value!.focus();
+        inputRef.value?.focus();
     } else currentBufferIndex.value = -1;
 });
 
@@ -102,10 +103,10 @@ onUnmounted(() => window.removeEventListener('keydown', handleKeydown));
     <input
         class="bg-black bg-opacity-50 text-base text-white px-[16px] py-[8px] focus:outline-none w-full"
         :class="{ invisible: !focus, visible: focus }"
-        :placeholder="options.inputPlaceholder"
+        :placeholder="options.placeholder"
         v-model="message"
         ref="inputRef"
         @keydown="sendMessage"
-        @blur="() => inputRef!.focus()"
+        @blur="(event) => (event.target as HTMLInputElement).focus()"
     />
 </template>

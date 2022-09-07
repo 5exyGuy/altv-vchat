@@ -2,6 +2,7 @@
 import { onMounted, onUnmounted, ref, watch } from 'vue';
 import type { CommandSuggestion, MatchedCommand } from '../interfaces';
 import { useChatStore } from '../stores';
+import commandsJson from '../commands.json';
 
 // --------------------------------------------------------------
 // Chat Store
@@ -13,7 +14,7 @@ const { focus, message, setMessage, options } = useChatStore();
 // Local Variables
 // --------------------------------------------------------------
 
-const commands = ref([] as Array<CommandSuggestion>);
+const commands = ref(commandsJson as Array<CommandSuggestion>);
 const matchedCommands = ref([] as Array<MatchedCommand>);
 const selected = ref(-1);
 
@@ -44,21 +45,21 @@ function selectCommand(event: KeyboardEvent) {
  * Matches the current message against the available command suggestions.
  * @param message The message to match against.
  */
-function updateMatchedCommands(message: string) {
+function updateMatchedCommands(message: string, commands: Array<CommandSuggestion>) {
     if (!message) {
         matchedCommands.value = [];
         return;
     }
 
     const words = message.split(' ');
-    if (!words[0].startsWith(options.cmdPrefix)) {
+    if (!words[0].startsWith(options.prefix)) {
         matchedCommands.value = [];
         return;
     }
 
-    matchedCommands.value = commands.value
+    matchedCommands.value = commands
         .filter((command) => {
-            const cmdName = words[0].startsWith(options.cmdPrefix) ? words[0].substring(1) : words[0];
+            const cmdName = words[0].startsWith(options.prefix) ? words[0].substring(1) : words[0];
 
             return (
                 cmdName.length > 0 &&
@@ -66,10 +67,10 @@ function updateMatchedCommands(message: string) {
                 words.length - 1 <= (command.params?.length ?? 0)
             );
         })
-        .splice(0, options.maxCmdSuggestions)
+        .splice(0, options.maxCommandSuggestions)
         .map((command) => {
             let currentParam = -1;
-            const cmdName = options.cmdPrefix + command.name;
+            const cmdName = options.prefix + command.name;
 
             if (words.length === 1 && words[0] === cmdName) currentParam = 0;
             if (words.length > 1 && words.length - 1 <= (command?.params?.length ?? 0)) currentParam = words.length - 1;
@@ -97,7 +98,7 @@ function addSuggestion(suggestion: CommandSuggestion | Array<CommandSuggestion>)
 // Effects ------------------------------------------------------
 
 // Listens for message changes and updates the matched commands.
-watch([message, commands], ([message]) => updateMatchedCommands(message));
+watch([message, commands], ([message, commands]) => updateMatchedCommands(message, commands));
 
 // Mount --------------------------------------------------------
 
@@ -132,7 +133,6 @@ onUnmounted(() => {
             }"
         >
             <div class="flex text-base text-white text-opacity-100">
-                <span>{{ options.cmdPrefix }}</span>
                 <span :class="{ 'font-bold': matchedCommand.currentParam === 0 }">{{ matchedCommand.name }}</span>
                 <span
                     v-for="(param, paramIndex) in matchedCommand.params"

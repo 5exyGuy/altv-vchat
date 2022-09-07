@@ -4,12 +4,13 @@ import MessageInput from './components/MessageInput.vue';
 import CommandSuggestions from './components/CommandSuggestions.vue';
 import { onMounted, onUnmounted } from 'vue';
 import { useChatStore } from './stores';
+import type { Options } from './interfaces';
 
 // --------------------------------------------------------------
 // Chat Store
 // --------------------------------------------------------------
 
-const { setFocus } = useChatStore();
+const { setFocus, setOptions } = useChatStore();
 
 // --------------------------------------------------------------
 // Functions
@@ -25,6 +26,15 @@ function toggleFocus(focus: boolean) {
     setFocus(focus);
 }
 
+/**
+ * Syncs the client settings with the server settings.
+ * @param settings The chat window's settings.
+ */
+function syncSettings(settings: Options) {
+    setOptions(settings);
+    window?.alt?.emit('vchat:mounted');
+}
+
 // --------------------------------------------------------------
 // Hooks
 // --------------------------------------------------------------
@@ -33,15 +43,15 @@ function toggleFocus(focus: boolean) {
 
 onMounted(() => {
     window?.alt?.on('vchat:focus', toggleFocus);
-    // window?.alt?.on('vchat:loadSettings', loadSettings);
-    window?.alt?.emit('vchat:mounted');
+    window?.alt?.on('vchat:syncSettings', syncSettings);
+    window?.alt?.emit('vchat:requestSettings');
 });
 
 // Unmount ------------------------------------------------------
 
 onUnmounted(() => {
     window?.alt?.off('vchat:focus', toggleFocus);
-    // window?.alt?.off('vchat:loadSettings', loadSettings);
+    window?.alt?.off('vchat:loadSettings', syncSettings);
 });
 </script>
 

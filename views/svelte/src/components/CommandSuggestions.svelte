@@ -1,14 +1,14 @@
 <script lang="ts">
     import type { CommandSuggestion, MatchedCommand } from '../interfaces';
-    import commandsJson from '../commands.json';
     import { onDestroy, onMount } from 'svelte';
     import { useChatStore } from '../stores';
+    import commandsJson from '../commands.json';
 
     // --------------------------------------------------------------
     // Chat Store
     // --------------------------------------------------------------
 
-    const { focus, message, options } = useChatStore();
+    const { focus, message, setMessage, options } = useChatStore();
 
     // --------------------------------------------------------------
     // Local Variables
@@ -36,7 +36,7 @@
         else if (event.key === 'ArrowDown' && matchedCommands.length > 1)
             selected = Math.min(matchedCommands.length - 1, selected + 1);
         else if (event.key === 'Tab' && selected >= 0 && !(matchedCommands[selected].currentParam > -1))
-            $message = matchedCommands[selected].name;
+            setMessage(matchedCommands[selected].name);
 
         event.preventDefault();
     }
@@ -45,7 +45,7 @@
      * Matches the current message against the available command suggestions.
      * @param message The message to match against.
      */
-    function updateMatchedCommands(message: string) {
+    function updateMatchedCommands(message: string, commands: Array<CommandSuggestion>) {
         if (!message) {
             matchedCommands = [];
             return;
@@ -89,7 +89,6 @@
      */
     function addSuggestion(suggestion: CommandSuggestion | Array<CommandSuggestion>) {
         Array.isArray(suggestion) ? (commands = [...commands, ...suggestion]) : (commands = [...commands, suggestion]);
-        updateMatchedCommands($message);
     }
 
     // --------------------------------------------------------------
@@ -98,7 +97,8 @@
 
     // Effects ------------------------------------------------------
 
-    $: updateMatchedCommands($message);
+    // Listens for message changes and updates the matched commands.
+    $: updateMatchedCommands($message, commands);
 
     // Mount --------------------------------------------------------
 

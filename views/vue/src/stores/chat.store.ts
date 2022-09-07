@@ -1,13 +1,16 @@
 import { reactive, ref } from 'vue';
+import type { Options } from '../interfaces';
 
 const focus = ref(false);
 const message = ref('');
 const options = reactive({
-    scrollStep: 20,
-    inputPlaceholder: 'Type a message...',
-    cmdPrefix: '/',
+    prefix: '/',
+    placeholder: 'Type a message...',
+    maxCommandSuggestions: 3,
+    maxMessageLength: 100,
+    maxMessages: 100,
     maxMessageBufferLength: 100,
-    maxCmdSuggestions: 3,
+    scrollStep: 20,
 });
 
 export function useChatStore() {
@@ -20,6 +23,9 @@ export function useChatStore() {
         },
         setMessage(value: string) {
             message.value = value;
+        },
+        setOptions(value: Options) {
+            Object.assign(options, value);
         },
     };
 }
