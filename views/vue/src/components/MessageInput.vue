@@ -83,7 +83,6 @@ function handleKeydown(event: KeyboardEvent) {
 // When focus is true, the input is focused.
 // When focus is false, sets the current message buffer index to -1.
 watch(focus, async (focus) => {
-    console.log('focus changed', focus);
     if (focus) {
         await nextTick();
         inputRef.value?.focus();

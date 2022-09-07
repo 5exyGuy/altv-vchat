@@ -45,21 +45,21 @@ export function CommandSuggestions() {
      * Matches the current message against the available command suggestions.
      * @param message The message to match against.
      */
-    function updateMatchedCommands(message: string) {
+    function updateMatchedCommands(message: string, commands: Array<CommandSuggestion>) {
         if (!message) {
             setMatchedCommands([]);
             return;
         }
 
         const words = message.split(' ');
-        if (!words[0].startsWith(options.cmdPrefix)) {
+        if (!words[0].startsWith(options.prefix)) {
             setMatchedCommands([]);
             return;
         }
 
         const newMatchedCommands = commands
             .filter((command) => {
-                const cmdName = words[0].startsWith(options.cmdPrefix) ? words[0].substring(1) : words[0];
+                const cmdName = words[0].startsWith(options.prefix) ? words[0].substring(1) : words[0];
 
                 return (
                     cmdName.length > 0 &&
@@ -67,16 +67,16 @@ export function CommandSuggestions() {
                     words.length - 1 <= (command.params?.length ?? 0)
                 );
             })
-            .splice(0, options.maxCmdSuggestions)
+            .splice(0, options.maxCommandSuggestions)
             .map((command) => {
                 let currentParam = -1;
-                const cmdName = options.cmdPrefix + command.name;
+                const cmdName = options.prefix + command.name;
 
                 if (words.length === 1 && words[0] === cmdName) currentParam = 0;
                 if (words.length > 1 && words.length - 1 <= (command?.params?.length ?? 0))
                     currentParam = words.length - 1;
 
-                return { currentParam, ...command };
+                return { currentParam, ...command, name: cmdName };
             });
         setMatchedCommands(newMatchedCommands);
         newMatchedCommands.length === 0 ? setSelected(-1) : setSelected(0);
@@ -101,7 +101,7 @@ export function CommandSuggestions() {
     // Effects ------------------------------------------------------
 
     // Listens for message changes and updates the matched commands.
-    useEffect(() => updateMatchedCommands(message), [message, commands]);
+    useEffect(() => updateMatchedCommands(message, commands), [message, commands]);
 
     // Listens for key changes and updates the selected command.
     useEffect(() => {
@@ -151,7 +151,6 @@ export function CommandSuggestions() {
                     })}
                 >
                     <div className="flex text-base text-white text-opacity-100">
-                        <span>{options.cmdPrefix}</span>
                         <span className={classnames({ 'font-bold': matchedCommand.currentParam === 0 })}>
                             {matchedCommand.name}
                         </span>

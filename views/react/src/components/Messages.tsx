@@ -20,8 +20,10 @@ export function Messages() {
     // --------------------------------------------------------------
 
     const [messages, setMessages] = useState([] as Array<MessageData>);
-    const [boxHeight, setBoxHeight] = useState(0);
     const [currentScroll, setCurrentScroll] = useState(0);
+    const [boxHeight, setBoxHeight] = useState(0);
+    const [clientHeight, setClientHeight] = useState(0);
+    const [scrollHeight, setScrollHeight] = useState(0);
     const [deltaY, setDeltaY] = useState(0);
     const [key, setKey] = useState('');
 
@@ -63,7 +65,7 @@ export function Messages() {
      * Loads the messages from the client's local storage.
      * @param messages The messages to load.
      */
-    async function loadMessages(messages: Array<MessageData>) {
+    async function loadMessageHistory(messages: Array<MessageData>) {
         setMessages(messages);
     }
 
@@ -81,7 +83,7 @@ export function Messages() {
      * @param behavior Whether or not to scroll smoothly.
      */
     function scrollToTop(behavior: ScrollBehavior = 'smooth') {
-        ref!.current!.scrollTo({ top: 0, behavior });
+        ref.current!.scrollTo({ top: 0, behavior });
         setCurrentScroll(0);
     }
 
@@ -90,8 +92,13 @@ export function Messages() {
      * @param behavior Whether or not to scroll smoothly.
      */
     function scrollToBottom(behavior: ScrollBehavior = 'smooth') {
-        ref!.current!.scroll({ top: boxHeight, behavior });
+        ref.current!.scroll({ top: boxHeight, behavior });
         setCurrentScroll(boxHeight);
+    }
+
+    function scrollTo(top: number, behavior: ScrollBehavior = 'smooth') {
+        ref.current!.scroll({ top, behavior });
+        setCurrentScroll(top);
     }
 
     /**
@@ -99,7 +106,7 @@ export function Messages() {
      */
     function scrollUp() {
         const scrollTo = currentScroll - options.scrollStep < 0 ? 0 : currentScroll - options.scrollStep;
-        ref!.current!.scrollTop = scrollTo;
+        ref.current!.scrollTop = scrollTo;
         setCurrentScroll(scrollTo);
         setDeltaY(0);
     }
@@ -110,7 +117,7 @@ export function Messages() {
     function scrollDown() {
         const scrollTo =
             currentScroll + options.scrollStep > boxHeight ? boxHeight : currentScroll + options.scrollStep;
-        ref!.current!.scrollTop = scrollTo;
+        ref.current!.scrollTop = scrollTo;
         setCurrentScroll(scrollTo);
         setDeltaY(0);
     }
@@ -143,22 +150,20 @@ export function Messages() {
     // Listens to focus changes.
     // If the chat box is not focused, it scrolls to the bottom.
     useEffect(() => {
-        !focus && scrollToBottom();
+        if (focus || !ref) return;
+        scrollToBottom();
     }, [focus]);
 
     // Listens to messages changes.
     // Sets the new height of the chat box.
     useEffect(() => {
         if (messages.length === 0) return;
-        setBoxHeight(ref!.current!.scrollHeight - ref!.current!.clientHeight);
+        setClientHeight(ref.current!.clientHeight);
+        setScrollHeight(ref.current!.scrollHeight);
+        setBoxHeight(ref.current!.scrollHeight - ref.current!.clientHeight);
+        if (focus || (!focus && currentScroll === ref.current!.scrollHeight - ref.current!.clientHeight)) return;
+        scrollTo(ref.current!.scrollHeight - ref.current!.clientHeight);
     }, [messages]);
-
-    // Listens to box height changes.
-    // Scrolls to the bottom if the chat box is not focused.
-    useEffect(() => {
-        if (focus || (focus && currentScroll !== boxHeight) || boxHeight === 0) return;
-        scrollToBottom();
-    }, [boxHeight]);
 
     // Listens to scroll delta changes.
     useEffect(() => {
@@ -177,25 +182,28 @@ export function Messages() {
         setKey('');
     }, [key]);
 
+    function bind() {
+        // window.addEventListener('keydown', handleKeydown.bind());
+    }
+
     // Mount --------------------------------------------------------
 
     useEffect(() => {
         window.addEventListener('keydown', handleKeydown);
         window.addEventListener('wheel', processScroll, { passive: false });
 
-        window?.alt?.on('vchat:loadHistory', loadMessages);
-        window?.alt?.on('vchat:message', addMessage);
-        window?.alt?.on('vchat:clear', clearMessages);
-
+        window?.alt?.on('vchat:loadMessageHistory', loadMessageHistory);
+        window?.alt?.on('vchat:addMessage', addMessage);
+        window?.alt?.on('vchat:clearMessages', clearMessages);
         // Unmount --------------------------------------------------
 
         return () => {
             window.removeEventListener('keydown', handleKeydown);
             window.removeEventListener('wheel', processScroll);
 
-            window?.alt?.off('vchat:loadHistory', loadMessages);
-            window?.alt?.off('vchat:message', addMessage);
-            window?.alt?.off('vchat:clear', clearMessages);
+            window?.alt?.off('vchat:loadMessageHistory', loadMessageHistory);
+            window?.alt?.off('vchat:addMessage', addMessage);
+            window?.alt?.off('vchat:clearMessages', clearMessages);
         };
     }, []);
 
@@ -205,14 +213,13 @@ export function Messages() {
 
     return (
         <div
-            className={classnames('flex flex-col gap-[4px] h-[320px] w-full mask mb-[16px] pr-2', {
+            className={classnames('scrollbar mask flex flex-col gap-[4px] h-[320px] w-full mask mb-[16px] pr-2', {
                 'opacity-50': !focus,
                 'opacity-100': focus,
-                'overflow-y-scroll': focus && ref!.current!.scrollHeight > ref!.current!.clientHeight,
-                'overflow-y-hidden': !focus,
             })}
             style={
                 {
+                    '--scrollbar-opacity': focus && scrollHeight > clientHeight ? 1 : 0,
                     '--mask-top-height': maskTopHeight,
                     '--mask-bottom-height': maskBottomHeight,
                 } as CSSProperties

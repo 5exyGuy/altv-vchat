@@ -48,7 +48,7 @@ export function CommandSuggestions() {
      * Matches the current message against the available command suggestions.
      * @param message The message to match against.
      */
-    function updateMatchedCommands(message: string) {
+    function updateMatchedCommands(message: string, commands: Array<CommandSuggestion>) {
         if (!message) {
             setMatchedCommands([]);
             return;
@@ -61,7 +61,7 @@ export function CommandSuggestions() {
         }
 
         setMatchedCommands(
-            commands()
+            commands
                 .filter((command) => {
                     const cmdName = words[0].startsWith(options.prefix) ? words[0].substring(1) : words[0];
 
@@ -105,7 +105,7 @@ export function CommandSuggestions() {
     // Effects ------------------------------------------------------
 
     // Listens for message changes and updates the matched commands.
-    createEffect(on([message, commands], ([message]) => updateMatchedCommands(message)));
+    createEffect(on([message, commands], ([message, commands]) => updateMatchedCommands(message, commands)));
 
     // Mount --------------------------------------------------------
 

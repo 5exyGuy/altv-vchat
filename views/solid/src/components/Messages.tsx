@@ -17,8 +17,10 @@ export function Messages() {
     // --------------------------------------------------------------
 
     const [messages, setMessages] = createSignal<Array<MessageData>>([]);
-    const [boxHeight, setBoxHeight] = createSignal<number>(0);
     const [currentScroll, setCurrentScroll] = createSignal<number>(0);
+    const [boxHeight, setBoxHeight] = createSignal<number>(0);
+    const [clientHeight, setClientHeight] = createSignal<number>(0);
+    const [scrollHeight, setScrollHeight] = createSignal<number>(0);
 
     // --------------------------------------------------------------
     // Computed Local Values
@@ -139,15 +141,22 @@ export function Messages() {
 
     // Listens to focus changes.
     // If the chat box is not focused, it scrolls to the bottom.
-    createEffect(on(focus, (focus) => !focus && scrollToBottom()));
+    createEffect(
+        on(focus, (focus) => {
+            if (focus || !ref) return;
+            scrollToBottom();
+        }),
+    );
 
     // Listens to messages changes.
     // Sets the new height of the chat box.
     // Scrolls to the bottom if the chat box is not focused.
     createEffect(
         on(messages, () => {
-            setBoxHeight(ref!.scrollHeight - ref!.clientHeight);
-            if (focus() || (focus() && currentScroll() !== boxHeight()) || boxHeight() === 0) return;
+            setClientHeight(ref!.clientHeight);
+            setScrollHeight(ref!.scrollHeight);
+            setBoxHeight(scrollHeight() - clientHeight());
+            if (focus() || (!focus() && currentScroll === boxHeight)) return;
             scrollToBottom();
         }),
     );
@@ -180,15 +189,14 @@ export function Messages() {
 
     return (
         <div
-            class="flex flex-col gap-[4px] h-[320px] w-full mask mb-[16px] pr-2 overflow-y-scroll"
+            class="scrollbar mask flex flex-col gap-[4px] h-[320px] w-full mask mb-[16px] pr-2"
             classList={{
                 'opacity-50': !focus(),
                 'opacity-100': focus(),
-                'overflow-y-scroll': focus(),
-                'overflow-y-hidden': !focus(),
             }}
             style={
                 {
+                    '--scrollbar-opacity': focus() && scrollHeight() > clientHeight() ? 1 : 0,
                     '--mask-top-height': maskTopHeight(),
                     '--mask-bottom-height': maskBottomHeight(),
                 } as JSX.CSSProperties

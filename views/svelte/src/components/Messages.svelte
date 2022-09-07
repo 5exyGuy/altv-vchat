@@ -34,7 +34,7 @@
     // Refs
     // --------------------------------------------------------------
 
-    let ref: HTMLDivElement;
+    let ref: HTMLDivElement | undefined;
 
     // --------------------------------------------------------------
     // Functions
@@ -85,7 +85,7 @@
      * @param behavior Whether or not to scroll smoothly.
      */
     function scrollToTop(behavior: ScrollBehavior = 'smooth') {
-        ref.scrollTo({ top: 0, behavior });
+        ref!.scrollTo({ top: 0, behavior });
         currentScroll = 0;
     }
 
@@ -94,7 +94,7 @@
      * @param behavior Whether or not to scroll smoothly.
      */
     async function scrollToBottom(behavior: ScrollBehavior = 'smooth') {
-        ref.scroll({ top: boxHeight, behavior });
+        ref!.scroll({ top: boxHeight, behavior });
         currentScroll = boxHeight;
     }
 

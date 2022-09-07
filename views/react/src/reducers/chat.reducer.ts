@@ -1,26 +1,23 @@
 import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
+import type { Options } from '../interfaces';
 
 export interface ChatState {
     message: string;
     focus: boolean;
-    options: {
-        scrollStep: number;
-        inputPlaceholder: string;
-        cmdPrefix: string;
-        maxMessageBufferLength: number;
-        maxCmdSuggestions: number;
-    };
+    options: Options;
 }
 
 const initialState: ChatState = {
     message: '',
     focus: false,
     options: {
-        scrollStep: 20,
-        inputPlaceholder: 'Type a message...',
-        cmdPrefix: '/',
+        prefix: '/',
+        placeholder: 'Type a message...',
+        maxCommandSuggestions: 3,
+        maxMessageLength: 100,
+        maxMessages: 100,
         maxMessageBufferLength: 100,
-        maxCmdSuggestions: 3,
+        scrollStep: 20,
     },
 };
 
@@ -34,9 +31,12 @@ export const chatSlice = createSlice({
         setFocus: (state, action: PayloadAction<boolean>) => {
             state.focus = action.payload;
         },
+        setOptions: (state, action: PayloadAction<Options>) => {
+            state.options = action.payload;
+        },
     },
 });
 
-export const { setMessage, setFocus } = chatSlice.actions;
+export const { setMessage, setFocus, setOptions } = chatSlice.actions;
 
 export const chatReducer = chatSlice.reducer;

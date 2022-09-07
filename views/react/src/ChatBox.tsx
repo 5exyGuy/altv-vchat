@@ -3,7 +3,8 @@ import { useDispatch } from 'react-redux';
 import { CommandSuggestions } from './components/CommandSuggestions';
 import { MessageInput } from './components/MessageInput';
 import { Messages } from './components/Messages';
-import { setFocus } from './reducers/chat.reducer';
+import type { Options } from './interfaces';
+import { setFocus, setOptions } from './reducers/chat.reducer';
 
 export function ChatBox() {
     // --------------------------------------------------------------
@@ -26,6 +27,15 @@ export function ChatBox() {
         dispatch(setFocus(focus));
     }
 
+    /**
+     * Syncs the client settings with the server settings.
+     * @param settings The chat window's settings.
+     */
+    function syncSettings(settings: Options) {
+        dispatch(setOptions(settings));
+        window?.alt?.emit('vchat:mounted');
+    }
+
     // --------------------------------------------------------------
     // Hooks
     // --------------------------------------------------------------
@@ -34,14 +44,14 @@ export function ChatBox() {
 
     useEffect(() => {
         window?.alt?.on('vchat:focus', toggleFocus);
-        // window?.alt?.on('vchat:loadSettings', loadSettings);
-        window?.alt?.emit('vchat:mounted');
+        window?.alt?.on('vchat:syncSettings', syncSettings);
+        window?.alt.emit('vchat:requestSettings');
 
         // Unmount --------------------------------------------------
 
         return () => {
             window?.alt?.off('vchat:focus', toggleFocus);
-            // window?.alt?.off('vchat:loadSettings', loadSettings);
+            window?.alt?.off('vchat:loadSettings', syncSettings);
         };
     }, []);
 
