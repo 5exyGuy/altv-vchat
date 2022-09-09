@@ -1,4 +1,4 @@
-import type { Player } from 'alt-server';
+import { Player } from 'alt-server';
 import { DEFAULT_MESSAGE_PROCESSOR } from './consts';
 import { MessageType } from './enums';
 import { MountService } from './services/mount.service';
@@ -45,28 +45,38 @@ export class Chat {
             const words = message.slice(1);
 
             if (words.length > 0) {
-                if (this.settingsService.get('logPlayerCommands'))
+                if (this.settingsService.getOption('logPlayerCommands'))
                     this.loggerService.log(`[command] ${player.name}: ${message}`);
 
                 let args = words.split(' ');
                 let cmdName = args.shift() ?? '';
 
                 const invoked = this.commandService.invoke(player, cmdName, args);
-                if (!invoked) this.windowService.send(player, `Unknown command ${message}`, MessageType.Error);
+                if (invoked) return;
+                this.mountService.waitForMount(
+                    player,
+                    this.windowService.send(player, `Unknown command ${message}`, MessageType.Error),
+                );
             }
         } else {
             if (this.windowService.isMuted(player)) {
-                this.windowService.send(player, 'You are currently muted.', MessageType.Error);
+                this.mountService.waitForMount(
+                    player,
+                    this.windowService.send(player, 'You are currently muted.', MessageType.Error),
+                );
                 return;
             }
 
-            if (this.settingsService.get('logPlayerMessages'))
+            if (this.settingsService.getOption('logPlayerMessages'))
                 this.loggerService.log(`[message] ${player.name}: ${message}`);
-            if (!this.settingsService.get('enableHTMLInjections'))
+            if (!this.settingsService.getOption('enableHTMLInjections'))
                 message = message.replace(/</g, '&lt;').replace(/'/g, '&#39').replace(/"/g, '&#34');
-            if (this.messageProcessor && this.settingsService.get('enableDefaultMessageProcessor'))
+            if (this.messageProcessor && this.settingsService.getOption('enableDefaultMessageProcessor'))
                 message = this.messageProcessor(`<b>${player.name}:</b> ${message}`);
-            this.windowService.broadcast(message);
+
+            Player.all.forEach((player) =>
+                this.mountService.waitForMount(player, this.windowService.send(player, message)),
+            );
         }
     }
 
@@ -76,7 +86,12 @@ export class Chat {
     }
 
     private syncSettings(player: Player) {
-        this.eventService.emitClient(player, 'vchat:syncSettings', this.settingsService.getClient());
+        this.eventService.emitClient(
+            player,
+            'vchat:syncSettings',
+            this.settingsService.getClientOptions(),
+            this.settingsService.getCommandSuggestions(),
+        );
     }
 
     private onChatMounted(player: Player, mounted: boolean) {

@@ -1,7 +1,6 @@
-import type { DEFAULT_SETTINGS } from './consts';
 import { MessageType } from './enums';
-import type { CommandSuggestion } from './interfaces';
-import { WindowService, EventService, MessageHistoryService, SettingsService } from './services';
+import type { ClientOptions, CommandSuggestion, WindowOptions } from './interfaces';
+import { WindowService, EventService, MessageHistoryService, OptionsService } from './services';
 
 export class Chat {
     private static readonly instance = new Chat();
@@ -13,7 +12,7 @@ export class Chat {
     private constructor(
         private readonly eventService = EventService.getInstance(),
         private readonly messageHistoryService = MessageHistoryService.getInstance(),
-        private readonly settingsService = SettingsService.getInstance(),
+        private readonly optionsService = OptionsService.getInstance(),
         private readonly windowService = WindowService.getInstance(),
     ) {}
 
@@ -23,18 +22,21 @@ export class Chat {
         this.eventService.onServer('vchat:toggleFocusEnabled', this.toggleWindowFocusEnabled.bind(this));
         this.eventService.onServer('vchat:addMessage', this.addMessageToWindow.bind(this));
         this.eventService.onServer('vchat:addSuggestion', this.addSuggestionToWindow.bind(this));
+        this.eventService.onServer(
+            'vchat:removeSuggestions',
+            this.removeSuggestionsFromWindow.bind(this.windowService),
+        );
         this.eventService.onServer('vchat:clearMessages', this.clearWindowMessages.bind(this));
         this.eventService.onServer('vchat:clearMessageHistory', this.clearMessageHistory.bind(this));
-        // Server -> [Client] => Window
         this.eventService.onServer('vchat:syncSettings', this.syncSettings.bind(this));
+        this.eventService.onServer('vchat:updateOption', this.updateOption.bind(this));
+        this.eventService.onServer('vchat:updateOptions', this.updateOptions.bind(this));
 
         this.eventService.on('keyup', this.toggleWindowFoucsOnKey.bind(this));
 
-        // Server <= [Client] <- Window
-        this.eventService.onWindow('vchat:requestSettings', this.requestSettings.bind(this));
-        // Server <= [Client] <- Window
-        this.eventService.onWindow('vchat:mounted', this.markAsMounted.bind(this));
-        this.eventService.onWindow('vchat:addMessage', this.sendMessageToServer.bind(this));
+        this.windowService.on('vchat:requestSettings', this.requestSettings.bind(this));
+        this.windowService.on('vchat:mounted', this.markAsMounted.bind(this));
+        this.windowService.on('vchat:addMessage', this.sendMessageToServer.bind(this));
     }
 
     public toggleWindowVisibility(enabled: boolean) {
@@ -58,6 +60,10 @@ export class Chat {
         this.windowService.addSuggestion(suggestion);
     }
 
+    public removeSuggestionsFromWindow() {
+        this.windowService.removeSuggestions();
+    }
+
     public clearWindowMessages() {
         this.windowService.clearMessages();
     }
@@ -66,14 +72,28 @@ export class Chat {
         this.messageHistoryService.clear();
     }
 
-    public syncSettings(settings: typeof DEFAULT_SETTINGS) {
-        this.settingsService.update(settings);
-        this.windowService.syncSettings(settings);
+    public syncSettings(options: ClientOptions & WindowOptions, commandSuggestions: Array<CommandSuggestion>) {
+        this.optionsService.update(options);
+
+        this.windowService.syncSettings(this.optionsService.getWindowOptions(), commandSuggestions);
+    }
+
+    public updateOption(
+        key: keyof ClientOptions & WindowOptions,
+        value: (ClientOptions & WindowOptions)[keyof (ClientOptions & WindowOptions)],
+    ) {
+        this.optionsService.set(key, value);
+        this.windowService.updateOptions(this.optionsService.getWindowOptions());
+    }
+
+    public updateOptions(options: ClientOptions & WindowOptions) {
+        this.optionsService.update(options);
+        this.windowService.updateOptions(this.optionsService.getWindowOptions());
     }
 
     public toggleWindowFoucsOnKey(key: number) {
-        if (this.settingsService.get('unfocusKey') === key) this.windowService.unfocus();
-        else if (this.settingsService.get('focusKey') === key) this.windowService.focus();
+        if (this.optionsService.get('unfocusKey') === key) this.windowService.unfocus();
+        else if (this.optionsService.get('focusKey') === key) this.windowService.focus();
     }
 
     public requestSettings() {
@@ -82,7 +102,7 @@ export class Chat {
     }
 
     public markAsMounted() {
-        this.windowService.show();
+        this.optionsService.get('hideOnConnect') ? this.windowService.hide() : this.windowService.show();
         this.eventService.emitServer('vchat:mounted', true);
     }
 

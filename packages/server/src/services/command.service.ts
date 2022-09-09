@@ -2,8 +2,6 @@ import { emitClientRaw, Player } from 'alt-server';
 import type { CommandSuggestion } from '../interfaces';
 import type { CommandHandler } from '../types';
 import { validateCommandName, validateCommandSuggestion } from '../validators';
-import { MountService } from './mount.service';
-import { SettingsService } from './settings.service';
 
 export class CommandService {
     private static readonly instance = new CommandService();
@@ -14,13 +12,10 @@ export class CommandService {
 
     private handlers = new Map<string, CommandHandler>();
 
-    private constructor(
-        private readonly mountService: MountService = MountService.getInstance(),
-        private readonly settingsService: SettingsService = SettingsService.getInstance(),
-    ) {}
+    private constructor() {}
 
     public register(command: string, handler: CommandHandler) {
-        if (!validateCommandName(command, this.settingsService.get('prefix'))) return;
+        if (!validateCommandName(command)) return;
         this.handlers.set(command, handler);
     }
 
@@ -40,6 +35,10 @@ export class CommandService {
         if (!Array.isArray(suggestion)) suggestion = [suggestion];
         const result = suggestion.some((s) => validateCommandSuggestion(s));
         if (!result) return;
-        this.mountService.waitForMount(player, () => emitClientRaw(player, 'vchat:addSuggestion', suggestion));
+        return () => emitClientRaw(player, 'vchat:addSuggestion', suggestion);
+    }
+
+    public removeSuggestions(player: Player) {
+        return () => emitClientRaw(player, 'vchat:removeSuggestions');
     }
 }

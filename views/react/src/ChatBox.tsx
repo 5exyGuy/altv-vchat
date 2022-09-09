@@ -1,10 +1,10 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { CommandSuggestions } from './components/CommandSuggestions';
 import { MessageInput } from './components/MessageInput';
 import { Messages } from './components/Messages';
-import type { Options } from './interfaces';
-import { setFocus, setOptions } from './reducers/chat.reducer';
+import type { CommandSuggestion, Options } from './interfaces';
+import { addCommandSuggestion, setFocus, setOptions } from './reducers/chat.reducer';
 
 export function ChatBox() {
     // --------------------------------------------------------------
@@ -31,9 +31,14 @@ export function ChatBox() {
      * Syncs the client settings with the server settings.
      * @param settings The chat window's settings.
      */
-    function syncSettings(settings: Options) {
+    function syncSettings(settings: Options, commandSuggestions: Array<CommandSuggestion>) {
         dispatch(setOptions(settings));
+        dispatch(addCommandSuggestion(commandSuggestions));
         window?.alt?.emit('vchat:mounted');
+    }
+
+    function updateOptions(options: Options) {
+        dispatch(setOptions(options));
     }
 
     // --------------------------------------------------------------
@@ -45,13 +50,15 @@ export function ChatBox() {
     useEffect(() => {
         window?.alt?.on('vchat:focus', toggleFocus);
         window?.alt?.on('vchat:syncSettings', syncSettings);
+        window?.alt?.on('vchat:updateOptions', updateOptions);
         window?.alt.emit('vchat:requestSettings');
 
         // Unmount --------------------------------------------------
 
         return () => {
             window?.alt?.off('vchat:focus', toggleFocus);
-            window?.alt?.off('vchat:loadSettings', syncSettings);
+            window?.alt?.off('vchat:syncSettings', syncSettings);
+            window?.alt?.off('vchat:updateOptions', updateOptions);
         };
     }, []);
 

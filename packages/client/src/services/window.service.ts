@@ -1,7 +1,6 @@
 import { toggleGameControls, WebView } from 'alt-client';
-import type { DEFAULT_SETTINGS } from '../consts';
 import { MessageType } from '../enums';
-import type { CommandSuggestion, Message } from '../interfaces';
+import type { CommandSuggestion, Message, WindowOptions } from '../interfaces';
 
 export class WindowService {
     private static readonly instance = new WindowService();
@@ -20,7 +19,6 @@ export class WindowService {
 
     public focus() {
         if (!this.webView.isVisible || !this.focusEnabled) return;
-
         this.webView.emit('vchat:focus', true);
         this.webView.focus();
         toggleGameControls(false);
@@ -28,7 +26,6 @@ export class WindowService {
 
     public unfocus() {
         if (!this.webView.isVisible || !this.focusEnabled) return;
-
         this.webView.emit('vchat:focus', false);
         this.webView.unfocus();
         toggleGameControls(true);
@@ -67,46 +64,16 @@ export class WindowService {
         this.webView.emit('vchat:addSuggestion', suggestion);
     }
 
-    public syncSettings(settings: typeof DEFAULT_SETTINGS) {
-        const {
-            prefix,
-            placeholder,
-            maxCommandSuggestions,
-            maxMessageLength,
-            maxMessages,
-            maxMessageBufferLength,
-            scrollStep,
-        } = settings;
-        this.webView.emit('vchat:syncSettings', {
-            prefix,
-            placeholder,
-            maxCommandSuggestions,
-            maxMessageLength,
-            maxMessages,
-            maxMessageBufferLength,
-            scrollStep,
-        });
+    public removeSuggestions() {
+        this.webView.emit('vchat:removeSuggestions');
     }
 
-    public updateSettings(settings: typeof DEFAULT_SETTINGS) {
-        const {
-            prefix,
-            placeholder,
-            maxCommandSuggestions,
-            maxMessageLength,
-            maxMessages,
-            maxMessageBufferLength,
-            scrollStep,
-        } = settings;
-        this.webView.emit('vchat:updateSettings', {
-            prefix,
-            placeholder,
-            maxCommandSuggestions,
-            maxMessageLength,
-            maxMessages,
-            maxMessageBufferLength,
-            scrollStep,
-        });
+    public syncSettings(options: WindowOptions, commandSuggestions: Array<CommandSuggestion>) {
+        this.webView.emit('vchat:syncSettings', options, commandSuggestions);
+    }
+
+    public updateOptions(options: WindowOptions) {
+        this.webView.emit('vchat:updateOptions', options);
     }
 
     public on(event: string, listener: (...args: any[]) => void) {

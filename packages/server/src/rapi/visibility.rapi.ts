@@ -1,4 +1,5 @@
-import type { Player } from 'alt-server';
+import { Player } from 'alt-server';
+import { MountService } from '../services/mount.service';
 import { WindowService } from '../services/window.service';
 
 /**
@@ -6,13 +7,27 @@ import { WindowService } from '../services/window.service';
  * @param player
  */
 export function show(player: Player) {
-    WindowService.getInstance().show(player);
+    MountService.getInstance().waitForMount(player, WindowService.getInstance().show(player));
 }
 
 /**
- * Hide the chat window for the given player.
+ * Shows the chat window for all players.
+ */
+export function showAll() {
+    Player.all.forEach((player) => show(player));
+}
+
+/**
+ * Hides the chat window for the given player.
  * @param player
  */
 export function hide(player: Player) {
-    WindowService.getInstance().hide(player);
+    MountService.getInstance().waitForMount(player, WindowService.getInstance().hide(player));
+}
+
+/**
+ * Hides the chat window for all players.
+ */
+export function hideAll() {
+    Player.all.forEach((player) => hide(player));
 }

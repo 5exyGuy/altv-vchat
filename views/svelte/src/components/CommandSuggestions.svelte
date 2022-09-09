@@ -91,6 +91,13 @@
         Array.isArray(suggestion) ? (commands = [...commands, ...suggestion]) : (commands = [...commands, suggestion]);
     }
 
+    /**
+     * Removes all command suggestions.
+     */
+    function removeSuggestions() {
+        commands = [];
+    }
+
     // --------------------------------------------------------------
     // Hooks
     // --------------------------------------------------------------
@@ -102,11 +109,17 @@
 
     // Mount --------------------------------------------------------
 
-    onMount(() => window?.alt?.on('vchat:addSuggestion', addSuggestion));
+    onMount(() => {
+        window?.alt?.on('vchat:addSuggestion', addSuggestion);
+        window?.alt?.on('vchat:removeSuggestions', removeSuggestions);
+    });
 
     // Unmount ------------------------------------------------------
 
-    onDestroy(() => window?.alt?.off('vchat:addSuggestion', addSuggestion));
+    onDestroy(() => {
+        window?.alt?.off('vchat:addSuggestion', addSuggestion);
+        window?.alt?.off('vchat:removeSuggestions', removeSuggestions);
+    });
 </script>
 
 <div

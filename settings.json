@@ -9,8 +9,11 @@
     "maxMessageHistory": 100,
     "unfocusKey": 27,
     "focusKey": 84,
+    "hideOnConnect": false,
     "enableHTMLInjections": false,
     "enableDefaultMessageProcessor": true,
     "logPlayerMessages": true,
-    "logPlayerCommands": true
+    "logPlayerCommands": true,
+    "unknownCommandMessage": "Unknown command: {0}",
+    "muteMessage": "You are muted."
 }

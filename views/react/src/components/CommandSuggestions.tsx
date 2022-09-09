@@ -2,9 +2,8 @@ import { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import type { RootState } from '../stores/chat.store';
 import type { CommandSuggestion, MatchedCommand } from '../interfaces';
-import { setMessage } from '../reducers/chat.reducer';
+import { addCommandSuggestion, removeCommandSuggestions, setMessage } from '../reducers/chat.reducer';
 import classnames from 'classnames';
-import commandsJson from '../commands.json';
 
 export function CommandSuggestions() {
     // --------------------------------------------------------------
@@ -14,13 +13,13 @@ export function CommandSuggestions() {
     const focus = useSelector((state: RootState) => state.chat.focus);
     const message = useSelector((state: RootState) => state.chat.message);
     const options = useSelector((state: RootState) => state.chat.options);
+    const commands = useSelector((state: RootState) => state.chat.commandSuggestions);
     const dispatch = useDispatch();
 
     // --------------------------------------------------------------
     // States
     // --------------------------------------------------------------
 
-    const [commands, setCommands] = useState<Array<CommandSuggestion>>(commandsJson);
     const [matchedCommands, setMatchedCommands] = useState<Array<MatchedCommand>>([]);
     const [selected, setSelected] = useState(-1);
     const [key, setKey] = useState('');
@@ -89,9 +88,14 @@ export function CommandSuggestions() {
      * @param suggestion The command suggestion to add.
      */
     function addSuggestion(suggestion: CommandSuggestion | Array<CommandSuggestion>) {
-        Array.isArray(suggestion)
-            ? setCommands((commands) => [...commands, ...suggestion])
-            : setCommands((commands) => [...commands, suggestion]);
+        dispatch(addCommandSuggestion(suggestion));
+    }
+
+    /**
+     * Removes all command suggestions.
+     */
+    function removeSuggestions() {
+        dispatch(removeCommandSuggestions());
     }
 
     // --------------------------------------------------------------
@@ -121,12 +125,14 @@ export function CommandSuggestions() {
     useEffect(() => {
         window.addEventListener('keydown', selectCommand);
         window?.alt?.on('vchat:addSuggestion', addSuggestion);
+        window?.alt?.on('vchat:removeSuggestions', removeSuggestions);
 
         // Unmount --------------------------------------------------
 
         return () => {
             window.removeEventListener('keydown', selectCommand);
             window?.alt?.off('vchat:addSuggestion', addSuggestion);
+            window?.alt?.off('vchat:removeSuggestions', removeSuggestions);
         };
     }, []);
 

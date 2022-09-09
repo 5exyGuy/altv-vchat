@@ -1,11 +1,12 @@
 import { Player } from 'alt-server';
+import { MountService } from '../services/mount.service';
 import { WindowService } from '../services/window.service';
 
 /**
  * Clears the player's chat history from the local storage.
  */
 export function clearMessageHistory(player: Player) {
-    WindowService.getInstance().clearMessageHistory(player);
+    MountService.getInstance().waitForMount(player, WindowService.getInstance().clearMessageHistory(player));
 }
 
 /**
@@ -19,7 +20,7 @@ export function clearMessageHistoryAll() {
  * Clears the player's chat in the webview.
  */
 export function clearMessages(player: Player) {
-    WindowService.getInstance().clearMessages(player);
+    MountService.getInstance().waitForMount(player, WindowService.getInstance().clearMessages(player));
 }
 
 /**

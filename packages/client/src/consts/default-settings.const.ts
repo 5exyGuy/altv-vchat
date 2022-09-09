@@ -1,3 +1,5 @@
+import type { ClientOptions, WindowOptions } from '../interfaces';
+
 export const DEFAULT_SETTINGS = {
     prefix: '/',
     placeholder: 'Type a message...',
@@ -9,4 +11,4 @@ export const DEFAULT_SETTINGS = {
     maxMessageHistory: 100,
     unfocusKey: 27,
     focusKey: 84,
-};
+} as ClientOptions & WindowOptions;

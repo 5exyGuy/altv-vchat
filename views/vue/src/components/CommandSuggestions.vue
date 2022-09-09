@@ -91,6 +91,13 @@ function addSuggestion(suggestion: CommandSuggestion | Array<CommandSuggestion>)
         : (commands.value = [...commands.value, suggestion]);
 }
 
+/**
+ * Removes all command suggestions.
+ */
+function removeSuggestions() {
+    commands.value = [];
+}
+
 // --------------------------------------------------------------
 // Hooks
 // --------------------------------------------------------------
@@ -105,6 +112,7 @@ watch([message, commands], ([message, commands]) => updateMatchedCommands(messag
 onMounted(() => {
     window.addEventListener('keydown', selectCommand);
     window?.alt?.on('vchat:addSuggestion', addSuggestion);
+    window?.alt?.on('vchat:removeSuggestions', removeSuggestions);
 });
 
 // Unmount ------------------------------------------------------
@@ -112,6 +120,7 @@ onMounted(() => {
 onUnmounted(() => {
     window.removeEventListener('keydown', selectCommand);
     window?.alt?.off('vchat:addSuggestion', addSuggestion);
+    window?.alt?.off('vchat:removeSuggestions', removeSuggestions);
 });
 </script>
 

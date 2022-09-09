@@ -44,7 +44,9 @@ export class MountService {
         return this.players.has(player);
     }
 
-    public waitForMount(player: Player, fn: Function) {
+    public waitForMount(player: Player, fn: Function | undefined) {
+        if (!fn) return;
+
         if (this.isMounted(player)) {
             fn();
             return;

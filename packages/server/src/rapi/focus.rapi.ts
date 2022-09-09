@@ -1,11 +1,12 @@
 import { Player } from 'alt-server';
+import { MountService } from '../services/mount.service';
 import { WindowService } from '../services/window.service';
 
 /**
  * Toggles the player's chat focus activation.
  */
 export function toggleFocusEnabled(player: Player, enabled: boolean) {
-    WindowService.getInstance().toggleFocusEnabled(player, enabled);
+    MountService.getInstance().waitForMount(player, WindowService.getInstance().toggleFocusEnabled(player, enabled));
 }
 
 /**
@@ -19,7 +20,7 @@ export function toggleFocusEnabledAll(enabled: boolean) {
  * Focuses the player's chat.
  */
 export function focus(player: Player) {
-    WindowService.getInstance().focus(player);
+    MountService.getInstance().waitForMount(player, WindowService.getInstance().focus(player));
 }
 
 /**
@@ -33,7 +34,7 @@ export function focusAll() {
  * Unfocuses the player's chat.
  */
 export function unfocus(player: Player) {
-    WindowService.getInstance().unfocus(player);
+    MountService.getInstance().waitForMount(player, WindowService.getInstance().unfocus(player));
 }
 
 /**

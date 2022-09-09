@@ -1,7 +1,7 @@
 import { emitClientRaw, Player } from 'alt-server';
 import { MessageType } from '../enums';
+import type { WindowOptions } from '../interfaces';
 import { validateMessage } from '../validators';
-import { MountService } from './mount.service';
 
 export class WindowService {
     private static readonly instance = new WindowService();
@@ -12,26 +12,19 @@ export class WindowService {
 
     private readonly mutedPlayers = new Set<Player>();
 
-    private constructor(private readonly mountService = MountService.getInstance()) {}
+    private constructor() {}
 
     public send(player: Player, message: string, type: MessageType = MessageType.Default) {
         if (!validateMessage(message, type)) return;
-        this.mountService.waitForMount(player, () => emitClientRaw(player, 'vchat:addMessage', message, type));
-    }
-
-    public broadcast(message: string, type: MessageType = MessageType.Default) {
-        if (!validateMessage(message, type)) return;
-        Player.all.forEach((player) =>
-            this.mountService.waitForMount(player, () => emitClientRaw(player, 'vchat:addMessage', message, type)),
-        );
+        return () => emitClientRaw(player, 'vchat:addMessage', message, type);
     }
 
     public show(player: Player) {
-        this.mountService.waitForMount(player, () => emitClientRaw(player, 'vchat:toggleVisibility', true));
+        return () => emitClientRaw(player, 'vchat:toggleVisibility', true);
     }
 
     public hide(player: Player) {
-        this.mountService.waitForMount(player, () => emitClientRaw(player, 'vchat:toggleVisibility', false));
+        return () => emitClientRaw(player, 'vchat:toggleVisibility', false);
     }
 
     public mute(player: Player) {
@@ -47,22 +40,30 @@ export class WindowService {
     }
 
     public toggleFocusEnabled(player: Player, enabled: boolean) {
-        this.mountService.waitForMount(player, () => emitClientRaw(player, 'vchat:toggleFocusEnabled', enabled));
+        return () => emitClientRaw(player, 'vchat:toggleFocusEnabled', enabled);
     }
 
     public focus(player: Player) {
-        this.mountService.waitForMount(player, () => emitClientRaw(player, 'vchat:toggleFocus', true));
+        return () => emitClientRaw(player, 'vchat:toggleFocus', true);
     }
 
     public unfocus(player: Player) {
-        this.mountService.waitForMount(player, () => emitClientRaw(player, 'vchat:toggleFocus', false));
+        return () => emitClientRaw(player, 'vchat:toggleFocus', false);
     }
 
     public clearMessageHistory(player: Player) {
-        this.mountService.waitForMount(player, () => emitClientRaw(player, 'vchat:clearMessageHistory'));
+        return () => emitClientRaw(player, 'vchat:clearMessageHistory');
     }
 
     public clearMessages(player: Player) {
-        this.mountService.waitForMount(player, () => emitClientRaw(player, 'vchat:clearMessages'));
+        return () => emitClientRaw(player, 'vchat:clearMessages');
+    }
+
+    public updateOption(player: Player, key: keyof WindowOptions, value: WindowOptions[keyof WindowOptions]) {
+        return () => emitClientRaw(player, 'vchat:updateOption', key, value);
+    }
+
+    public updateOptions(player: Player, options: WindowOptions) {
+        return () => emitClientRaw(player, 'vchat:updateOptions', options);
     }
 }

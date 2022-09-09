@@ -1,4 +1,4 @@
-export interface Options {
+export interface WindowOptions {
     prefix: string;
     placeholder: string;
     maxMessages: number;

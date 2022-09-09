@@ -98,6 +98,13 @@ export function CommandSuggestions() {
             : setCommands((commands) => [...commands, suggestion]);
     }
 
+    /**
+     * Removes all command suggestions.
+     */
+    function removeSuggestions() {
+        setCommands([]);
+    }
+
     // --------------------------------------------------------------
     // Hooks
     // --------------------------------------------------------------
@@ -112,6 +119,7 @@ export function CommandSuggestions() {
     onMount(() => {
         window.addEventListener('keydown', selectCommand);
         window?.alt?.on('vchat:addSuggestion', addSuggestion);
+        window?.alt?.on('vchat:removeSuggestions', removeSuggestions);
     });
 
     // Unmount ------------------------------------------------------
@@ -119,6 +127,7 @@ export function CommandSuggestions() {
     onCleanup(() => {
         window.removeEventListener('keydown', selectCommand);
         window?.alt?.off('vchat:addSuggestion', addSuggestion);
+        window?.alt?.on('vchat:removeSuggestions', removeSuggestions);
     });
 
     // --------------------------------------------------------------
