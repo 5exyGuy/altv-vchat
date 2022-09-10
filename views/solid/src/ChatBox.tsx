@@ -35,6 +35,14 @@ export function ChatBox() {
         window?.alt?.emit('vchat:mounted');
     }
 
+    /**
+     * Updates the window's options.
+     * @param options The new options.
+     */
+    function updateOptions(options: Options) {
+        setOptions(options);
+    }
+
     // --------------------------------------------------------------
     // Hooks
     // --------------------------------------------------------------
@@ -44,6 +52,7 @@ export function ChatBox() {
     onMount(() => {
         window?.alt?.on('vchat:focus', toggleFocus);
         window?.alt?.on('vchat:syncSettings', syncSettings);
+        window?.alt?.on('vchat:updateOptions', updateOptions);
         window?.alt.emit('vchat:requestSettings');
     });
 
@@ -51,7 +60,8 @@ export function ChatBox() {
 
     onCleanup(() => {
         window?.alt?.off('vchat:focus', toggleFocus);
-        window?.alt?.off('vchat:loadSettings', syncSettings);
+        window?.alt?.off('vchat:syncSettings', syncSettings);
+        window?.alt?.off('vchat:updateOptions', updateOptions);
     });
 
     return (

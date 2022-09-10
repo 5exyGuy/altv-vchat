@@ -37,7 +37,7 @@ export function MessageInput() {
 
         window?.alt?.emit('vchat:addMessage', message());
         batch(() => {
-            setBuffer((buffer) => [message(), ...buffer].splice(0, options.maxMessageBufferLength));
+            setBuffer((buffer) => [message(), ...buffer].splice(0, options().maxMessageBufferLength));
             setCurrentBufferIndex(-1);
             setMessage('');
         });
@@ -53,7 +53,7 @@ export function MessageInput() {
      */
     function selectPreviousMessage(event: KeyboardEvent) {
         if (event.key !== 'ArrowUp' && event.key !== 'ArrowDown') return;
-        if (message() && message().startsWith(options.prefix)) return;
+        if (message() && message().startsWith(options().prefix)) return;
         if (buffer().length === 0) return;
 
         if (event.key === 'ArrowDown') {
@@ -81,11 +81,43 @@ export function MessageInput() {
         event.preventDefault();
     }
 
+    // Message input processing -------------------------------------
+
+    /**
+     * Updates the current message.
+     * @param event The change event.
+     */
+    function processInputChange(
+        event: Event & {
+            currentTarget: HTMLInputElement;
+            target: Element;
+        },
+    ) {
+        const value = event.currentTarget.value;
+        if (options().maxMessageLength !== 0 && value.length > options().maxMessageLength) {
+            ref!.value = message();
+            return;
+        }
+        setMessage(value);
+        ref!.value = value;
+    }
+
     // --------------------------------------------------------------
     // Hooks
     // --------------------------------------------------------------
 
     // Effects ------------------------------------------------------
+
+    // Listens to options changes.
+    createEffect(
+        on(options, (options) => {
+            if (message().length > options.maxMessageLength) setMessage(message().slice(0, options.maxMessageLength));
+            if (buffer().length > options.maxMessageBufferLength) {
+                setBuffer(buffer().slice(0, options.maxMessageBufferLength));
+                setCurrentBufferIndex(-1);
+            }
+        }),
+    );
 
     // Listens to focus changes.
     // When focus is true, the input is focused.
@@ -105,15 +137,22 @@ export function MessageInput() {
     // --------------------------------------------------------------
 
     return (
-        <input
-            class="bg-black bg-opacity-50 text-base text-white px-[16px] py-[8px] focus:outline-none w-full"
+        <div
+            class="flex gap-4 bg-black bg-opacity-50 text-base text-white px-[16px] py-[8px] w-full"
             classList={{ invisible: !focus(), visible: focus() }}
-            placeholder={options.placeholder}
-            value={message()}
-            onInput={(event) => setMessage(event.currentTarget.value)}
-            ref={ref}
-            onKeyDown={sendMessage}
-            onBlur={(event) => event.currentTarget.focus()}
-        />
+        >
+            <input
+                class="bg-transparent focus:outline-none w-full"
+                placeholder={options().placeholder}
+                value={message()}
+                onInput={processInputChange}
+                ref={ref}
+                onKeyDown={sendMessage}
+                onBlur={(event) => event.currentTarget.focus()}
+            />
+            <span class="text-white text-opacity-50">
+                {message().length}/{options().maxMessageLength}
+            </span>
+        </div>
     );
 }

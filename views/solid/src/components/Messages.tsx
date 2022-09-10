@@ -51,7 +51,11 @@ export function Messages() {
      * @param type The type of message.
      */
     function addMessage(message: string, type: MessageType = MessageType.Default) {
-        setMessages((messages) => [...messages, { content: message, type }]);
+        setMessages((messages) => {
+            const newMessages = [...messages, { content: message, type }];
+            if (messages.length < options().maxMessages) return newMessages;
+            return newMessages.splice(newMessages.length - options().maxMessages, options().maxMessages);
+        });
     }
 
     /**
@@ -59,6 +63,8 @@ export function Messages() {
      * @param messages The messages to load.
      */
     function loadMessageHistory(messages: Array<MessageData>) {
+        if (messages.length < options().maxMessages) return messages;
+        messages = messages.splice(messages.length - options().maxMessages, options().maxMessages);
         setMessages(messages);
     }
 
@@ -93,7 +99,7 @@ export function Messages() {
      * Scrolls the chat box up by the specified amount in the chat store.
      */
     function scrollUp() {
-        const scrollTo = currentScroll() - options.scrollStep < 0 ? 0 : currentScroll() - options.scrollStep;
+        const scrollTo = currentScroll() - options().scrollStep < 0 ? 0 : currentScroll() - options().scrollStep;
         ref!.scrollTop = scrollTo;
         setCurrentScroll(scrollTo);
     }
@@ -103,7 +109,7 @@ export function Messages() {
      */
     function scrollDown() {
         const scrollTo =
-            currentScroll() + options.scrollStep > boxHeight() ? boxHeight() : currentScroll() + options.scrollStep;
+            currentScroll() + options().scrollStep > boxHeight() ? boxHeight() : currentScroll() + options().scrollStep;
         ref!.scrollTop = scrollTo;
         setCurrentScroll(scrollTo);
     }
@@ -138,6 +144,16 @@ export function Messages() {
     // --------------------------------------------------------------
 
     // Effects ------------------------------------------------------
+
+    // Listens to options changes and removes the messages if the max messages is changed.
+    createEffect(
+        on(options, (options) => {
+            setMessages((messages) => {
+                if (messages.length < options.maxMessages) return messages;
+                return messages.slice(messages.length - options.maxMessages);
+            });
+        }),
+    );
 
     // Listens to focus changes.
     // If the chat box is not focused, it scrolls to the bottom.

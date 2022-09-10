@@ -4,7 +4,7 @@ import { createStore } from 'solid-js/store';
 function createChatStore() {
     const [focus, setFocus] = createSignal(false);
     const [message, setMessage] = createSignal('');
-    const [options, setOptions] = createStore({
+    const [options, setOptions] = createSignal({
         prefix: '/',
         placeholder: 'Type a message...',
         maxCommandSuggestions: 3,

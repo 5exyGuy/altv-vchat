@@ -87,9 +87,9 @@ export function MessageInput() {
      * @param event The change event.
      */
     function processInputChange(event: ChangeEvent<HTMLInputElement>) {
-        const value = event.target.value;
+        const value = event.currentTarget.value;
         if (options.maxMessageLength !== 0 && value.length > options.maxMessageLength) return;
-        dispatch(setMessage(event.target.value));
+        dispatch(setMessage(value));
     }
 
     // --------------------------------------------------------------

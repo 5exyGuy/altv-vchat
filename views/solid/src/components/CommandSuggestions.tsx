@@ -55,7 +55,7 @@ export function CommandSuggestions() {
         }
 
         const words = message.split(' ');
-        if (!words[0].startsWith(options.prefix)) {
+        if (!words[0].startsWith(options().prefix)) {
             setMatchedCommands([]);
             return;
         }
@@ -63,7 +63,7 @@ export function CommandSuggestions() {
         setMatchedCommands(
             commands
                 .filter((command) => {
-                    const cmdName = words[0].startsWith(options.prefix) ? words[0].substring(1) : words[0];
+                    const cmdName = words[0].startsWith(options().prefix) ? words[0].substring(1) : words[0];
 
                     return (
                         cmdName.length > 0 &&
@@ -71,10 +71,10 @@ export function CommandSuggestions() {
                         words.length - 1 <= (command.params?.length ?? 0)
                     );
                 })
-                .splice(0, options.maxCommandSuggestions)
+                .splice(0, options().maxCommandSuggestions)
                 .map((command) => {
                     let currentParam = -1;
-                    const cmdName = options.prefix + command.name;
+                    const cmdName = options().prefix + command.name;
 
                     if (words.length === 1 && words[0] === cmdName) currentParam = 0;
                     if (words.length > 1 && words.length - 1 <= (command?.params?.length ?? 0))
@@ -112,7 +112,7 @@ export function CommandSuggestions() {
     // Effects ------------------------------------------------------
 
     // Listens for message changes and updates the matched commands.
-    createEffect(on([message, commands], ([message, commands]) => updateMatchedCommands(message, commands)));
+    createEffect(on([message, commands, options], ([message, commands]) => updateMatchedCommands(message, commands)));
 
     // Mount --------------------------------------------------------
 

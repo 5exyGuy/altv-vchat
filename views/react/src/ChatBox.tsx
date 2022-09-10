@@ -3,6 +3,7 @@ import { useDispatch } from 'react-redux';
 import { CommandSuggestions } from './components/CommandSuggestions';
 import { MessageInput } from './components/MessageInput';
 import { Messages } from './components/Messages';
+import useAltEvent from './hooks/alt-event.hook';
 import type { CommandSuggestion, Options } from './interfaces';
 import { addCommandSuggestion, setFocus, setOptions } from './reducers/chat.reducer';
 
@@ -37,6 +38,10 @@ export function ChatBox() {
         window?.alt?.emit('vchat:mounted');
     }
 
+    /**
+     * Updates the window's options.
+     * @param options The new options.
+     */
     function updateOptions(options: Options) {
         dispatch(setOptions(options));
     }
@@ -45,22 +50,13 @@ export function ChatBox() {
     // Hooks
     // --------------------------------------------------------------
 
-    // Mount --------------------------------------------------------
+    // Events -------------------------------------------------------
 
-    useEffect(() => {
-        window?.alt?.on('vchat:focus', toggleFocus);
-        window?.alt?.on('vchat:syncSettings', syncSettings);
-        window?.alt?.on('vchat:updateOptions', updateOptions);
-        window?.alt.emit('vchat:requestSettings');
+    useAltEvent('vchat:focus', toggleFocus);
+    useAltEvent('vchat:syncSettings', syncSettings);
+    useAltEvent('vchat:updateOptions', updateOptions);
 
-        // Unmount --------------------------------------------------
-
-        return () => {
-            window?.alt?.off('vchat:focus', toggleFocus);
-            window?.alt?.off('vchat:syncSettings', syncSettings);
-            window?.alt?.off('vchat:updateOptions', updateOptions);
-        };
-    }, []);
+    useEffect(() => window?.alt.emit('vchat:requestSettings'), []);
 
     return (
         <div className="fixed top-[16px] left-[16px] w-[640px]">

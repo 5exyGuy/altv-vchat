@@ -103,6 +103,11 @@ export function Messages() {
         setCurrentScroll(boxHeight);
     }
 
+    /**
+     * Scrolls to the specified top position.
+     * @param top The top position to scroll to.
+     * @param behavior Whether or not to scroll smoothly.
+     */
     function scrollTo(top: number, behavior: ScrollBehavior = 'smooth') {
         ref.current!.scroll({ top, behavior });
         setCurrentScroll(top);
@@ -176,7 +181,6 @@ export function Messages() {
     // Listens to messages changes.
     // Sets the new height of the chat box.
     useEffect(() => {
-        if (messages.length === 0) return;
         setClientHeight(ref.current!.clientHeight);
         setScrollHeight(ref.current!.scrollHeight);
         setBoxHeight(ref.current!.scrollHeight - ref.current!.clientHeight);
