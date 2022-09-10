@@ -1,8 +1,9 @@
-import { reactive, ref } from 'vue';
-import type { Options } from '../interfaces';
+import { reactive, Ref, ref } from 'vue';
+import type { CommandSuggestion, Options } from '../interfaces';
 
-const focus = ref(false);
-const message = ref('');
+const focus: Ref<boolean> = ref(false);
+const message: Ref<string> = ref('');
+const commandSuggestions: Ref<Array<CommandSuggestion>> = ref([]);
 const options = reactive({
     prefix: '/',
     placeholder: 'Type a message...',
@@ -17,12 +18,16 @@ export function useChatStore() {
     return {
         focus,
         message,
+        commandSuggestions,
         options,
         setFocus(value: boolean) {
             focus.value = value;
         },
         setMessage(value: string) {
             message.value = value;
+        },
+        setCommandSuggestions(value: Array<CommandSuggestion>) {
+            commandSuggestions.value = value;
         },
         setOptions(value: Options) {
             Object.assign(options, value);

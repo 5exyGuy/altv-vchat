@@ -2,19 +2,17 @@
 import { onMounted, onUnmounted, Ref, ref, watch } from 'vue';
 import type { CommandSuggestion, MatchedCommand } from '../interfaces';
 import { useChatStore } from '../stores';
-import commandsJson from '../commands.json';
 
 // --------------------------------------------------------------
 // Chat Store
 // --------------------------------------------------------------
 
-const { focus, message, setMessage, options } = useChatStore();
+const { focus, message, setMessage, commandSuggestions, setCommandSuggestions, options } = useChatStore();
 
 // --------------------------------------------------------------
 // Local Variables
 // --------------------------------------------------------------
 
-const commands: Ref<Array<CommandSuggestion>> = ref(commandsJson);
 const matchedCommands: Ref<Array<MatchedCommand>> = ref([]);
 const selected: Ref<number> = ref(-1);
 
@@ -87,15 +85,15 @@ function updateMatchedCommands(message: string, commands: Array<CommandSuggestio
  */
 function addSuggestion(suggestion: CommandSuggestion | Array<CommandSuggestion>) {
     Array.isArray(suggestion)
-        ? (commands.value = [...commands.value, ...suggestion])
-        : (commands.value = [...commands.value, suggestion]);
+        ? setCommandSuggestions([...commandSuggestions.value, ...suggestion])
+        : setCommandSuggestions([...commandSuggestions.value, suggestion]);
 }
 
 /**
  * Removes all command suggestions.
  */
 function removeSuggestions() {
-    commands.value = [];
+    setCommandSuggestions([]);
 }
 
 // --------------------------------------------------------------
@@ -105,7 +103,7 @@ function removeSuggestions() {
 // Effects ------------------------------------------------------
 
 // Listens for message changes and updates the matched commands.
-watch([message, commands, options], ([message, commands]) => updateMatchedCommands(message, commands));
+watch([message, commandSuggestions, options], ([message, commands]) => updateMatchedCommands(message, commands));
 
 // Mount --------------------------------------------------------
 

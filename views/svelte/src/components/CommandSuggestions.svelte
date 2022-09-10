@@ -2,19 +2,17 @@
     import type { CommandSuggestion, MatchedCommand } from '../interfaces';
     import { onDestroy, onMount } from 'svelte';
     import { useChatStore } from '../stores';
-    import commandsJson from '../commands.json';
 
     // --------------------------------------------------------------
     // Chat Store
     // --------------------------------------------------------------
 
-    const { focus, message, setMessage, options } = useChatStore();
+    const { focus, message, setMessage, commandSuggestions, setCommandSuggestions, options } = useChatStore();
 
     // --------------------------------------------------------------
     // Local Variables
     // --------------------------------------------------------------
 
-    let commands: Array<CommandSuggestion> = commandsJson;
     let matchedCommands: Array<MatchedCommand> = [];
     let selected: number = -1;
 
@@ -88,14 +86,16 @@
      * @param suggestion The command suggestion to add.
      */
     function addSuggestion(suggestion: CommandSuggestion | Array<CommandSuggestion>) {
-        Array.isArray(suggestion) ? (commands = [...commands, ...suggestion]) : (commands = [...commands, suggestion]);
+        Array.isArray(suggestion)
+            ? setCommandSuggestions([...$commandSuggestions, ...suggestion])
+            : setCommandSuggestions([...$commandSuggestions, suggestion]);
     }
 
     /**
      * Removes all command suggestions.
      */
     function removeSuggestions() {
-        commands = [];
+        setCommandSuggestions([]);
     }
 
     // --------------------------------------------------------------
@@ -105,8 +105,8 @@
     // Effects ------------------------------------------------------
 
     // Listens for message changes and updates the matched commands.
-    $: updateMatchedCommands($message, commands);
-    const unsubOptions = options.subscribe(() => updateMatchedCommands($message, commands));
+    $: updateMatchedCommands($message, $commandSuggestions);
+    const unsubOptions = options.subscribe(() => updateMatchedCommands($message, $commandSuggestions));
 
     // Mount --------------------------------------------------------
 

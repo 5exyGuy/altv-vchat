@@ -2,7 +2,7 @@ import { onCleanup, onMount } from 'solid-js';
 import { CommandSuggestions } from './components/CommandSuggestions';
 import { MessageInput } from './components/MessageInput';
 import { Messages } from './components/Messages';
-import type { Options } from './interfaces';
+import type { CommandSuggestion, Options } from './interfaces';
 import { chatStore } from './stores';
 
 export function ChatBox() {
@@ -10,7 +10,7 @@ export function ChatBox() {
     // Chat Store
     // --------------------------------------------------------------
 
-    const { setFocus, setOptions } = chatStore;
+    const { setFocus, setCommandSuggestions, setOptions } = chatStore;
 
     // --------------------------------------------------------------
     // Functions
@@ -30,8 +30,9 @@ export function ChatBox() {
      * Syncs the client settings with the server settings.
      * @param settings The chat window's settings.
      */
-    function syncSettings(settings: Options) {
+    function syncSettings(settings: Options, commandSuggestions: Array<CommandSuggestion>) {
         setOptions(settings);
+        setCommandSuggestions((commands) => [...commands, ...commandSuggestions]);
         window?.alt?.emit('vchat:mounted');
     }
 

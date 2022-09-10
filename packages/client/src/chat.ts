@@ -35,7 +35,7 @@ export class Chat {
         this.eventService.on('keyup', this.toggleWindowFoucsOnKey.bind(this));
 
         this.windowService.on('vchat:requestSettings', this.requestSettings.bind(this));
-        this.windowService.on('vchat:mounted', this.markAsMounted.bind(this));
+        this.windowService.once('vchat:mounted', this.markAsMounted.bind(this));
         this.windowService.on('vchat:addMessage', this.sendMessageToServer.bind(this));
     }
 

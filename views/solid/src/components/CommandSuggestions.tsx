@@ -1,20 +1,18 @@
 import type { CommandSuggestion, MatchedCommand } from '../interfaces';
 import { createEffect, createSignal, For, on, onCleanup, onMount } from 'solid-js';
 import { chatStore } from '../stores';
-import commandsJson from '../commands.json';
 
 export function CommandSuggestions() {
     // --------------------------------------------------------------
     // Chat Store
     // --------------------------------------------------------------
 
-    const { focus, message, setMessage, options } = chatStore;
+    const { focus, message, setMessage, commandSuggestions, setCommandSuggestions, options } = chatStore;
 
     // --------------------------------------------------------------
     // Local Variables
     // --------------------------------------------------------------
 
-    const [commands, setCommands] = createSignal<Array<CommandSuggestion>>(commandsJson);
     const [matchedCommands, setMatchedCommands] = createSignal<Array<MatchedCommand>>([]);
     const [selected, setSelected] = createSignal<number>(-1);
 
@@ -94,15 +92,15 @@ export function CommandSuggestions() {
      */
     function addSuggestion(suggestion: CommandSuggestion | Array<CommandSuggestion>) {
         Array.isArray(suggestion)
-            ? setCommands((commands) => [...commands, ...suggestion])
-            : setCommands((commands) => [...commands, suggestion]);
+            ? setCommandSuggestions((commands) => [...commands, ...suggestion])
+            : setCommandSuggestions((commands) => [...commands, suggestion]);
     }
 
     /**
      * Removes all command suggestions.
      */
     function removeSuggestions() {
-        setCommands([]);
+        setCommandSuggestions([]);
     }
 
     // --------------------------------------------------------------
@@ -112,7 +110,9 @@ export function CommandSuggestions() {
     // Effects ------------------------------------------------------
 
     // Listens for message changes and updates the matched commands.
-    createEffect(on([message, commands, options], ([message, commands]) => updateMatchedCommands(message, commands)));
+    createEffect(
+        on([message, commandSuggestions, options], ([message, commands]) => updateMatchedCommands(message, commands)),
+    );
 
     // Mount --------------------------------------------------------
 

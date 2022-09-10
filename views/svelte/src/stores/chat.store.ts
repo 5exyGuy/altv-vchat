@@ -1,9 +1,10 @@
-import type { Options } from '../interfaces';
+import type { CommandSuggestion, Options } from '../interfaces';
 import { writable } from 'svelte/store';
 
-const focus = writable(false);
-const message = writable('');
-const options = writable({
+const focus = writable<boolean>(false);
+const message = writable<string>('');
+const commandSuggestions = writable<Array<CommandSuggestion>>([]);
+const options = writable<Options>({
     prefix: '/',
     placeholder: 'Type a message...',
     maxCommandSuggestions: 3,
@@ -17,12 +18,16 @@ export function useChatStore() {
     return {
         focus,
         message,
+        commandSuggestions,
         options,
         setFocus(value: boolean) {
             focus.set(value);
         },
         setMessage(value: string) {
             message.set(value);
+        },
+        setCommandSuggestions(value: Array<CommandSuggestion>) {
+            commandSuggestions.set(value);
         },
         setOptions(value: Options) {
             options.set(value);

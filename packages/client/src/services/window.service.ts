@@ -79,4 +79,8 @@ export class WindowService {
     public on(event: string, listener: (...args: any[]) => void) {
         this.webView.on(event, listener);
     }
+
+    public once(event: string, listener: (...args: any[]) => void) {
+        this.webView.once(event, listener);
+    }
 }

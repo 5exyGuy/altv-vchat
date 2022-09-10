@@ -1,9 +1,10 @@
 import { createRoot, createSignal } from 'solid-js';
-import { createStore } from 'solid-js/store';
+import type { CommandSuggestion } from '../interfaces';
 
 function createChatStore() {
-    const [focus, setFocus] = createSignal(false);
-    const [message, setMessage] = createSignal('');
+    const [focus, setFocus] = createSignal<boolean>(false);
+    const [message, setMessage] = createSignal<string>('');
+    const [commandSuggestions, setCommandSuggestions] = createSignal<Array<CommandSuggestion>>([]);
     const [options, setOptions] = createSignal({
         prefix: '/',
         placeholder: 'Type a message...',
@@ -14,7 +15,7 @@ function createChatStore() {
         scrollStep: 20,
     });
 
-    return { focus, setFocus, message, setMessage, options, setOptions };
+    return { focus, setFocus, message, setMessage, commandSuggestions, setCommandSuggestions, options, setOptions };
 }
 
 export const chatStore = createRoot(createChatStore);

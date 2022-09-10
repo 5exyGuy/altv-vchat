@@ -4,13 +4,13 @@ import MessageInput from './components/MessageInput.vue';
 import CommandSuggestions from './components/CommandSuggestions.vue';
 import { onMounted, onUnmounted } from 'vue';
 import { useChatStore } from './stores';
-import type { Options } from './interfaces';
+import type { CommandSuggestion, Options } from './interfaces';
 
 // --------------------------------------------------------------
 // Chat Store
 // --------------------------------------------------------------
 
-const { setFocus, setOptions } = useChatStore();
+const { setFocus, commandSuggestions, setCommandSuggestions, setOptions } = useChatStore();
 
 // --------------------------------------------------------------
 // Functions
@@ -30,8 +30,9 @@ function toggleFocus(focus: boolean) {
  * Syncs the client settings with the server settings.
  * @param settings The chat window's settings.
  */
-function syncSettings(settings: Options) {
+function syncSettings(settings: Options, _commandSuggestions: Array<CommandSuggestion>) {
     setOptions(settings);
+    setCommandSuggestions([...commandSuggestions.value, ..._commandSuggestions]);
     window?.alt?.emit('vchat:mounted');
 }
 
