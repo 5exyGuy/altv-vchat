@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted, onUnmounted, ref, watch } from 'vue';
+import { onMounted, onUnmounted, Ref, ref, watch } from 'vue';
 import type { CommandSuggestion, MatchedCommand } from '../interfaces';
 import { useChatStore } from '../stores';
 import commandsJson from '../commands.json';
@@ -14,9 +14,9 @@ const { focus, message, setMessage, options } = useChatStore();
 // Local Variables
 // --------------------------------------------------------------
 
-const commands = ref(commandsJson as Array<CommandSuggestion>);
-const matchedCommands = ref([] as Array<MatchedCommand>);
-const selected = ref(-1);
+const commands: Ref<Array<CommandSuggestion>> = ref(commandsJson);
+const matchedCommands: Ref<Array<MatchedCommand>> = ref([]);
+const selected: Ref<number> = ref(-1);
 
 // --------------------------------------------------------------
 // Functions
@@ -105,7 +105,7 @@ function removeSuggestions() {
 // Effects ------------------------------------------------------
 
 // Listens for message changes and updates the matched commands.
-watch([message, commands], ([message, commands]) => updateMatchedCommands(message, commands));
+watch([message, commands, options], ([message, commands]) => updateMatchedCommands(message, commands));
 
 // Mount --------------------------------------------------------
 

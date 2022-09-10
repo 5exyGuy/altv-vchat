@@ -53,7 +53,7 @@ export function ChatBox() {
         window?.alt?.on('vchat:focus', toggleFocus);
         window?.alt?.on('vchat:syncSettings', syncSettings);
         window?.alt?.on('vchat:updateOptions', updateOptions);
-        window?.alt.emit('vchat:requestSettings');
+        window?.alt?.emit('vchat:requestSettings');
     });
 
     // Unmount ------------------------------------------------------

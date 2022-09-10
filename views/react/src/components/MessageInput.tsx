@@ -19,9 +19,9 @@ export function MessageInput() {
     // Local Variables
     // --------------------------------------------------------------
 
-    const [buffer, setBuffer] = useState([] as Array<string>);
-    const [currentBufferIndex, setCurrentBufferIndex] = useState(-1);
-    const [previuosMessage, setPreviuosMessage] = useState('');
+    const [buffer, setBuffer] = useState<Array<string>>([]);
+    const [currentBufferIndex, setCurrentBufferIndex] = useState<number>(-1);
+    const [previuosMessage, setPreviuosMessage] = useState<string>('');
 
     // --------------------------------------------------------------
     // Refs

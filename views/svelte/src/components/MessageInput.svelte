@@ -12,9 +12,9 @@
     // Local Variables
     // --------------------------------------------------------------
 
-    let buffer = [] as Array<string>;
-    let currentBufferIndex = -1;
-    let previousMessage = '';
+    let buffer: Array<string> = [];
+    let currentBufferIndex: number = -1;
+    let previousMessage: string = '';
 
     // --------------------------------------------------------------
     // Refs
@@ -71,11 +71,29 @@
         event.preventDefault();
     }
 
+    function processInputChange(event: Event) {
+        const value = (event.currentTarget as HTMLInputElement).value;
+        if ($options.maxMessageLength !== 0 && value.length > $options.maxMessageLength) {
+            setMessage(value.slice(0, $options.maxMessageLength));
+            return;
+        }
+        setMessage(value);
+    }
+
     // --------------------------------------------------------------
     // Hooks
     // --------------------------------------------------------------
 
     // Effects ------------------------------------------------------
+
+    // Listens to options changes.
+    const unsubOptions = options.subscribe((options) => {
+        if ($message.length > options.maxMessageLength) setMessage($message.slice(0, options.maxMessageLength));
+        if (buffer.length > options.maxMessageBufferLength) {
+            buffer = buffer.slice(0, options.maxMessageBufferLength);
+            currentBufferIndex = -1;
+        }
+    });
 
     // Listens to focus changes.
     // When focus is true, the input is focused.
@@ -89,18 +107,29 @@
 
     // Unmount ------------------------------------------------------
 
-    onDestroy(() => unsubFocus());
+    onDestroy(() => {
+        unsubOptions();
+        unsubFocus();
+    });
 </script>
 
-<input
-    class="bg-black bg-opacity-50 text-base text-white px-[16px] py-[8px] focus:outline-none w-full"
+<div
+    class="flex gap-4 bg-black bg-opacity-50 text-base text-white px-[16px] py-[8px] w-full"
     class:invisible={!$focus}
     class:visible={$focus}
-    placeholder={$options.placeholder}
-    bind:value={$message}
-    bind:this={ref}
-    on:keydown={sendMessage}
-    on:blur={(event) => event.currentTarget.focus()}
-/>
+>
+    <input
+        class="bg-transparent focus:outline-none w-full"
+        placeholder={$options.placeholder}
+        bind:value={$message}
+        bind:this={ref}
+        on:input={processInputChange}
+        on:keydown={sendMessage}
+        on:blur={(event) => event.currentTarget.focus()}
+    />
+    <span class="text-white text-opacity-50">
+        {$message.length}/{$options.maxMessageLength}
+    </span>
+</div>
 
 <svelte:window on:keydown={handleKeydown} />

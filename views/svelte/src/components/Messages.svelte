@@ -49,12 +49,7 @@
      */
     async function addMessage(message: string, type: MessageType = MessageType.Default) {
         messages = [...messages, { content: message, type }];
-        await tick();
-        scrollHeight = ref.scrollHeight;
-        clientHeight = ref.clientHeight;
-        boxHeight = scrollHeight - clientHeight;
-        if ($focus || (!$focus && currentScroll === boxHeight)) return;
-        scrollToBottom();
+        await updateBox();
     }
 
     /**
@@ -63,12 +58,7 @@
      */
     async function setMessages(_messages: Array<MessageData>) {
         messages = _messages;
-        await tick();
-        scrollHeight = ref.scrollHeight;
-        clientHeight = ref.clientHeight;
-        boxHeight = scrollHeight - clientHeight;
-        if ($focus || (!$focus && currentScroll === boxHeight)) return;
-        scrollToBottom();
+        await updateBox();
     }
 
     /**
@@ -142,12 +132,33 @@
         event.deltaY < 0 ? scrollUp() : scrollDown();
     }
 
+    /**
+     * Updates the chat box's dimensions.
+     */
+    async function updateBox() {
+        await tick();
+        scrollHeight = ref.scrollHeight;
+        clientHeight = ref.clientHeight;
+        boxHeight = scrollHeight - clientHeight;
+        if ($focus || (!$focus && currentScroll === boxHeight)) return;
+        scrollToBottom();
+    }
+
     // --------------------------------------------------------------
     // Hooks
     // --------------------------------------------------------------
 
     // Effects ------------------------------------------------------
 
+    // Listens to options changes and removes the messages if the max messages is changed.
+    const unsubOptions = options.subscribe(async (options) => {
+        if (messages.length < options.maxMessages) return;
+        messages = messages.slice(messages.length - options.maxMessages);
+        await updateBox();
+    });
+
+    // Listens to focus changes.
+    // If the chat box is not focused, it scrolls to the bottom.
     const unsubFocus = focus.subscribe((focus) => {
         if (focus || !ref) return;
         scrollToBottom();
@@ -164,6 +175,7 @@
     // Unmount ------------------------------------------------------
 
     onDestroy(() => {
+        unsubOptions();
         unsubFocus();
 
         window?.alt?.off('vchat:loadMessageHistory', setMessages);

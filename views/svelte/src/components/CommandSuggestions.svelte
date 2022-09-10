@@ -14,9 +14,9 @@
     // Local Variables
     // --------------------------------------------------------------
 
-    let commands = commandsJson as Array<CommandSuggestion>;
-    let matchedCommands = [] as Array<MatchedCommand>;
-    let selected = -1;
+    let commands: Array<CommandSuggestion> = commandsJson;
+    let matchedCommands: Array<MatchedCommand> = [];
+    let selected: number = -1;
 
     // --------------------------------------------------------------
     // Functions
@@ -106,6 +106,7 @@
 
     // Listens for message changes and updates the matched commands.
     $: updateMatchedCommands($message, commands);
+    const unsubOptions = options.subscribe(() => updateMatchedCommands($message, commands));
 
     // Mount --------------------------------------------------------
 
@@ -117,6 +118,8 @@
     // Unmount ------------------------------------------------------
 
     onDestroy(() => {
+        unsubOptions();
+
         window?.alt?.off('vchat:addSuggestion', addSuggestion);
         window?.alt?.off('vchat:removeSuggestions', removeSuggestions);
     });

@@ -21,11 +21,11 @@ export function Messages() {
     // Local Variables
     // --------------------------------------------------------------
 
-    const [messages, setMessages] = useState([] as Array<MessageData>);
-    const [currentScroll, setCurrentScroll] = useState(0);
-    const [boxHeight, setBoxHeight] = useState(0);
-    const [clientHeight, setClientHeight] = useState(0);
-    const [scrollHeight, setScrollHeight] = useState(0);
+    const [messages, setMessages] = useState<Array<MessageData>>([]);
+    const [currentScroll, setCurrentScroll] = useState<number>(0);
+    const [boxHeight, setBoxHeight] = useState<number>(0);
+    const [clientHeight, setClientHeight] = useState<number>(0);
+    const [scrollHeight, setScrollHeight] = useState<number>(0);
 
     // --------------------------------------------------------------
     // Computed Local Values

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, nextTick, onMounted, onUnmounted, ref } from 'vue';
+import { computed, nextTick, onMounted, onUnmounted, Ref, ref, watch } from 'vue';
 import { MessageType } from '../enums';
 import type { Message as MessageData } from '../interfaces';
 import { useChatStore } from '../stores';
@@ -15,11 +15,11 @@ const { focus, options } = useChatStore();
 // Local Variables
 // --------------------------------------------------------------
 
-const messages = ref([] as Array<MessageData>);
-const currentScroll = ref(0);
-const boxHeight = ref(0);
-const clientHeight = ref(0);
-const scrollHeight = ref(0);
+const messages: Ref<Array<MessageData>> = ref([]);
+const currentScroll: Ref<number> = ref(0);
+const boxHeight: Ref<number> = ref(0);
+const clientHeight: Ref<number> = ref(0);
+const scrollHeight: Ref<number> = ref(0);
 
 // --------------------------------------------------------------
 // Computed Local Values
@@ -53,12 +53,7 @@ const messagesRef = ref<HTMLDivElement>();
  */
 async function addMessage(message: string, type: MessageType = MessageType.Default) {
     messages.value = [...messages.value, { content: message, type }];
-    await nextTick();
-    scrollHeight.value = messagesRef.value!.scrollHeight;
-    clientHeight.value = messagesRef.value!.clientHeight;
-    boxHeight.value = scrollHeight.value - clientHeight.value;
-    if (focus.value || (!focus.value && currentScroll.value === boxHeight.value)) return;
-    scrollToBottom();
+    await updateBox();
 }
 
 /**
@@ -67,12 +62,7 @@ async function addMessage(message: string, type: MessageType = MessageType.Defau
  */
 async function loadMessages(_messages: Array<MessageData>) {
     messages.value = _messages;
-    await nextTick();
-    scrollHeight.value = messagesRef.value!.scrollHeight;
-    clientHeight.value = messagesRef.value!.clientHeight;
-    boxHeight.value = scrollHeight.value - clientHeight.value;
-    if (focus.value || (!focus.value && currentScroll.value === boxHeight.value)) return;
-    scrollToBottom();
+    await updateBox();
 }
 
 /**
@@ -148,11 +138,37 @@ async function processScroll(event: WheelEvent) {
     event.deltaY < 0 ? scrollUp() : scrollDown();
 }
 
+/**
+ * Updates the chat box's dimensions.
+ */
+async function updateBox() {
+    await nextTick();
+    scrollHeight.value = messagesRef.value!.scrollHeight;
+    clientHeight.value = messagesRef.value!.clientHeight;
+    boxHeight.value = scrollHeight.value - clientHeight.value;
+    if (focus.value || (!focus.value && currentScroll.value === boxHeight.value)) return;
+    scrollToBottom();
+}
+
 // --------------------------------------------------------------
 // Hooks
 // --------------------------------------------------------------
 
 // Effects ------------------------------------------------------
+
+// Listens to options changes and removes the messages if the max messages is changed.
+watch(options, async (options) => {
+    if (messages.value.length < options.maxMessages) return;
+    messages.value = messages.value.slice(messages.value.length - options.maxMessages);
+    await updateBox();
+});
+
+// Listens to focus changes.
+// If the chat box is not focused, it scrolls to the bottom.
+watch(focus, async (focus) => {
+    if (focus || !ref) return;
+    scrollToBottom();
+});
 
 // Mount --------------------------------------------------------
 

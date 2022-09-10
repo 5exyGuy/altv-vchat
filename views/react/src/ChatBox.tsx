@@ -56,7 +56,7 @@ export function ChatBox() {
     useAltEvent('vchat:syncSettings', syncSettings);
     useAltEvent('vchat:updateOptions', updateOptions);
 
-    useEffect(() => window?.alt.emit('vchat:requestSettings'), []);
+    useEffect(() => window?.alt?.emit('vchat:requestSettings'), []);
 
     return (
         <div className="fixed top-[16px] left-[16px] w-[640px]">

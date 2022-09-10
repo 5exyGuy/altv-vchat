@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { nextTick, onMounted, onUnmounted, ref, watch } from 'vue';
+import { nextTick, onMounted, onUnmounted, Ref, ref, watch } from 'vue';
 import { useChatStore } from '../stores';
 
 // --------------------------------------------------------------
@@ -12,9 +12,9 @@ const { focus, message, setMessage, options } = useChatStore();
 // Local Variables
 // --------------------------------------------------------------
 
-const buffer = ref([] as Array<string>);
-const currentBufferIndex = ref(-1);
-const previousMessage = ref('');
+const buffer: Ref<Array<string>> = ref([]);
+const currentBufferIndex: Ref<number> = ref(-1);
+const previousMessage: Ref<string> = ref('');
 
 // --------------------------------------------------------------
 // Refs
@@ -73,11 +73,29 @@ function handleKeydown(event: KeyboardEvent) {
     event.preventDefault();
 }
 
+function processInputChange(event: Event) {
+    const value = (event.currentTarget as HTMLInputElement).value;
+    if (options.maxMessageLength !== 0 && value.length > options.maxMessageLength) {
+        setMessage(value.slice(0, options.maxMessageLength));
+        return;
+    }
+    setMessage(value);
+}
+
 // --------------------------------------------------------------
 // Hooks
 // --------------------------------------------------------------
 
 // Effects ------------------------------------------------------
+
+// Listens to options changes.
+watch(options, (options) => {
+    if (message.value.length > options.maxMessageLength) setMessage(message.value.slice(0, options.maxMessageLength));
+    if (buffer.value.length > options.maxMessageBufferLength) {
+        buffer.value = buffer.value.slice(0, options.maxMessageBufferLength);
+        currentBufferIndex.value = -1;
+    }
+});
 
 // Listens to focus changes.
 // When focus is true, the input is focused.
@@ -99,13 +117,19 @@ onUnmounted(() => window.removeEventListener('keydown', handleKeydown));
 </script>
 
 <template>
-    <input
-        class="bg-black bg-opacity-50 text-base text-white px-[16px] py-[8px] focus:outline-none w-full"
+    <div
+        class="flex gap-4 bg-black bg-opacity-50 text-base text-white px-[16px] py-[8px] w-full"
         :class="{ invisible: !focus, visible: focus }"
-        :placeholder="options.placeholder"
-        v-model="message"
-        ref="inputRef"
-        @keydown="sendMessage"
-        @blur="(event) => (event.target as HTMLInputElement).focus()"
-    />
+    >
+        <input
+            class="bg-transparent focus:outline-none w-full"
+            :placeholder="options.placeholder"
+            v-model="message"
+            ref="inputRef"
+            @input="processInputChange"
+            @keydown="sendMessage"
+            @blur="(event) => (event.target as HTMLInputElement).focus()"
+        />
+        <span class="text-white text-opacity-50"> {{ message.length }}/{{ options.maxMessageLength }} </span>
+    </div>
 </template>

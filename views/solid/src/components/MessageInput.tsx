@@ -12,9 +12,9 @@ export function MessageInput() {
     // Local Variables
     // --------------------------------------------------------------
 
-    const [buffer, setBuffer] = createSignal([] as Array<string>);
-    const [currentBufferIndex, setCurrentBufferIndex] = createSignal(-1);
-    const [previuosMessage, setPreviuosMessage] = createSignal('');
+    const [buffer, setBuffer] = createSignal<Array<string>>([]);
+    const [currentBufferIndex, setCurrentBufferIndex] = createSignal<number>(-1);
+    const [previuosMessage, setPreviuosMessage] = createSignal<string>('');
 
     // --------------------------------------------------------------
     // Refs
