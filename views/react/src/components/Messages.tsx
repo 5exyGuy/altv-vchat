@@ -1,4 +1,4 @@
-import { CSSProperties, useEffect, useMemo, useRef, useState } from 'react';
+import { CSSProperties, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { MessageType } from '../enums';
 import type { Message as MessageData } from '../interfaces';
 import { Message } from './Message';
@@ -6,6 +6,8 @@ import classnames from 'classnames';
 import { useSelector } from 'react-redux';
 import type { RootState } from 'src/stores/chat.store';
 import './Messages.scss';
+import useAltEvent from '../hooks/alt-event.hook';
+import useWindowEvent from '../hooks/window-event.hook';
 
 export function Messages() {
     // --------------------------------------------------------------
@@ -24,8 +26,6 @@ export function Messages() {
     const [boxHeight, setBoxHeight] = useState(0);
     const [clientHeight, setClientHeight] = useState(0);
     const [scrollHeight, setScrollHeight] = useState(0);
-    const [deltaY, setDeltaY] = useState(0);
-    const [key, setKey] = useState('');
 
     // --------------------------------------------------------------
     // Computed Local Values
@@ -35,6 +35,7 @@ export function Messages() {
         () => (currentScroll === 0 ? '0px' : `${Math.floor((64 * currentScroll) / boxHeight)}px`),
         [currentScroll, boxHeight],
     );
+
     const maskBottomHeight = useMemo(
         () => (currentScroll === boxHeight ? '0px' : `${Math.floor((64 * (boxHeight - currentScroll)) / boxHeight)}px`),
         [currentScroll, boxHeight],
@@ -57,15 +58,21 @@ export function Messages() {
      * @param message The message to add.
      * @param type The type of message.
      */
-    async function addMessage(message: string, type: MessageType = MessageType.Default) {
-        setMessages((messages) => [...messages, { content: message, type }]);
+    function addMessage(message: string, type: MessageType = MessageType.Default) {
+        setMessages((messages) => {
+            const newMessages = [...messages, { content: message, type }];
+            if (messages.length < options.maxMessages) return newMessages;
+            return newMessages.splice(newMessages.length - options.maxMessages, options.maxMessages);
+        });
     }
 
     /**
      * Loads the messages from the client's local storage.
      * @param messages The messages to load.
      */
-    async function loadMessageHistory(messages: Array<MessageData>) {
+    function loadMessageHistory(messages: Array<MessageData>) {
+        if (messages.length < options.maxMessages) return messages;
+        messages = messages.splice(messages.length - options.maxMessages, options.maxMessages);
         setMessages(messages);
     }
 
@@ -108,7 +115,6 @@ export function Messages() {
         const scrollTo = currentScroll - options.scrollStep < 0 ? 0 : currentScroll - options.scrollStep;
         ref.current!.scrollTop = scrollTo;
         setCurrentScroll(scrollTo);
-        setDeltaY(0);
     }
 
     /**
@@ -119,7 +125,6 @@ export function Messages() {
             currentScroll + options.scrollStep > boxHeight ? boxHeight : currentScroll + options.scrollStep;
         ref.current!.scrollTop = scrollTo;
         setCurrentScroll(scrollTo);
-        setDeltaY(0);
     }
 
     /**
@@ -128,7 +133,12 @@ export function Messages() {
      */
     function handleKeydown(event: KeyboardEvent) {
         if (event.key !== 'PageUp' && event.key !== 'PageDown' && event.key !== 'Home' && event.key !== 'End') return;
-        setKey(event.key);
+
+        if (event.key === 'PageUp') scrollUp();
+        else if (event.key === 'PageDown') scrollDown();
+        else if (event.key === 'Home') scrollToTop();
+        else if (event.key === 'End') scrollToBottom();
+
         event.preventDefault();
     }
 
@@ -137,8 +147,9 @@ export function Messages() {
      * @param event The mouse wheel event.
      */
     function processScroll(event: WheelEvent) {
-        setDeltaY(event.deltaY);
         event.preventDefault();
+        if (!focus) return;
+        event.deltaY < 0 ? scrollUp() : scrollDown();
     }
 
     // --------------------------------------------------------------
@@ -146,6 +157,14 @@ export function Messages() {
     // --------------------------------------------------------------
 
     // Effects ------------------------------------------------------
+
+    // Listens to options changes and removes the messages if the max messages is changed.
+    useEffect(() => {
+        setMessages((messages) => {
+            if (messages.length < options.maxMessages) return messages;
+            return messages.slice(messages.length - options.maxMessages);
+        });
+    }, [options]);
 
     // Listens to focus changes.
     // If the chat box is not focused, it scrolls to the bottom.
@@ -165,47 +184,14 @@ export function Messages() {
         scrollTo(ref.current!.scrollHeight - ref.current!.clientHeight);
     }, [messages]);
 
-    // Listens to scroll delta changes.
-    useEffect(() => {
-        if (!focus) return;
-        if (deltaY === 0) return;
-        deltaY < 0 ? scrollUp() : scrollDown();
-    }, [deltaY]);
+    // Events -------------------------------------------------------
 
-    // Listens to key changes.
-    useEffect(() => {
-        if (!key) return;
-        if (key === 'PageUp') scrollUp();
-        else if (key === 'PageDown') scrollDown();
-        else if (key === 'Home') scrollToTop();
-        else if (key === 'End') scrollToBottom();
-        setKey('');
-    }, [key]);
+    useWindowEvent('keydown', handleKeydown);
+    useWindowEvent('wheel', processScroll);
 
-    function bind() {
-        // window.addEventListener('keydown', handleKeydown.bind());
-    }
-
-    // Mount --------------------------------------------------------
-
-    useEffect(() => {
-        window.addEventListener('keydown', handleKeydown);
-        window.addEventListener('wheel', processScroll, { passive: false });
-
-        window?.alt?.on('vchat:loadMessageHistory', loadMessageHistory);
-        window?.alt?.on('vchat:addMessage', addMessage);
-        window?.alt?.on('vchat:clearMessages', clearMessages);
-        // Unmount --------------------------------------------------
-
-        return () => {
-            window.removeEventListener('keydown', handleKeydown);
-            window.removeEventListener('wheel', processScroll);
-
-            window?.alt?.off('vchat:loadMessageHistory', loadMessageHistory);
-            window?.alt?.off('vchat:addMessage', addMessage);
-            window?.alt?.off('vchat:clearMessages', clearMessages);
-        };
-    }, []);
+    useAltEvent('vchat:loadMessageHistory', loadMessageHistory);
+    useAltEvent('vchat:addMessage', addMessage);
+    useAltEvent('vchat:clearMessages', clearMessages);
 
     // --------------------------------------------------------------
     // Render

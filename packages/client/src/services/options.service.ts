@@ -10,11 +10,11 @@ export class OptionsService {
 
     private options = DEFAULT_SETTINGS;
 
-    public update(options: ClientOptions & WindowOptions) {
+    public update(options: Partial<ClientOptions & WindowOptions>) {
         Object.keys(options).forEach((key) =>
             this.set(
                 key as keyof (ClientOptions & WindowOptions),
-                options[key as keyof (ClientOptions & WindowOptions)],
+                (options as ClientOptions & WindowOptions)[key as keyof (ClientOptions & WindowOptions)],
             ),
         );
     }

@@ -4,6 +4,8 @@ import type { RootState } from '../stores/chat.store';
 import type { CommandSuggestion, MatchedCommand } from '../interfaces';
 import { addCommandSuggestion, removeCommandSuggestions, setMessage } from '../reducers/chat.reducer';
 import classnames from 'classnames';
+import useWindowEvent from '../hooks/window-event.hook';
+import useAltEvent from '../hooks/alt-event.hook';
 
 export function CommandSuggestions() {
     // --------------------------------------------------------------
@@ -22,7 +24,6 @@ export function CommandSuggestions() {
 
     const [matchedCommands, setMatchedCommands] = useState<Array<MatchedCommand>>([]);
     const [selected, setSelected] = useState(-1);
-    const [key, setKey] = useState('');
 
     // --------------------------------------------------------------
     // Functions
@@ -34,8 +35,14 @@ export function CommandSuggestions() {
      */
     function selectCommand(event: KeyboardEvent) {
         if (event.key !== 'ArrowDown' && event.key !== 'ArrowUp' && event.key !== 'Tab') return;
+
+        if (event.key === 'ArrowUp' && matchedCommands.length > 1) setSelected(Math.max(0, selected - 1));
+        else if (event.key === 'ArrowDown' && matchedCommands.length > 1)
+            setSelected(Math.min(matchedCommands.length - 1, selected + 1));
+        else if (event.key === 'Tab' && selected >= 0 && !(matchedCommands[selected].currentParam > -1))
+            dispatch(setMessage(matchedCommands[selected].name));
+
         event.preventDefault();
-        setKey(event.key);
     }
 
     // Command suggestion matching ----------------------------------
@@ -45,6 +52,8 @@ export function CommandSuggestions() {
      * @param message The message to match against.
      */
     function updateMatchedCommands(message: string, commands: Array<CommandSuggestion>) {
+        setSelected(-1);
+
         if (!message) {
             setMatchedCommands([]);
             return;
@@ -104,37 +113,15 @@ export function CommandSuggestions() {
 
     // Effects ------------------------------------------------------
 
-    // Listens for message changes and updates the matched commands.
-    useEffect(() => updateMatchedCommands(message, commands), [message, commands]);
+    // Listens for message, command suggestions and options changes, and updates the matched commands.
+    useEffect(() => updateMatchedCommands(message, commands), [message, commands, options]);
 
-    // Listens for key changes and updates the selected command.
-    useEffect(() => {
-        if (!key) return;
+    // Events -------------------------------------------------------
 
-        if (key === 'ArrowUp' && matchedCommands.length > 1) setSelected(Math.max(0, selected - 1));
-        else if (key === 'ArrowDown' && matchedCommands.length > 1)
-            setSelected(Math.min(matchedCommands.length - 1, selected + 1));
-        else if (key === 'Tab' && selected >= 0 && !(matchedCommands[selected].currentParam > -1))
-            dispatch(setMessage(matchedCommands[selected].name));
+    useWindowEvent('keydown', selectCommand);
 
-        setKey('');
-    }, [key]);
-
-    // Mount --------------------------------------------------------
-
-    useEffect(() => {
-        window.addEventListener('keydown', selectCommand);
-        window?.alt?.on('vchat:addSuggestion', addSuggestion);
-        window?.alt?.on('vchat:removeSuggestions', removeSuggestions);
-
-        // Unmount --------------------------------------------------
-
-        return () => {
-            window.removeEventListener('keydown', selectCommand);
-            window?.alt?.off('vchat:addSuggestion', addSuggestion);
-            window?.alt?.off('vchat:removeSuggestions', removeSuggestions);
-        };
-    }, []);
+    useAltEvent('vchat:addSuggestion', addSuggestion);
+    useAltEvent('vchat:removeSuggestions', removeSuggestions);
 
     // --------------------------------------------------------------
     // Render

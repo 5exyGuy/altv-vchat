@@ -17,6 +17,11 @@ export class MessageHistoryService {
         this.save();
     }
 
+    public removeFirst() {
+        this.messages.shift();
+        this.save();
+    }
+
     public clear() {
         this.messages.length = 0;
         this.save();
@@ -29,5 +34,9 @@ export class MessageHistoryService {
 
     public get() {
         return this.messages;
+    }
+
+    public getLength() {
+        return this.messages.length;
     }
 }

@@ -52,6 +52,8 @@ export class Chat {
     }
 
     public addMessageToWindow(message: string, type: MessageType = MessageType.Default) {
+        if (this.messageHistoryService.getLength() > this.optionsService.get('maxMessageHistory'))
+            this.messageHistoryService.removeFirst();
         this.messageHistoryService.add({ content: message, type });
         this.windowService.addMessage(message, type);
     }
@@ -86,7 +88,7 @@ export class Chat {
         this.windowService.updateOptions(this.optionsService.getWindowOptions());
     }
 
-    public updateOptions(options: ClientOptions & WindowOptions) {
+    public updateOptions(options: Partial<ClientOptions & WindowOptions>) {
         this.optionsService.update(options);
         this.windowService.updateOptions(this.optionsService.getWindowOptions());
     }

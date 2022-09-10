@@ -1,8 +1,9 @@
 import { useSelector, useDispatch } from 'react-redux';
 import type { RootState } from '../stores/chat.store';
 import { setMessage } from '../reducers/chat.reducer';
-import { useEffect, useRef, useState, type KeyboardEvent } from 'react';
+import { type ChangeEvent, useEffect, useRef, useState, type KeyboardEvent } from 'react';
 import classnames from 'classnames';
+import useWindowEvent from '../hooks/window-event.hook';
 
 export function MessageInput() {
     // --------------------------------------------------------------
@@ -21,7 +22,6 @@ export function MessageInput() {
     const [buffer, setBuffer] = useState([] as Array<string>);
     const [currentBufferIndex, setCurrentBufferIndex] = useState(-1);
     const [previuosMessage, setPreviuosMessage] = useState('');
-    const [key, setKey] = useState('');
 
     // --------------------------------------------------------------
     // Refs
@@ -58,8 +58,38 @@ export function MessageInput() {
      */
     function handleKeydown(event: globalThis.KeyboardEvent) {
         if (event.key !== 'ArrowUp' && event.key !== 'ArrowDown') return;
-        setKey(event.key);
+        if (message && message.startsWith(options.prefix)) return;
+        if (buffer.length === 0) return;
+
+        if (event.key === 'ArrowDown') {
+            if (currentBufferIndex > 0) {
+                setMessage(buffer[currentBufferIndex - 1]);
+                setCurrentBufferIndex((currentBufferIndex) => currentBufferIndex - 1);
+            } else if (currentBufferIndex === 0) {
+                setCurrentBufferIndex(-1);
+                setMessage(previuosMessage);
+            }
+        } else if (event.key === 'ArrowUp') {
+            if (currentBufferIndex < 0) setPreviuosMessage(message);
+            if (currentBufferIndex < buffer.length - 1) {
+                setMessage(buffer[currentBufferIndex + 1]);
+                setCurrentBufferIndex((currentBufferIndex) => currentBufferIndex + 1);
+            }
+        }
+
         event.preventDefault();
+    }
+
+    // Message input processing -------------------------------------
+
+    /**
+     * Updates the current message.
+     * @param event The change event.
+     */
+    function processInputChange(event: ChangeEvent<HTMLInputElement>) {
+        const value = event.target.value;
+        if (options.maxMessageLength !== 0 && value.length > options.maxMessageLength) return;
+        dispatch(setMessage(event.target.value));
     }
 
     // --------------------------------------------------------------
@@ -68,62 +98,49 @@ export function MessageInput() {
 
     // Effects ------------------------------------------------------
 
+    // Listens to options changes.
+    useEffect(() => {
+        if (message.length > options.maxMessageLength) dispatch(setMessage(message.slice(0, options.maxMessageLength)));
+        if (buffer.length > options.maxMessageBufferLength) {
+            setBuffer(buffer.slice(0, options.maxMessageBufferLength));
+            setCurrentBufferIndex(-1);
+        }
+    }, [options]);
+
     // Listens to focus changes.
     // When focus is true, the input is focused.
     // When focus is false, sets the current message buffer index to -1.
-    useEffect(() => (focus ? ref!.current!.focus() : setCurrentBufferIndex(-1)), [focus]);
+    useEffect(() => (focus ? ref.current!.focus() : setCurrentBufferIndex(-1)), [focus]);
 
-    // Listends to key changes.
-    useEffect(() => {
-        if (!key) return;
-        if (message && message.startsWith(options.cmdPrefix)) return;
-        if (buffer.length === 0) return;
+    // Events -------------------------------------------------------
 
-        if (key === 'ArrowDown') {
-            if (currentBufferIndex > 0) {
-                dispatch(setMessage(buffer[currentBufferIndex - 1]));
-                setCurrentBufferIndex((currentBufferIndex) => currentBufferIndex - 1);
-            } else if (currentBufferIndex === 0) {
-                setCurrentBufferIndex(-1);
-                dispatch(setMessage(previuosMessage));
-            }
-        } else if (key === 'ArrowUp') {
-            if (currentBufferIndex < 0) setPreviuosMessage(message);
-            if (currentBufferIndex < buffer.length - 1) {
-                dispatch(setMessage(buffer[currentBufferIndex + 1]));
-                setCurrentBufferIndex((currentBufferIndex) => currentBufferIndex + 1);
-            }
-        }
-
-        setKey('');
-    }, [key]);
-
-    // Mount --------------------------------------------------------
-
-    useEffect(() => {
-        window.addEventListener('keydown', handleKeydown);
-
-        // Unmount --------------------------------------------------
-
-        return () => window.removeEventListener('keydown', handleKeydown);
-    }, []);
+    useWindowEvent('keydown', handleKeydown);
 
     // --------------------------------------------------------------
     // Render
     // --------------------------------------------------------------
 
     return (
-        <input
-            className={classnames(
-                'bg-black bg-opacity-50 text-base text-white px-[16px] py-[8px] focus:outline-none w-full',
-                { invisible: !focus, visible: focus },
+        <div
+            className={classnames('flex gap-4 bg-black bg-opacity-50 text-base text-white px-[16px] py-[8px] w-full', {
+                invisible: !focus,
+                visible: focus,
+            })}
+        >
+            <input
+                className="bg-transparent focus:outline-none w-full"
+                placeholder={options.placeholder}
+                value={message}
+                onChange={processInputChange}
+                ref={ref}
+                onKeyDown={sendMessage}
+                onBlur={(event) => event.currentTarget.focus()}
+            />
+            {options.maxMessageLength > 0 && (
+                <span className="text-white text-opacity-50">
+                    {message.length}/{options.maxMessageLength}
+                </span>
             )}
-            placeholder={options.inputPlaceholder}
-            value={message}
-            onChange={(event) => dispatch(setMessage(event.target.value))}
-            ref={ref}
-            onKeyDown={(event) => sendMessage(event)}
-            onBlur={(event) => event.currentTarget.focus()}
-        />
+        </div>
     );
 }

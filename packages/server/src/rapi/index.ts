@@ -5,6 +5,7 @@ export * from './message-handler.rapi';
 export * from './message-processor.rapi';
 export * from './mount.rapi';
 export * from './mute.rapi';
+export * from './options.rapi';
 export * from './send.rapi';
 export * from './suggestion.rapi';
 export * from './visibility.rapi';

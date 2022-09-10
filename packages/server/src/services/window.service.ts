@@ -1,6 +1,6 @@
 import { emitClientRaw, Player } from 'alt-server';
 import { MessageType } from '../enums';
-import type { WindowOptions } from '../interfaces';
+import type { ClientOptions, WindowOptions } from '../interfaces';
 import { validateMessage } from '../validators';
 
 export class WindowService {
@@ -59,11 +59,15 @@ export class WindowService {
         return () => emitClientRaw(player, 'vchat:clearMessages');
     }
 
-    public updateOption(player: Player, key: keyof WindowOptions, value: WindowOptions[keyof WindowOptions]) {
+    public updateOption(
+        player: Player,
+        key: keyof (ClientOptions & WindowOptions),
+        value: (ClientOptions & WindowOptions)[keyof (ClientOptions & WindowOptions)],
+    ) {
         return () => emitClientRaw(player, 'vchat:updateOption', key, value);
     }
 
-    public updateOptions(player: Player, options: WindowOptions) {
+    public updateOptions(player: Player, options: Partial<ClientOptions & WindowOptions>) {
         return () => emitClientRaw(player, 'vchat:updateOptions', options);
     }
 }
