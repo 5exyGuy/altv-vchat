@@ -8,6 +8,6 @@
         "dev": "turbo run dev --filter=!@altv-chat/react --filter=!@altv-chat/solid --filter=!@altv-chat/vue"
     },
     "devDependencies": {
-        "turbo": "^1.4.3"
+        "turbo": "^1.4.6"
     }
 }
