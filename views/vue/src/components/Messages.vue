@@ -52,7 +52,10 @@ const messagesRef = ref<HTMLDivElement>();
  * @param type The type of message.
  */
 async function addMessage(message: string, type: MessageType = MessageType.Default) {
-    messages.value = [...messages.value, { content: message, type }];
+    const newMessages = [...messages.value, { content: message, type }];
+    newMessages.length < options.maxMessages
+        ? (messages.value = newMessages)
+        : (messages.value = newMessages.slice(newMessages.length - options.maxMessages));
     await updateBox();
 }
 
@@ -61,7 +64,9 @@ async function addMessage(message: string, type: MessageType = MessageType.Defau
  * @param _messages The messages to load.
  */
 async function loadMessages(_messages: Array<MessageData>) {
-    messages.value = _messages;
+    _messages.length < options.maxMessages
+        ? (messages.value = _messages)
+        : (messages.value = _messages.slice(_messages.length - options.maxMessages));
     await updateBox();
 }
 

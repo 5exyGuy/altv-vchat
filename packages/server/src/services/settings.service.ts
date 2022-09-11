@@ -2,8 +2,8 @@ import { DEFAULT_OPTIONS } from '../consts';
 import * as alt from 'alt-server';
 import fs from 'fs';
 import path from 'path';
-import { LoggerService } from './logger.service';
 import type { CommandSuggestion } from '../interfaces';
+import { LoggerService } from './logger.service';
 
 export class SettingsService {
     private static readonly instance = new SettingsService();

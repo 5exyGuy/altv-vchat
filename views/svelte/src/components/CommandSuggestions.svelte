@@ -49,7 +49,7 @@
             return;
         }
 
-        const words = message.split(' ');
+        const words = message.trim().split(' ');
         if (!words[0].startsWith($options.prefix)) {
             matchedCommands = [];
             return;
@@ -71,7 +71,7 @@
                 const cmdName = $options.prefix + command.name;
 
                 if (words.length === 1 && words[0] === cmdName) currentParam = 0;
-                if (words.length > 1 && words.length - 1 <= (command.params.length ?? 0))
+                else if (words.length > 1 && words.length - 1 <= (command.params.length ?? 0))
                     currentParam = words.length - 1;
 
                 return { currentParam, ...command, name: cmdName };

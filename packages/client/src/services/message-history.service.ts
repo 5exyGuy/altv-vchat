@@ -8,7 +8,7 @@ export class MessageHistoryService {
         return MessageHistoryService.instance;
     }
 
-    private readonly messages: Array<Message> = LocalStorage.get('chatHistory') ?? [];
+    private readonly messages = (LocalStorage.get('chatHistory') as Array<Message>) ?? ([] as Array<Message>);
 
     private constructor() {}
 

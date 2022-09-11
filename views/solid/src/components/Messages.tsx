@@ -53,7 +53,7 @@ export function Messages() {
     function addMessage(message: string, type: MessageType = MessageType.Default) {
         setMessages((messages) => {
             const newMessages = [...messages, { content: message, type }];
-            if (messages.length < options().maxMessages) return newMessages;
+            if (newMessages.length < options().maxMessages) return newMessages;
             return newMessages.splice(newMessages.length - options().maxMessages, options().maxMessages);
         });
     }

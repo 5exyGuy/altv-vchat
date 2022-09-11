@@ -1,7 +1,9 @@
 export interface ServerOptions {
-    prefix: string;
-    enableHTMLInjections: boolean;
     enableDefaultMessageProcessor: boolean;
-    logPlayerMessages: boolean;
+    enableHTMLInjections: boolean;
     logPlayerCommands: boolean;
+    logPlayerMessages: boolean;
+    muteMessage: string;
+    prefix: string;
+    unknownCommandMessage: string;
 }

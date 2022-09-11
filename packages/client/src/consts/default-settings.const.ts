@@ -1,14 +1,15 @@
 import type { ClientOptions, WindowOptions } from '../interfaces';
 
-export const DEFAULT_SETTINGS = {
-    prefix: '/',
-    placeholder: 'Type a message...',
+export const DEFAULT_SETTINGS: ClientOptions & WindowOptions = {
+    focusKey: 84,
+    hideOnConnect: false,
     maxCommandSuggestions: 3,
+    maxMessageBufferLength: 100,
+    maxMessageHistory: 100,
     maxMessageLength: 100,
     maxMessages: 100,
-    maxMessageBufferLength: 100,
+    placeholder: 'Type a message...',
+    prefix: '/',
     scrollStep: 20,
-    maxMessageHistory: 100,
     unfocusKey: 27,
-    focusKey: 84,
-} as ClientOptions & WindowOptions;
+};

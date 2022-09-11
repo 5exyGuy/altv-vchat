@@ -1,12 +1,7 @@
 import { Player } from 'alt-server';
 import { DEFAULT_MESSAGE_PROCESSOR } from './consts';
 import { MessageType } from './enums';
-import { MountService } from './services/mount.service';
-import { WindowService } from './services/window.service';
-import { CommandService } from './services/command.service';
-import { EventService } from './services/event.service';
-import { LoggerService } from './services/logger.service';
-import { SettingsService } from './services/settings.service';
+import { CommandService, EventService, LoggerService, MountService, SettingsService, WindowService } from './services';
 import type { MessageHandler } from './types';
 
 export class Chat {
@@ -53,17 +48,18 @@ export class Chat {
 
                 const invoked = this.commandService.invoke(player, cmdName, args);
                 if (invoked) return;
+                const unknownCommandMessage = this.settingsService
+                    .getOption('unknownCommandMessage')
+                    .replace('{0}', cmdName);
                 this.mountService.waitForMount(
                     player,
-                    this.windowService.send(player, `Unknown command ${message}`, MessageType.Error),
+                    this.windowService.send(player, unknownCommandMessage, MessageType.Error),
                 );
             }
         } else {
             if (this.windowService.isMuted(player)) {
-                this.mountService.waitForMount(
-                    player,
-                    this.windowService.send(player, 'You are currently muted.', MessageType.Error),
-                );
+                const muteMessage = this.settingsService.getOption('muteMessage');
+                this.mountService.waitForMount(player, this.windowService.send(player, muteMessage, MessageType.Error));
                 return;
             }
 

@@ -1,9 +1,9 @@
 export interface WindowOptions {
-    prefix: string;
-    placeholder: string;
-    maxMessages: number;
     maxCommandSuggestions: number;
-    maxMessageLength: number;
     maxMessageBufferLength: number;
+    maxMessageLength: number;
+    maxMessages: number;
+    placeholder: string;
+    prefix: string;
     scrollStep: number;
 }

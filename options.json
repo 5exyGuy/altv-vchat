@@ -1,0 +1,19 @@
+{
+    "enableDefaultMessageProcessor": true,
+    "enableHTMLInjections": false,
+    "focusKey": 84,
+    "hideOnConnect": false,
+    "logPlayerCommands": true,
+    "logPlayerMessages": true,
+    "maxCommandSuggestions": 3,
+    "maxMessageBufferLength": 100,
+    "maxMessageHistory": 100,
+    "maxMessageLength": 100,
+    "maxMessages": 100,
+    "muteMessage": "You are muted.",
+    "placeholder": "Type a message...",
+    "prefix": "/",
+    "scrollStep": 20,
+    "unfocusKey": 27,
+    "unknownCommandMessage": "Unknown command: {0}"
+}

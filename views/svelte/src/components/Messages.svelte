@@ -48,7 +48,10 @@
      * @param type The type of message.
      */
     async function addMessage(message: string, type: MessageType = MessageType.Default) {
-        messages = [...messages, { content: message, type }];
+        const newMessages = [...messages, { content: message, type }];
+        newMessages.length < $options.maxMessages
+            ? (messages = newMessages)
+            : (messages = newMessages.slice(newMessages.length - $options.maxMessages));
         await updateBox();
     }
 
@@ -57,7 +60,9 @@
      * @param _messages The messages to load.
      */
     async function setMessages(_messages: Array<MessageData>) {
-        messages = _messages;
+        _messages.length < $options.maxMessages
+            ? (messages = _messages)
+            : (messages = _messages.slice(_messages.length - $options.maxMessages));
         await updateBox();
     }
 

@@ -1,17 +1,21 @@
 import type { ClientOptions, ServerOptions, WindowOptions } from '../interfaces';
 
-export const DEFAULT_OPTIONS = {
-    prefix: '/',
-    placeholder: 'Type a message...',
-    maxMessages: 100,
-    maxMessageHistory: 100,
-    maxCommandSuggestions: 3,
-    maxMessageLength: 1000,
-    hideOnConnect: false,
-    enableHTMLInjections: false,
+export const DEFAULT_OPTIONS: ServerOptions & ClientOptions & WindowOptions = {
     enableDefaultMessageProcessor: true,
-    logPlayerMessages: false,
-    logPlayerCommands: false,
-    unfocusKey: 27,
+    enableHTMLInjections: false,
     focusKey: 84,
-} as ServerOptions & ClientOptions & WindowOptions;
+    hideOnConnect: false,
+    logPlayerCommands: false,
+    logPlayerMessages: false,
+    maxCommandSuggestions: 3,
+    maxMessageBufferLength: 100,
+    maxMessageHistory: 100,
+    maxMessageLength: 1000,
+    maxMessages: 100,
+    muteMessage: 'You are muted.',
+    placeholder: 'Type a message...',
+    prefix: '/',
+    scrollStep: 20,
+    unfocusKey: 27,
+    unknownCommandMessage: 'Unknown command: {0}',
+};
