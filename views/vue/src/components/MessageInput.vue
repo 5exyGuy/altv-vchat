@@ -35,7 +35,7 @@ const inputRef = ref<HTMLInputElement>();
 async function sendMessage(event: KeyboardEvent) {
     if (event.key !== 'Enter') return;
 
-    window?.alt?.emit('vchat:addMessage', message.value);
+    window?.alt?.emit('vchat:addMessage', message.value.trim());
     buffer.value = [message.value, ...buffer.value].splice(0, options.maxMessageBufferLength);
     currentBufferIndex.value = -1;
     setMessage('');

@@ -35,7 +35,7 @@
     async function sendMessage(event: KeyboardEvent) {
         if (event.key !== 'Enter') return;
 
-        window?.alt?.emit('vchat:addMessage', $message);
+        window?.alt?.emit('vchat:addMessage', $message.trim());
         buffer = [$message, ...buffer].splice(0, $options.maxMessageBufferLength);
         currentBufferIndex = -1;
         setMessage('');

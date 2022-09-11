@@ -52,7 +52,7 @@ export function CommandSuggestions() {
             return;
         }
 
-        const words = message.split(' ');
+        const words = message.trim().split(' ');
         if (!words[0].startsWith(options().prefix)) {
             setMatchedCommands([]);
             return;
@@ -65,7 +65,8 @@ export function CommandSuggestions() {
 
                     return (
                         cmdName.length > 0 &&
-                        command.name.startsWith(cmdName) &&
+                        ((command.name === cmdName && words.length > (command.params?.length ?? 0)) ||
+                            (command.name.startsWith(cmdName) && words.length === 1)) &&
                         words.length - 1 <= (command.params?.length ?? 0)
                     );
                 })

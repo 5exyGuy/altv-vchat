@@ -61,7 +61,8 @@
 
                 return (
                     cmdName.length > 0 &&
-                    command.name.startsWith(cmdName) &&
+                    ((command.name === cmdName && words.length > (command.params?.length ?? 0)) ||
+                        (command.name.startsWith(cmdName) && words.length === 1)) &&
                     words.length - 1 <= (command.params?.length ?? 0)
                 );
             })

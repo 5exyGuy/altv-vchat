@@ -42,7 +42,7 @@ export function MessageInput() {
     async function sendMessage(event: KeyboardEvent<HTMLInputElement>) {
         if (event.key !== 'Enter') return;
 
-        window?.alt?.emit('vchat:addMessage', message);
+        window?.alt?.emit('vchat:addMessage', message.trim());
         setBuffer((buffer) => [message, ...buffer].splice(0, options.maxMessageBufferLength));
         setCurrentBufferIndex(-1);
         dispatch(setMessage(''));
