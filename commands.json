@@ -1,7 +1,1 @@
-[
-    {
-        "name": "tp",
-        "description": "Teleport to the specified coordinates.",
-        "params": [{ "name": "x" }, { "name": "y" }, { "name": "z" }]
-    }
-]
+[]
