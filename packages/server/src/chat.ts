@@ -67,8 +67,23 @@ export class Chat {
                 this.loggerService.log(`[message] ${player.name}: ${message}`);
             if (!this.settingsService.getOption('enableHTMLInjections'))
                 message = message.replace(/</g, '&lt;').replace(/'/g, '&#39').replace(/"/g, '&#34');
-            if (this.messageProcessor && this.settingsService.getOption('enableDefaultMessageProcessor'))
+            if (this.messageProcessor && this.settingsService.getOption('enableDefaultMessageProcessor')) {
+                this.settingsService.getEmojis().forEach((emoji) => {
+                    const escapedName = emoji.name.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
+                    const escapedTextEquivalent = emoji.textEquivalent.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
+                    const regex = new RegExp(`(:${escapedName}:|${escapedTextEquivalent})`, 'g');
+                    const src = this.settingsService
+                        .getOption('emojiCDN')
+                        .replace('{0}', emoji.name)
+                        .replace('{1}', emoji.fileFormat);
+                    message = message.replace(
+                        regex,
+                        `<img src="${src}" alt="${emoji.name}" width="24" height="24" style="display: inline-block;" />`,
+                    );
+                });
+
                 message = this.messageProcessor(`<b>${player.name}:</b> ${message}`);
+            }
 
             Player.all.forEach((player) =>
                 this.mountService.waitForMount(player, this.windowService.send(player, message)),

@@ -4,6 +4,7 @@ import fs from 'fs';
 import path from 'path';
 import type { CommandSuggestion } from '../interfaces';
 import { LoggerService } from './logger.service';
+import type { Emoji } from '../interfaces/emoji.interface';
 
 export class SettingsService {
     private static readonly instance = new SettingsService();
@@ -14,14 +15,16 @@ export class SettingsService {
 
     private options = DEFAULT_OPTIONS;
     private commandSuggestions = [] as Array<CommandSuggestion>;
+    private emojis = [] as Array<Emoji>;
 
     private constructor(private readonly loggerService: LoggerService = LoggerService.getInstance()) {
         this.readOptions();
         this.readCommandSuggestions();
+        this.readEmojis();
     }
 
     private readOptions() {
-        const optionsPath = path.join(process.cwd(), 'resources', alt.Resource.current.name, 'settings.json');
+        const optionsPath = path.join(process.cwd(), 'resources', alt.Resource.current.name, 'options.json');
         if (!fs.existsSync(optionsPath)) return;
         this.options = JSON.parse(fs.readFileSync(optionsPath, 'utf8'));
         this.loggerService.log(`Loaded options from ${optionsPath}`);
@@ -37,6 +40,13 @@ export class SettingsService {
         if (!fs.existsSync(commandSuggestionsPath)) return;
         this.commandSuggestions = JSON.parse(fs.readFileSync(commandSuggestionsPath, 'utf8'));
         this.loggerService.log(`Loaded command suggestions from ${commandSuggestionsPath}`);
+    }
+
+    private readEmojis() {
+        const emojisPath = path.join(process.cwd(), 'resources', alt.Resource.current.name, 'emojis.json');
+        if (!fs.existsSync(emojisPath)) return;
+        this.emojis = JSON.parse(fs.readFileSync(emojisPath, 'utf8'));
+        this.loggerService.log(`Loaded emojis from ${emojisPath}`);
     }
 
     public getOption<T extends keyof typeof DEFAULT_OPTIONS>(key: T) {
@@ -57,5 +67,9 @@ export class SettingsService {
 
     public getCommandSuggestions() {
         return this.commandSuggestions;
+    }
+
+    public getEmojis() {
+        return this.emojis;
     }
 }

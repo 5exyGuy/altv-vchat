@@ -1,6 +1,7 @@
 import type { ClientOptions, ServerOptions, WindowOptions } from '../interfaces';
 
 export const DEFAULT_OPTIONS: ServerOptions & ClientOptions & WindowOptions = {
+    emojiCDN: 'http://resource/client/view/emojis/{0}.{1}',
     enableDefaultMessageProcessor: true,
     enableHTMLInjections: false,
     focusKey: 84,

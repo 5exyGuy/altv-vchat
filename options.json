@@ -1,4 +1,5 @@
 {
+    "emojiCDN": "http://resource/client/emojis/{0}.{1}",
     "enableDefaultMessageProcessor": true,
     "enableHTMLInjections": false,
     "focusKey": 84,
