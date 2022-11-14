@@ -9,6 +9,6 @@
         "index.d.ts"
     ],
     "peerDependencies": {
-        "@altv/types-server": ">=2.4.6"
+        "@altv/types-server": ">=2.5.0"
     }
 }
