@@ -7,7 +7,7 @@
         "esModuleInterop": true,
         "skipLibCheck": true,
         "forceConsistentCasingInFileNames": true,
-        "moduleResolution": "node",
+        "moduleResolution": "Node",
         "allowUnusedLabels": false,
         "allowUnreachableCode": false,
         "exactOptionalPropertyTypes": true,
@@ -20,8 +20,9 @@
         "noUnusedParameters": true,
         "importsNotUsedAsValues": "error",
         "checkJs": true,
-        "experimentalDecorators": true,
+        "baseUrl": "./",
         "typeRoots": ["./node_modules/@types", "./node_modules/@altv"]
     },
-    "include": ["src/**/*.ts", "src/**/*.d.ts"]
+    "include": ["src/**/*.ts", "src/**/*.d.ts"],
+    "exclude": ["node_modules"]
 }

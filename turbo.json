@@ -3,11 +3,11 @@
     "pipeline": {
         "build": {
             "dependsOn": ["^build"],
-            "outputs": ["dist/**"]
+            "outputs": ["../../client/**", "../../server/**"]
         },
         "dev": {
             "dependsOn": ["^build"],
-            "outputs": ["dist/**"]
+            "outputs": ["../../client/**", "../../server/**"]
         }
     }
 }

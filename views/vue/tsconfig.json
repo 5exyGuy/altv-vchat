@@ -16,5 +16,6 @@
         "importsNotUsedAsValues": "error"
     },
     "include": ["src/**/*.ts", "src/**/*.d.ts", "src/**/*.vue"],
+    "exclude": ["node_modules"],
     "references": [{ "path": "./tsconfig.node.json" }]
 }
