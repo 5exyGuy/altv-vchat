@@ -21,3 +21,10 @@ export function removeMessageProcessor() {
 export function restoreMessageProcessor() {
     Chat.getInstance().restoreMessageProcessor();
 }
+
+/**
+ * Processes the message.
+ */
+export function processMessage(message: string) {
+    Chat.getInstance().processMessage(message);
+}

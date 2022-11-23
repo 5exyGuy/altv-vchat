@@ -83,6 +83,10 @@ declare module 'vchat' {
      */
     export function restoreMessageProcessor(): void;
     /**
+     * Processes the message.
+     */
+    export function processMessage(message: string): void;
+    /**
      * Subscribes to mount event and returns the id of the subscription.
      */
     export function onMounted(fn: MountCallback): number;
