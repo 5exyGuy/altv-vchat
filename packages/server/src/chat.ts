@@ -68,7 +68,7 @@ export class Chat {
             if (!this.settingsService.getOption('enableHTMLInjections'))
                 message = message.replace(/</g, '&lt;').replace(/'/g, '&#39').replace(/"/g, '&#34');
             if (this.messageProcessor && this.settingsService.getOption('enableDefaultMessageProcessor'))
-                this.processMessage(`<b>${player.name}:</b> ${message}`);
+                message = this.processMessage(`<b>${player.name}:</b> ${message}`);
 
             Player.all.forEach((player) =>
                 this.mountService.waitForMount(player, this.windowService.send(player, message)),
