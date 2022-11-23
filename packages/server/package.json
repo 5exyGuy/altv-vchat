@@ -1,6 +1,6 @@
 {
     "name": "@altv-chat/server",
-    "version": "1.0.0",
+    "version": "1.0.3",
     "author": "5exyGuy (Aurėjus Remeika)",
     "type": "module",
     "scripts": {
