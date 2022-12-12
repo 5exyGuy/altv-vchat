@@ -1,6 +1,6 @@
 {
     "name": "@altv-vchat/server",
-    "version": "1.0.3",
+    "version": "1.0.4",
     "author": "5exyGuy (Aurėjus Remeika)",
     "type": "module",
     "scripts": {
@@ -8,11 +8,11 @@
         "build": "rollup -c"
     },
     "devDependencies": {
-        "@altv/types-server": "^2.5.1",
-        "@altv/types-shared": "^1.3.2",
-        "@types/node": "^18.11.9",
-        "esbuild": "^0.15.15",
-        "rollup": "^3.4.0",
+        "@altv/types-server": "^2.5.5",
+        "@altv/types-shared": "^1.3.6",
+        "@types/node": "^18.11.13",
+        "esbuild": "^0.16.4",
+        "rollup": "^3.7.3",
         "rollup-plugin-esbuild": "^5.0.0"
     }
 }

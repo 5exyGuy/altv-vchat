@@ -58,7 +58,6 @@ export function MessageInput() {
      */
     function handleKeydown(event: globalThis.KeyboardEvent) {
         if (event.key !== 'ArrowUp' && event.key !== 'ArrowDown') return;
-        if (message && message.startsWith(options.prefix)) return;
         if (buffer.length === 0) return;
 
         if (event.key === 'ArrowDown') {

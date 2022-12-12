@@ -50,30 +50,30 @@ function updateMatchedCommands(message: string, commands: Array<CommandSuggestio
     }
 
     const words = message.trim().split(' ');
-    if (!words[0].startsWith(options.prefix)) {
+    const cmdName = words[0].startsWith(options.prefix) ? words[0].substring(1) : '';
+
+    if (cmdName.length === 0) {
         matchedCommands.value = [];
         return;
     }
 
-    matchedCommands.value = commands
-        .filter((command) => {
-            const cmdName = words[0].startsWith(options.prefix) ? words[0].substring(1) : words[0];
+    const cmdParams = words.slice(1);
 
-            return (
-                cmdName.length > 0 &&
-                ((command.name === cmdName && words.length > (command.params?.length ?? 0)) ||
-                    (command.name.startsWith(cmdName) && words.length === 1)) &&
-                words.length - 1 <= (command.params?.length ?? 0)
-            );
-        })
+    matchedCommands.value = commands
+        .filter(
+            (command) =>
+                (command.name === cmdName && cmdParams.length <= (command.params?.length ?? 0)) ||
+                (command.name.startsWith(cmdName) && cmdParams.length === 0),
+        )
         .splice(0, options.maxCommandSuggestions)
         .map((command) => {
             let currentParam = -1;
-            const cmdName = options.prefix + command.name;
 
-            if (words.length === 1 && words[0] === cmdName) currentParam = 0;
-            if (words.length > 1 && words.length - 1 <= (command?.params?.length ?? 0)) currentParam = words.length - 1;
-            return { currentParam, ...command, name: cmdName };
+            if (words.length === 1 && command.name === cmdName) currentParam = 0;
+            else if (cmdParams.length > 0 && cmdParams.length <= (command.params?.length ?? 0))
+                currentParam = cmdParams.length;
+
+            return { currentParam, ...command, name: options.prefix + command.name };
         });
     matchedCommands.value.length === 0 ? (selected.value = -1) : (selected.value = 0);
 }
@@ -127,8 +127,7 @@ onUnmounted(() => {
     <div
         class="mt-[4px] text-white flex flex-col transition origin-top scale-y-0"
         :class="{
-            'scale-y-0': !focus || matchedCommands.length === 0,
-            'scale-y-100': focus && matchedCommands.length > 0,
+            'scale-y-100': matchedCommands.length > 0 && focus,
         }"
     >
         <div

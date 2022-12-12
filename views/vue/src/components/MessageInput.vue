@@ -51,7 +51,6 @@ async function sendMessage(event: KeyboardEvent) {
  */
 function handleKeydown(event: KeyboardEvent) {
     if (event.key !== 'ArrowUp' && event.key !== 'ArrowDown') return;
-    if (message.value && message.value.startsWith(options.prefix)) return;
     if (buffer.value.length === 0) return;
 
     if (event.key === 'ArrowDown') {

@@ -53,33 +53,31 @@ export function CommandSuggestions() {
         }
 
         const words = message.trim().split(' ');
-        if (!words[0].startsWith(options().prefix)) {
+        const cmdName = words[0].startsWith(options().prefix) ? words[0].substring(1) : '';
+
+        if (cmdName.length === 0) {
             setMatchedCommands([]);
             return;
         }
 
+        const cmdParams = words.slice(1);
+
         setMatchedCommands(
             commands
-                .filter((command) => {
-                    const cmdName = words[0].startsWith(options().prefix) ? words[0].substring(1) : words[0];
-
-                    return (
-                        cmdName.length > 0 &&
-                        ((command.name === cmdName && words.length > (command.params?.length ?? 0)) ||
-                            (command.name.startsWith(cmdName) && words.length === 1)) &&
-                        words.length - 1 <= (command.params?.length ?? 0)
-                    );
-                })
+                .filter(
+                    (command) =>
+                        (command.name === cmdName && cmdParams.length <= (command.params?.length ?? 0)) ||
+                        (command.name.startsWith(cmdName) && cmdParams.length === 0),
+                )
                 .splice(0, options().maxCommandSuggestions)
                 .map((command) => {
                     let currentParam = -1;
-                    const cmdName = options().prefix + command.name;
 
-                    if (words.length === 1 && words[0] === cmdName) currentParam = 0;
-                    if (words.length > 1 && words.length - 1 <= (command?.params?.length ?? 0))
-                        currentParam = words.length - 1;
+                    if (words.length === 1 && command.name === cmdName) currentParam = 0;
+                    else if (cmdParams.length > 0 && cmdParams.length <= (command.params?.length ?? 0))
+                        currentParam = cmdParams.length;
 
-                    return { currentParam, ...command, name: cmdName };
+                    return { currentParam, ...command, name: options().prefix + command.name };
                 }),
         );
         matchedCommands().length === 0 ? setSelected(-1) : setSelected(0);

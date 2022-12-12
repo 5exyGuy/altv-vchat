@@ -1,0 +1,4 @@
+client-files = [ 'client/*' ]
+client-main = 'client/index.js'
+main = 'server/index.js'
+type = 'js'
