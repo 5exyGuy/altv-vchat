@@ -137,8 +137,7 @@ export function CommandSuggestions() {
         <div
             class="mt-[4px] text-white flex flex-col transition origin-top"
             classList={{
-                'scale-y-0': !focus() || matchedCommands().length === 0,
-                'scale-y-100': focus() && matchedCommands().length > 0,
+                'scale-y-100': matchedCommands().length > 0 && focus(),
             }}
         >
             <For each={matchedCommands()}>

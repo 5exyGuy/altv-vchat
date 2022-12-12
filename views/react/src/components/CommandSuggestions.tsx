@@ -129,8 +129,7 @@ export function CommandSuggestions() {
     return (
         <div
             className={classnames('mt-[4px] text-white flex flex-col transition origin-top', {
-                'scale-y-0': !focus || matchedCommands.length === 0,
-                'scale-y-100': focus && matchedCommands.length > 0,
+                'scale-y-100': matchedCommands.length > 0 && focus,
             })}
         >
             {matchedCommands.map((matchedCommand, cmdIndex) => (
