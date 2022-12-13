@@ -2,11 +2,11 @@
     {
         "name": "smile",
         "textEquivalent": ":)",
-        "fileFormat": "png"
+        "url": "http://resource/emojis/smile.png"
     },
     {
         "name": "laughing",
         "textEquivalent": ":D",
-        "fileFormat": "png"
+        "url": "http://resource/emojis/laughing.png"
     }
 ]

@@ -7,25 +7,22 @@
   </p>
 </div>
 
-> :warning: Current version might be unstable and have bugs
-
 <!-- ABOUT -->
 
 ## About
 
 [![Chat Preview](https://img.youtube.com/vi/GM9chEZhLRY/0.jpg)](https://www.youtube.com/watch?v=GM9chEZhLRY)
 
-**altV-vChat** is a chat resource for [alt:V](https://altv.mp) server that offers more functionality than the usual
-example chat resource. The resource includes full keyboard support, a default message processor, more functions,
-autocompletion of command by typing part of the command name in the input field and more.
+**altV-vChat** is a chat resource for [alt:V](https://altv.mp) server that offers more functionality than the example
+resource. The resource includes full keyboard support, a default message processor, more functions, autocompletion of
+command by typing part of the command name in the input field and more.
 
 **Features:**
 
 -   Keyboard and mouse support
 -   Command suggestions
--   Replaceable message handler
--   Replaceable message processor
--   More sever-side functions
+-   Text formatting
+-   Emojis
 
 It is also included in the project together with other examples of front-end framework implementations, if you want to
 get some ideas for your own project.
@@ -84,12 +81,12 @@ get some ideas for your own project.
     pnpm run build
     ```
 
-3. Add the chat resource as a dependency in the `resource.cfg` file inside your resource folder
+3. Add the chat resource as a dependency in the `resource.toml` file inside your resource folder
     > **_NOTE:_** Make sure that the name you insert matches the name of the resource folder.
     ```
     deps: [vchat]
     ```
-    **OR** add it into `server.cfg`
+    **OR** add it into `server.toml`
     ```
     resources: [vchat]
     ```
@@ -113,17 +110,17 @@ get some ideas for your own project.
 Chat has keyboard support, which allows you to control the chat. Also, the input field is always in focus, so you can
 make mouse clicks in any position. There is a prevention for the input field from losing it's focus.
 
-| Key                                          | Description                                                                                                       |
-| -------------------------------------------- | ----------------------------------------------------------------------------------------------------------------- |
-| <kbd>T</kbd>                                 | Opens the chat                                                                                                    |
-| <kbd>ESC</kbd>                               | Closes the chat                                                                                                   |
-| <kbd>PageUp</kbd></br><kbd>WheelUp</kbd>     | Scrolls up                                                                                                        |
-| <kbd>PageDown</kbd></br><kbd>WheelDown</kbd> | Scrolls down                                                                                                      |
-| <kbd>Home</kbd>                              | Scrolls to the top (the oldest message)                                                                           |
-| <kbd>End</kbd>                               | Scrolls to the end (the lastest message)                                                                          |
-| <kbd>↑</kbd>                                 | Selects command suggestion (if there are any) **OR**</br> Selects a previously entered message (if there are any) |
-| <kbd>↓</kbd>                                 | Selects command suggestion (if there are any) **OR**</br>Selects a previously entered message (if there are any)  |
-| <kbd>Tab</kbd>                               | Finish typing the selected command suggestion                                                                     |
+| Key                                          | Description                                                                 |
+| -------------------------------------------- | --------------------------------------------------------------------------- |
+| <kbd>T</kbd>                                 | Opens the chat                                                              |
+| <kbd>ESC</kbd>                               | Closes the chat                                                             |
+| <kbd>PageUp</kbd></br><kbd>WheelUp</kbd>     | Scrolls up                                                                  |
+| <kbd>PageDown</kbd></br><kbd>WheelDown</kbd> | Scrolls down                                                                |
+| <kbd>Home</kbd>                              | Scrolls to the top (the oldest message)                                     |
+| <kbd>End</kbd>                               | Scrolls to the end (the lastest message)                                    |
+| <kbd>↑</kbd>                                 | Selects command suggestion **OR**</br> Selects a previously entered message |
+| <kbd>↓</kbd>                                 | Selects command suggestion **OR**</br>Selects a previously entered message  |
+| <kbd>Tab</kbd>                               | Finish typing the selected command suggestion                               |
 
 ![Keyboard Support Preview](./preview/keyboard-support-preview.gif)
 
@@ -168,7 +165,7 @@ _Lorem Ipsum is simply dummy text of the printing and typesetting industry_
 
 #### Colored text
 
-`{b82a42}Lorem Ipsum is simply{/b82a42} dummy text of the {716dbf}printing{/716dbf} and typesetting industry`
+`{b82a42}Lorem Ipsum is simply{ffffff} dummy text of the {716dbf}printing{ffffff} and typesetting industry`
 
 <span style="color: #b82a42;">Lorem Ipsum is simply</span> dummy text of the
 <span style="color: #716dbf;">printing</span> and typesetting industry

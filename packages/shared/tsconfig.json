@@ -21,10 +21,7 @@
         "importsNotUsedAsValues": "error",
         "checkJs": true,
         "baseUrl": "./",
-        "typeRoots": ["./node_modules/@types", "./node_modules/@altv"],
-        "paths": {
-            "@altv-vchat/shared": ["../shared/src"]
-        }
+        "typeRoots": ["./node_modules/@types", "./node_modules/@altv"]
     },
     "include": ["src/**/*.ts", "src/**/*.d.ts"],
     "exclude": ["node_modules"]

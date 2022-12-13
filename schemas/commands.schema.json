@@ -1,0 +1,37 @@
+{
+    "type": "object",
+    "properties": {
+        "commandSuggestions": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": "string",
+                        "description": ""
+                    },
+                    "description": {
+                        "type": "string",
+                        "description": ""
+                    },
+                    "parameters": {
+                        "type": "array",
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "name": {
+                                    "type": "string",
+                                    "description": ""
+                                },
+                                "description": {
+                                    "type": "string",
+                                    "description": ""
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

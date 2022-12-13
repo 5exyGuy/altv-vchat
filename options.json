@@ -1,6 +1,5 @@
 {
-    "emojiCDN": "http://resource/client/emojis/{0}.{1}",
-    "enableDefaultMessageProcessor": true,
+    "enableDefaultMessageFormatter": true,
     "enableHTMLInjections": false,
     "focusKey": 84,
     "hideOnConnect": false,
@@ -16,5 +15,6 @@
     "prefix": "/",
     "scrollStep": 20,
     "unfocusKey": 27,
-    "unknownCommandMessage": "Unknown command: {0}"
+    "unknownCommandMessage": "Unknown command: {0}",
+    "useChatFormattingInAPI": true
 }

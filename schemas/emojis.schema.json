@@ -1,0 +1,30 @@
+{
+    "type": "object",
+    "properties": {
+        "emojis": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": "string",
+                        "description": ""
+                    },
+                    "textEquivalent": {
+                        "type": "string",
+                        "description": ""
+                    },
+                    "extension": {
+                        "type": "string",
+                        "description": "",
+                        "enum": ["gif", "jpg", "png", "svg", "webp", "apng"]
+                    },
+                    "url": {
+                        "type": "string",
+                        "description": ""
+                    }
+                }
+            }
+        }
+    }
+}

@@ -1,0 +1,77 @@
+{
+    "type": "object",
+    "properties": {
+        "enableDefaultMessageFormatter": {
+            "type": "boolean",
+            "description": ""
+        },
+        "enableHTMLInjections": {
+            "type": "boolean",
+            "description": ""
+        },
+        "focusKey": {
+            "type": "number",
+            "description": ""
+        },
+        "hideOnConnect": {
+            "type": "boolean",
+            "description": ""
+        },
+        "logPlayerCommands": {
+            "type": "boolean",
+            "description": ""
+        },
+        "logPlayerMessages": {
+            "type": "boolean",
+            "description": ""
+        },
+        "maxCommandSuggestions": {
+            "type": "number",
+            "description": ""
+        },
+        "maxMessageBufferLength": {
+            "type": "number",
+            "description": ""
+        },
+        "maxMessageHistory": {
+            "type": "number",
+            "description": ""
+        },
+        "maxMessageLength": {
+            "type": "number",
+            "description": ""
+        },
+        "maxMessages": {
+            "type": "number",
+            "description": ""
+        },
+        "muteMessage": {
+            "type": "string",
+            "description": ""
+        },
+        "placeholder": {
+            "type": "string",
+            "description": ""
+        },
+        "prefix": {
+            "type": "string",
+            "description": ""
+        },
+        "scrollStep": {
+            "type": "number",
+            "description": ""
+        },
+        "unfocusKey": {
+            "type": "number",
+            "description": ""
+        },
+        "unknownCommandMessage": {
+            "type": "string",
+            "description": ""
+        },
+        "useChatFormattingInAPI": {
+            "type": "boolean",
+            "description": ""
+        }
+    }
+}
