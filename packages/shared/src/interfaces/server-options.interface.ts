@@ -1,6 +1,6 @@
 export interface ServerOptions {
     emojiCDN: string;
-    enableDefaultMessageProcessor: boolean;
+    enableDefaultMessageFormatter: boolean;
     enableHTMLInjections: boolean;
     logPlayerCommands: boolean;
     logPlayerMessages: boolean;
