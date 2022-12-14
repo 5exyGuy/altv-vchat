@@ -1,14 +1,13 @@
 import { Player } from 'alt-server';
 import { MessageType } from '@altv-vchat/shared';
-import { DEFAULT_MESSAGE_PROCESSOR } from './consts';
+import { CHAT_PLAYER_NAME_METADATA, DEFAULT_MESSAGE_PROCESSOR } from './consts';
 import { CommandService, EventService, LoggerService, MountService, OptionsService, WindowService } from './services';
-import type { MessageHandler } from './types';
 import { singleton } from 'tsyringe';
+import type { MessageFormatter } from './types';
 
 @singleton()
 export class Chat {
-    private messageProcessor: typeof DEFAULT_MESSAGE_PROCESSOR | undefined = DEFAULT_MESSAGE_PROCESSOR;
-    private messsageHandler: MessageHandler | undefined = this.handleMessage;
+    private messageFormatter?: MessageFormatter | undefined;
 
     public constructor(
         private readonly mountService: MountService,
@@ -26,7 +25,7 @@ export class Chat {
         this.eventService.on('playerDisconnect', this.onPlayerDisconnect.bind(this));
     }
 
-    private handleMessage(player: Player, message: string) {
+    private onChatMessage(player: Player, message: string) {
         if (typeof message !== 'string') return;
 
         message = message.trim();
@@ -59,22 +58,15 @@ export class Chat {
                 return;
             }
 
-            if (this.optionsService.getOption('logPlayerMessages'))
-                this.loggerService.log(`[message] ${player.name}: ${message}`);
-            if (!this.optionsService.getOption('enableHTMLInjections'))
-                message = message.replace(/</g, '&lt;').replace(/'/g, '&#39').replace(/"/g, '&#34');
-            if (this.messageProcessor && this.optionsService.getOption('enableDefaultMessageFormatter'))
-                message = this.processMessage(`<b>${player.name}:</b> ${message}`);
+            let syncedPlayerName = player.getSyncedMeta(CHAT_PLAYER_NAME_METADATA) as string;
+            syncedPlayerName =
+                syncedPlayerName && typeof syncedPlayerName === 'string' ? syncedPlayerName : player.name;
+            message = this.processMessage(syncedPlayerName, message);
 
             Player.all.forEach((player) =>
                 this.mountService.waitForMount(player, this.windowService.send(player, message)),
             );
         }
-    }
-
-    private onChatMessage(player: Player, message: string) {
-        if (!this.messsageHandler) return;
-        this.messsageHandler(player, message);
     }
 
     private syncSettings(player: Player) {
@@ -94,39 +86,38 @@ export class Chat {
         this.mountService.markAsUnmounted(player);
     }
 
-    public setMessageProcessor(messageProcessor: typeof DEFAULT_MESSAGE_PROCESSOR | undefined) {
-        this.messageProcessor = messageProcessor;
+    public setMessageFormatter(messageFormatter?: MessageFormatter) {
+        this.messageFormatter = messageFormatter;
     }
 
-    public restoreMessageProcessor() {
-        this.messageProcessor = DEFAULT_MESSAGE_PROCESSOR;
-    }
+    public processMessage(playerName: string, message: string) {
+        if (!this.optionsService.getOption('enableHTMLInjections'))
+            message = message.replace(/</g, '&lt;').replace(/'/g, '&#39').replace(/"/g, '&#34');
+        if (this.optionsService.getOption('enableDefaultMessageFormatter')) {
+            message = this.optionsService
+                .getOption('playerMessageFormat')
+                .replace('{0}', playerName)
+                .replace('{1}', message);
+            message = DEFAULT_MESSAGE_PROCESSOR(message);
 
-    public processMessage(message: string) {
-        if (!this.messageProcessor) return message;
+            this.optionsService.getEmojis().forEach((emoji) => {
+                const escapedName = emoji.name.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
+                const escapedTextEquivalent = emoji.textEquivalent.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
+                const regex = new RegExp(`(:${escapedName}:|${escapedTextEquivalent})`, 'g');
+                const src = this.optionsService
+                    .getOption('emojiCDN')
+                    .replace('{0}', emoji.name)
+                    .replace('{1}', emoji.fileFormat);
+                message = message.replace(
+                    regex,
+                    `<img src="${src}" alt="${emoji.name}" width="24" height="24" style="display: inline-block;" />`,
+                );
+            });
+        }
 
-        this.optionsService.getEmojis().forEach((emoji) => {
-            const escapedName = emoji.name.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
-            const escapedTextEquivalent = emoji.textEquivalent.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
-            const regex = new RegExp(`(:${escapedName}:|${escapedTextEquivalent})`, 'g');
-            const src = this.optionsService
-                .getOption('emojiCDN')
-                .replace('{0}', emoji.name)
-                .replace('{1}', emoji.fileFormat);
-            message = message.replace(
-                regex,
-                `<img src="${src}" alt="${emoji.name}" width="24" height="24" style="display: inline-block;" />`,
-            );
-        });
+        if (this.optionsService.getOption('logPlayerMessages'))
+            this.loggerService.log(`[message] ${playerName}: ${message}`);
 
-        return this.messageProcessor(message);
-    }
-
-    public setMessageHandler(messageHandler: MessageHandler | undefined) {
-        this.messsageHandler = messageHandler;
-    }
-
-    public restoreMessageHandler() {
-        this.messsageHandler = this.handleMessage;
+        return this.messageFormatter?.(message) ?? message;
     }
 }

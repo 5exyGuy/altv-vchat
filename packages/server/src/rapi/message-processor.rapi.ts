@@ -1,31 +1,25 @@
 import { container } from 'tsyringe';
 import { Chat } from '../chat';
-import type { MessageProcessor } from '../types';
+import { DEFAULT_MESSAGE_PROCESSOR } from '../consts';
+import type { MessageFormatter } from '../types';
 
 /**
- * Sets the message processor.
+ * Sets the message formatter.
  */
-export function setMessageProcessor(fn: MessageProcessor) {
-    container.resolve(Chat).setMessageProcessor(fn);
+export function setMessageFormatter(fn: MessageFormatter) {
+    container.resolve(Chat).setMessageFormatter(fn);
 }
 
 /**
- * Removes the message processor.
+ * Removes the message formatter.
  */
-export function removeMessageProcessor() {
-    container.resolve(Chat).setMessageProcessor(undefined);
-}
-
-/**
- * Sets the message processor to the default.
- */
-export function restoreMessageProcessor() {
-    container.resolve(Chat).restoreMessageProcessor();
+export function removeMessageFormatter() {
+    container.resolve(Chat).setMessageFormatter(undefined);
 }
 
 /**
  * Processes the message.
  */
-export function processMessage(message: string) {
-    container.resolve(Chat).processMessage(message);
+export function useDefaultMessageFormatter(message: string) {
+    return DEFAULT_MESSAGE_PROCESSOR(message);
 }

@@ -10,4 +10,5 @@ export const DefaultServerOptions: ServerOptions = {
     prefix: '/',
     unknownCommandMessage: 'Unknown command: {0}',
     useChatFormattingInAPI: true,
+    playerMessageFormat: '<b>{0}:</b> {1}',
 };

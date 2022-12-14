@@ -8,4 +8,5 @@ export interface ServerOptions {
     prefix: string;
     unknownCommandMessage: string;
     useChatFormattingInAPI: boolean;
+    playerMessageFormat: string;
 }

@@ -1,7 +1,6 @@
 export * from './clear.rapi';
 export * from './command.rapi';
 export * from './focus.rapi';
-export * from './message-handler.rapi';
 export * from './message-processor.rapi';
 export * from './mount.rapi';
 export * from './mute.rapi';

@@ -8,11 +8,11 @@
                 "properties": {
                     "name": {
                         "type": "string",
-                        "description": ""
+                        "description": "The name of the command"
                     },
                     "description": {
                         "type": "string",
-                        "description": ""
+                        "description": "The description of the command"
                     },
                     "parameters": {
                         "type": "array",
@@ -21,11 +21,11 @@
                             "properties": {
                                 "name": {
                                     "type": "string",
-                                    "description": ""
+                                    "description": "The name of the parameter"
                                 },
                                 "description": {
                                     "type": "string",
-                                    "description": ""
+                                    "description": "The description of the parameter"
                                 }
                             }
                         }

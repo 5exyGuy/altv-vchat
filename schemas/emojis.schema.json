@@ -8,20 +8,20 @@
                 "properties": {
                     "name": {
                         "type": "string",
-                        "description": ""
+                        "description": "The name of the emoji, e.g. 'thumbsup' or 'smile'"
                     },
                     "textEquivalent": {
                         "type": "string",
-                        "description": ""
+                        "description": "The text equivalent of the emoji, e.g. '+' or ':)'"
                     },
                     "extension": {
                         "type": "string",
-                        "description": "",
-                        "enum": ["gif", "jpg", "png", "svg", "webp", "apng"]
+                        "enum": ["gif", "jpg", "png", "svg", "webp", "apng"],
+                        "description": "The file extension of the emoji, e.g. 'png' or 'gif'"
                     },
                     "url": {
                         "type": "string",
-                        "description": ""
+                        "description": "The URL of the emoji, e.g. 'https://example.com/emoji.png'"
                     }
                 }
             }
