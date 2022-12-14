@@ -1,4 +1,5 @@
 import { Player } from 'alt-server';
+import { container } from 'tsyringe';
 import { MountService } from '../services/mount.service';
 import { WindowService } from '../services/window.service';
 
@@ -6,7 +7,7 @@ import { WindowService } from '../services/window.service';
  * Clears the player's chat history from the local storage.
  */
 export function clearMessageHistory(player: Player) {
-    MountService.getInstance().waitForMount(player, WindowService.getInstance().clearMessageHistory(player));
+    container.resolve(MountService).waitForMount(player, container.resolve(WindowService).clearMessageHistory(player));
 }
 
 /**
@@ -20,7 +21,7 @@ export function clearMessageHistoryAll() {
  * Clears the player's chat in the webview.
  */
 export function clearMessages(player: Player) {
-    MountService.getInstance().waitForMount(player, WindowService.getInstance().clearMessages(player));
+    container.resolve(MountService).waitForMount(player, container.resolve(WindowService).clearMessages(player));
 }
 
 /**

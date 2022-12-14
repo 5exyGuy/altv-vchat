@@ -1,4 +1,5 @@
 import { Player } from 'alt-server';
+import { container } from 'tsyringe';
 import { MountService } from '../services/mount.service';
 import { WindowService } from '../services/window.service';
 
@@ -6,7 +7,9 @@ import { WindowService } from '../services/window.service';
  * Toggles the player's chat focus activation.
  */
 export function toggleFocusEnabled(player: Player, enabled: boolean) {
-    MountService.getInstance().waitForMount(player, WindowService.getInstance().toggleFocusEnabled(player, enabled));
+    container
+        .resolve(MountService)
+        .waitForMount(player, container.resolve(WindowService).toggleFocusEnabled(player, enabled));
 }
 
 /**
@@ -20,7 +23,7 @@ export function toggleFocusEnabledAll(enabled: boolean) {
  * Focuses the player's chat.
  */
 export function focus(player: Player) {
-    MountService.getInstance().waitForMount(player, WindowService.getInstance().focus(player));
+    container.resolve(MountService).waitForMount(player, container.resolve(WindowService).focus(player));
 }
 
 /**
@@ -34,7 +37,7 @@ export function focusAll() {
  * Unfocuses the player's chat.
  */
 export function unfocus(player: Player) {
-    MountService.getInstance().waitForMount(player, WindowService.getInstance().unfocus(player));
+    container.resolve(MountService).waitForMount(player, container.resolve(WindowService).unfocus(player));
 }
 
 /**

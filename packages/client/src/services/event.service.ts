@@ -1,14 +1,8 @@
 import { emitServerRaw, on, onServer } from 'alt-client';
+import { singleton } from 'tsyringe';
 
+@singleton()
 export class EventService {
-    private static readonly instance = new EventService();
-
-    public static getInstance() {
-        return EventService.instance;
-    }
-
-    private constructor() {}
-
     public emitServer(event: string, ...args: any[]) {
         emitServerRaw(event, ...args);
     }

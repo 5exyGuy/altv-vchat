@@ -1,4 +1,4 @@
-import type { MessageType } from '../enums';
+import type { MessageType } from '@altv-vchat/shared';
 
 export interface Message {
     content: string; // The content of the message.

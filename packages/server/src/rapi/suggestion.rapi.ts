@@ -1,15 +1,18 @@
 import type { Player } from 'alt-server';
-import type { CommandSuggestion } from '../interfaces';
+import type { CommandSuggestion } from '@altv-vchat/shared';
 import { CommandService } from '../services/command.service';
 import { MountService } from '../services/mount.service';
+import { container } from 'tsyringe';
 
 /**
  * Adds a command suggestion to the player's chat webview.
  */
 export function addSuggestion(player: Player, suggestion: CommandSuggestion | Array<CommandSuggestion>) {
-    MountService.getInstance().waitForMount(player, CommandService.getInstance().addSuggestion(player, suggestion));
+    container
+        .resolve(MountService)
+        .waitForMount(player, container.resolve(CommandService).addSuggestion(player, suggestion));
 }
 
 export function removeSuggestions(player: Player) {
-    MountService.getInstance().waitForMount(player, CommandService.getInstance().removeSuggestions(player));
+    container.resolve(MountService).waitForMount(player, container.resolve(CommandService).removeSuggestions(player));
 }

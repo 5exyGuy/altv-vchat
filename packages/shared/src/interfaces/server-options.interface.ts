@@ -7,4 +7,5 @@ export interface ServerOptions {
     muteMessage: string;
     prefix: string;
     unknownCommandMessage: string;
+    useChatFormattingInAPI: boolean;
 }

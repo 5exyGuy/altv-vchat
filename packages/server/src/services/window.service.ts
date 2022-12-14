@@ -1,18 +1,11 @@
 import { emitClientRaw, Player } from 'alt-server';
-import { MessageType } from '../enums';
-import type { ClientOptions, WindowOptions } from '../interfaces';
 import { validateMessage } from '../validators';
+import { ClientOptions, MessageType, WindowOptions } from '@altv-vchat/shared';
+import { singleton } from 'tsyringe';
 
+@singleton()
 export class WindowService {
-    private static readonly instance = new WindowService();
-
-    public static getInstance() {
-        return WindowService.instance;
-    }
-
     private readonly mutedPlayers = new Set<Player>();
-
-    private constructor() {}
 
     public send(player: Player, message: string, type: MessageType = MessageType.Default) {
         if (!validateMessage(message, type)) return;

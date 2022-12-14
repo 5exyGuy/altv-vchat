@@ -1,4 +1,5 @@
 import { Player } from 'alt-server';
+import { container } from 'tsyringe';
 import { MountService } from '../services/mount.service';
 import { WindowService } from '../services/window.service';
 
@@ -7,7 +8,7 @@ import { WindowService } from '../services/window.service';
  * @param player
  */
 export function show(player: Player) {
-    MountService.getInstance().waitForMount(player, WindowService.getInstance().show(player));
+    container.resolve(MountService).waitForMount(player, container.resolve(WindowService).show(player));
 }
 
 /**
@@ -22,7 +23,7 @@ export function showAll() {
  * @param player
  */
 export function hide(player: Player) {
-    MountService.getInstance().waitForMount(player, WindowService.getInstance().hide(player));
+    container.resolve(MountService).waitForMount(player, container.resolve(WindowService).hide(player));
 }
 
 /**

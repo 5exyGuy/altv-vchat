@@ -1,4 +1,4 @@
-import type { CommandSuggestion } from '../interfaces';
+import type { CommandSuggestion } from '@altv-vchat/shared';
 
 export function validateCommandSuggestion(suggestion: CommandSuggestion) {
     if (typeof suggestion !== 'object') return false;

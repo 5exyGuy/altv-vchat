@@ -1,18 +1,12 @@
 import { emitClientRaw, Player } from 'alt-server';
-import type { CommandSuggestion } from '../interfaces';
+import type { CommandSuggestion } from '@altv-vchat/shared';
 import type { CommandHandler } from '../types';
 import { validateCommandName, validateCommandSuggestion } from '../validators';
+import { singleton } from 'tsyringe';
 
+@singleton()
 export class CommandService {
-    private static readonly instance = new CommandService();
-
-    public static getInstance() {
-        return CommandService.instance;
-    }
-
     private handlers = new Map<string, CommandHandler>();
-
-    private constructor() {}
 
     public register(command: string, handler: CommandHandler) {
         if (!validateCommandName(command)) return;

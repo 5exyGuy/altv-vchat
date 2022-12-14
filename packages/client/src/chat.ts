@@ -1,19 +1,14 @@
-import { MessageType } from './enums';
-import type { ClientOptions, CommandSuggestion, WindowOptions } from './interfaces';
+import { ClientOptions, CommandSuggestion, MessageType, WindowOptions } from '@altv-vchat/shared';
+import { singleton } from 'tsyringe';
 import { WindowService, EventService, MessageHistoryService, OptionsService } from './services';
 
+@singleton()
 export class Chat {
-    private static readonly instance = new Chat();
-
-    public static getInstance() {
-        return Chat.instance;
-    }
-
-    private constructor(
-        private readonly eventService = EventService.getInstance(),
-        private readonly messageHistoryService = MessageHistoryService.getInstance(),
-        private readonly optionsService = OptionsService.getInstance(),
-        private readonly windowService = WindowService.getInstance(),
+    public constructor(
+        private readonly eventService: EventService,
+        private readonly messageHistoryService: MessageHistoryService,
+        private readonly optionsService: OptionsService,
+        private readonly windowService: WindowService,
     ) {}
 
     public start() {

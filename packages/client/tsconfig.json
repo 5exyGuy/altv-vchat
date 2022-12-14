@@ -24,7 +24,9 @@
         "typeRoots": ["./node_modules/@types", "./node_modules/@altv"],
         "paths": {
             "@altv-vchat/shared": ["../shared/src"]
-        }
+        },
+        "emitDecoratorMetadata": true,
+        "experimentalDecorators": true
     },
     "include": ["src/**/*.ts", "src/**/*.d.ts"],
     "exclude": ["node_modules"]

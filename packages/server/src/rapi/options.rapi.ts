@@ -1,7 +1,7 @@
 import { Player } from 'alt-server';
-import type { ClientOptions, WindowOptions } from '../interfaces';
-import { MountService } from '../services/mount.service';
-import { WindowService } from '../services/window.service';
+import type { ClientOptions, WindowOptions } from '@altv-vchat/shared';
+import { MountService, WindowService } from '../services';
+import { container } from 'tsyringe';
 
 /**
  * Updates the specified option for the specified player.
@@ -11,7 +11,9 @@ export function updateOption(
     key: keyof (ClientOptions & WindowOptions),
     value: (ClientOptions & WindowOptions)[keyof (ClientOptions & WindowOptions)],
 ) {
-    MountService.getInstance().waitForMount(player, WindowService.getInstance().updateOption(player, key, value));
+    container
+        .resolve(MountService)
+        .waitForMount(player, container.resolve(WindowService).updateOption(player, key, value));
 }
 
 /**
@@ -28,7 +30,9 @@ export function updateOptionAll(
  * Updates the specified options for the specified player.
  */
 export function updateOptions(player: Player, options: Partial<ClientOptions & WindowOptions>) {
-    MountService.getInstance().waitForMount(player, WindowService.getInstance().updateOptions(player, options));
+    container
+        .resolve(MountService)
+        .waitForMount(player, container.resolve(WindowService).updateOptions(player, options));
 }
 
 /**

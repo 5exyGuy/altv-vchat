@@ -1,14 +1,11 @@
-import { DEFAULT_SETTINGS } from '../consts';
-import type { ClientOptions, WindowOptions } from '../interfaces';
+import { ClientOptions, DefaultClientOptions, DefaultWindowOptions, WindowOptions } from '@altv-vchat/shared';
+import { singleton } from 'tsyringe';
 
+@singleton()
 export class OptionsService {
-    private static readonly instance = new OptionsService();
-
-    public static getInstance() {
-        return OptionsService.instance;
-    }
-
-    private options = DEFAULT_SETTINGS;
+    private readonly defaultOptions = { ...DefaultClientOptions, ...DefaultWindowOptions } as ClientOptions &
+        WindowOptions;
+    private readonly options = { ...DefaultClientOptions, ...DefaultWindowOptions } as ClientOptions & WindowOptions;
 
     public update(options: Partial<ClientOptions & WindowOptions>) {
         Object.keys(options).forEach((key) =>
@@ -20,13 +17,13 @@ export class OptionsService {
     }
 
     public get<T extends keyof (ClientOptions & WindowOptions)>(key: T) {
-        if (!this.options[key] || typeof this.options[key] !== typeof DEFAULT_SETTINGS[key])
-            return DEFAULT_SETTINGS[key];
+        if (!this.options[key] || typeof this.options[key] !== typeof this.defaultOptions[key])
+            return this.defaultOptions[key];
         return this.options[key];
     }
 
     public set<T extends keyof (ClientOptions & WindowOptions)>(key: T, value: (ClientOptions & WindowOptions)[T]) {
-        if (!this.options[key] || typeof this.options[key] !== typeof DEFAULT_SETTINGS[key]) return;
+        if (!this.options[key] || typeof this.options[key] !== typeof this.defaultOptions[key]) return;
         this.options[key] = value;
     }
 

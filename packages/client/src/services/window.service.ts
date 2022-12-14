@@ -1,19 +1,15 @@
 import { toggleGameControls, WebView } from 'alt-client';
-import { MessageType } from '../enums';
-import type { CommandSuggestion, Message, WindowOptions } from '../interfaces';
+import type { Message } from '../interfaces';
+import { CommandSuggestion, MessageType, WindowOptions } from '@altv-vchat/shared';
+import { singleton } from 'tsyringe';
 
+@singleton()
 export class WindowService {
-    private static readonly instance = new WindowService();
-
-    public static getInstance() {
-        return WindowService.instance;
-    }
-
     private readonly webView = new WebView('http://resource/client/view/index.html');
     // private readonly webView = new WebView('http://localhost:4000');
     private focusEnabled = true;
 
-    private constructor() {
+    public constructor() {
         this.webView.isVisible = false;
     }
 

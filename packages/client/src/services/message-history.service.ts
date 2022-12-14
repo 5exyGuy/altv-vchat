@@ -1,16 +1,10 @@
 import { LocalStorage } from 'alt-client';
+import { singleton } from 'tsyringe';
 import type { Message } from '../interfaces';
 
+@singleton()
 export class MessageHistoryService {
-    private static readonly instance = new MessageHistoryService();
-
-    public static getInstance() {
-        return MessageHistoryService.instance;
-    }
-
     private readonly messages = (LocalStorage.get('chatHistory') as Array<Message>) ?? ([] as Array<Message>);
-
-    private constructor() {}
 
     public add(message: Message) {
         this.messages.push(message);

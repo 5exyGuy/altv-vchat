@@ -1,26 +1,22 @@
 import { Player } from 'alt-server';
+import { MessageType } from '@altv-vchat/shared';
 import { DEFAULT_MESSAGE_PROCESSOR } from './consts';
-import { MessageType } from './enums';
-import { CommandService, EventService, LoggerService, MountService, SettingsService, WindowService } from './services';
+import { CommandService, EventService, LoggerService, MountService, OptionsService, WindowService } from './services';
 import type { MessageHandler } from './types';
+import { singleton } from 'tsyringe';
 
+@singleton()
 export class Chat {
-    private static readonly instance = new Chat();
-
-    public static getInstance() {
-        return Chat.instance;
-    }
-
     private messageProcessor: typeof DEFAULT_MESSAGE_PROCESSOR | undefined = DEFAULT_MESSAGE_PROCESSOR;
     private messsageHandler: MessageHandler | undefined = this.handleMessage;
 
     public constructor(
-        private readonly mountService: MountService = MountService.getInstance(),
-        private readonly windowService: WindowService = WindowService.getInstance(),
-        private readonly commandService: CommandService = CommandService.getInstance(),
-        private readonly eventService: EventService = EventService.getInstance(),
-        private readonly loggerService: LoggerService = LoggerService.getInstance(),
-        private readonly settingsService: SettingsService = SettingsService.getInstance(),
+        private readonly mountService: MountService,
+        private readonly windowService: WindowService,
+        private readonly commandService: CommandService,
+        private readonly eventService: EventService,
+        private readonly loggerService: LoggerService,
+        private readonly optionsService: OptionsService,
     ) {}
 
     public start() {
@@ -40,7 +36,7 @@ export class Chat {
             const words = message.slice(1);
 
             if (words.length > 0) {
-                if (this.settingsService.getOption('logPlayerCommands'))
+                if (this.optionsService.getOption('logPlayerCommands'))
                     this.loggerService.log(`[command] ${player.name}: ${message}`);
 
                 let args = words.split(' ');
@@ -48,7 +44,7 @@ export class Chat {
 
                 const invoked = this.commandService.invoke(player, cmdName, args);
                 if (invoked) return;
-                const unknownCommandMessage = this.settingsService
+                const unknownCommandMessage = this.optionsService
                     .getOption('unknownCommandMessage')
                     .replace('{0}', cmdName);
                 this.mountService.waitForMount(
@@ -58,16 +54,16 @@ export class Chat {
             }
         } else {
             if (this.windowService.isMuted(player)) {
-                const muteMessage = this.settingsService.getOption('muteMessage');
+                const muteMessage = this.optionsService.getOption('muteMessage');
                 this.mountService.waitForMount(player, this.windowService.send(player, muteMessage, MessageType.Error));
                 return;
             }
 
-            if (this.settingsService.getOption('logPlayerMessages'))
+            if (this.optionsService.getOption('logPlayerMessages'))
                 this.loggerService.log(`[message] ${player.name}: ${message}`);
-            if (!this.settingsService.getOption('enableHTMLInjections'))
+            if (!this.optionsService.getOption('enableHTMLInjections'))
                 message = message.replace(/</g, '&lt;').replace(/'/g, '&#39').replace(/"/g, '&#34');
-            if (this.messageProcessor && this.settingsService.getOption('enableDefaultMessageProcessor'))
+            if (this.messageProcessor && this.optionsService.getOption('enableDefaultMessageFormatter'))
                 message = this.processMessage(`<b>${player.name}:</b> ${message}`);
 
             Player.all.forEach((player) =>
@@ -85,8 +81,8 @@ export class Chat {
         this.eventService.emitClient(
             player,
             'vchat:syncSettings',
-            this.settingsService.getClientOptions(),
-            this.settingsService.getCommandSuggestions(),
+            this.optionsService.getClientOptions(),
+            this.optionsService.getCommandSuggestions(),
         );
     }
 
@@ -109,11 +105,11 @@ export class Chat {
     public processMessage(message: string) {
         if (!this.messageProcessor) return message;
 
-        this.settingsService.getEmojis().forEach((emoji) => {
+        this.optionsService.getEmojis().forEach((emoji) => {
             const escapedName = emoji.name.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
             const escapedTextEquivalent = emoji.textEquivalent.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
             const regex = new RegExp(`(:${escapedName}:|${escapedTextEquivalent})`, 'g');
-            const src = this.settingsService
+            const src = this.optionsService
                 .getOption('emojiCDN')
                 .replace('{0}', emoji.name)
                 .replace('{1}', emoji.fileFormat);

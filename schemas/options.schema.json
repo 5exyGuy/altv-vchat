@@ -3,75 +3,93 @@
     "properties": {
         "enableDefaultMessageFormatter": {
             "type": "boolean",
-            "description": ""
+            "description": "",
+            "default": true
         },
         "enableHTMLInjections": {
             "type": "boolean",
-            "description": ""
+            "description": "",
+            "default": false
         },
         "focusKey": {
             "type": "number",
-            "description": ""
+            "description": "",
+            "default": 84
         },
         "hideOnConnect": {
             "type": "boolean",
-            "description": ""
+            "description": "",
+            "default": false
         },
         "logPlayerCommands": {
             "type": "boolean",
-            "description": ""
+            "description": "",
+            "default": false
         },
         "logPlayerMessages": {
             "type": "boolean",
-            "description": ""
+            "description": "",
+            "default": false
         },
         "maxCommandSuggestions": {
             "type": "number",
-            "description": ""
+            "description": "",
+            "default": 3
         },
         "maxMessageBufferLength": {
             "type": "number",
-            "description": ""
+            "description": "",
+            "default": 100
         },
         "maxMessageHistory": {
             "type": "number",
-            "description": ""
+            "description": "",
+            "default": 100
         },
         "maxMessageLength": {
             "type": "number",
-            "description": ""
+            "description": "",
+            "default": 1000
         },
         "maxMessages": {
             "type": "number",
-            "description": ""
+            "description": "",
+            "default": 100
         },
         "muteMessage": {
             "type": "string",
-            "description": ""
+            "description": "",
+            "default": "You are muted."
         },
         "placeholder": {
             "type": "string",
-            "description": ""
+            "description": "",
+            "default": "Type a message..."
         },
         "prefix": {
             "type": "string",
-            "description": ""
+            "description": "",
+            "default": "/"
         },
         "scrollStep": {
             "type": "number",
-            "description": ""
+            "description": "",
+            "default": 20
         },
         "unfocusKey": {
             "type": "number",
-            "description": ""
+            "description": "",
+            "default": 27
         },
         "unknownCommandMessage": {
             "type": "string",
-            "description": ""
+            "description": "",
+            "default": "Unknown command: {0}"
         },
         "useChatFormattingInAPI": {
             "type": "boolean",
-            "description": ""
+            "description": "",
+            "default": true
         }
     }
 }

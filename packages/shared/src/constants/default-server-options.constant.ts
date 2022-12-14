@@ -9,4 +9,5 @@ export const DefaultServerOptions: ServerOptions = {
     muteMessage: 'You are muted.',
     prefix: '/',
     unknownCommandMessage: 'Unknown command: {0}',
+    useChatFormattingInAPI: true,
 };

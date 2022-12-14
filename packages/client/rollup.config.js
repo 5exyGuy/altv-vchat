@@ -1,4 +1,7 @@
-import esbuild from 'rollup-plugin-esbuild';
+import typescript from 'rollup-plugin-typescript2';
+import nodeResolve from '@rollup/plugin-node-resolve';
+import commonjs from '@rollup/plugin-commonjs';
+import terser from '@rollup/plugin-terser';
 
 export default {
     input: 'src/index.ts',
@@ -6,6 +9,6 @@ export default {
         file: '../../client/index.js',
         format: 'esm',
     },
-    external: ['alt-client'],
-    plugins: [esbuild()],
+    external: ['alt-client', 'fs', 'path'],
+    plugins: [typescript(), nodeResolve(), commonjs(), terser()],
 };

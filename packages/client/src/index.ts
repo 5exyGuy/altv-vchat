@@ -1,3 +1,4 @@
+import { container } from 'tsyringe';
 import { Chat } from './chat';
 
-Chat.getInstance().start();
+container.resolve(Chat).start();

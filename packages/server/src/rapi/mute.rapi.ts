@@ -1,11 +1,12 @@
 import { Player } from 'alt-server';
+import { container } from 'tsyringe';
 import { WindowService } from '../services/window.service';
 
 /**
  * Mutes the player from sending messages.
  */
 export function mutePlayer(player: Player) {
-    WindowService.getInstance().mute(player);
+    container.resolve(WindowService).mute(player);
 }
 
 /**
@@ -19,7 +20,7 @@ export function muteAllPlayers() {
  * Unmutes the player from sending messages.
  */
 export function unmutePlayer(player: Player) {
-    WindowService.getInstance().unmute(player);
+    container.resolve(WindowService).unmute(player);
 }
 
 /**
@@ -33,5 +34,5 @@ export function unmuteAllPlayers() {
  * Checks if the player is muted.
  */
 export function isMuted(player: Player) {
-    return WindowService.getInstance().isMuted(player);
+    return container.resolve(WindowService).isMuted(player);
 }

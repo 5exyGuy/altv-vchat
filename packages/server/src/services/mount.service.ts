@@ -1,20 +1,14 @@
 import type { Player } from 'alt-server';
+import { singleton } from 'tsyringe';
 import type { MountCallback } from '../types';
 
+@singleton()
 export class MountService {
-    private static readonly instance = new MountService();
-
-    public static getInstance() {
-        return MountService.instance;
-    }
-
     private readonly listeners = new Map<number, MountCallback>();
     private readonly players = new Set<Player>();
     private readonly freeIds = [] as Array<number>;
     private currentId = -1;
     private readonly waiters = new Map<Player, Array<Function>>();
-
-    private constructor() {}
 
     public onMounted(fn: MountCallback) {
         const id = this.freeIds.pop() ?? ++this.currentId;

@@ -1,5 +1,5 @@
 import { logError } from 'alt-server';
-import { MessageType } from '../enums';
+import { MessageType } from '@altv-vchat/shared';
 
 export function validateMessage(message: string, type: MessageType) {
     if (typeof message !== 'string') {
