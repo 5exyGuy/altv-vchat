@@ -4,7 +4,7 @@
     "author": "5exyGuy (Aurėjus Remeika)",
     "type": "module",
     "scripts": {
-        "dev": "rollup -c -w",
+        "dev": "rollup -c -w --bundleConfigAsCjs",
         "build": "rollup -c --bundleConfigAsCjs"
     },
     "dependencies": {

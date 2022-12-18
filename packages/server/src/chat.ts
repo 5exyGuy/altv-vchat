@@ -61,7 +61,18 @@ export class Chat {
             let syncedPlayerName = player.getSyncedMeta(CHAT_PLAYER_NAME_METADATA) as string;
             syncedPlayerName =
                 syncedPlayerName && typeof syncedPlayerName === 'string' ? syncedPlayerName : player.name;
-            message = this.processMessage(syncedPlayerName, message);
+
+            if (this.optionsService.getOption('logPlayerMessages'))
+                this.loggerService.log(`[message] ${syncedPlayerName}: ${message}`);
+
+            if (!this.optionsService.getOption('enableHTMLInjections'))
+                message = message.replace(/</g, '&lt;').replace(/'/g, '&#39').replace(/"/g, '&#34');
+
+            message = this.optionsService
+                .getOption('playerMessageFormat')
+                .replace('{0}', syncedPlayerName)
+                .replace('{1}', message);
+            message = this.processMessage(message);
 
             Player.all.forEach((player) =>
                 this.mountService.waitForMount(player, this.windowService.send(player, message)),
@@ -90,33 +101,25 @@ export class Chat {
         this.messageFormatter = messageFormatter;
     }
 
-    public processMessage(playerName: string, message: string) {
-        if (!this.optionsService.getOption('enableHTMLInjections'))
-            message = message.replace(/</g, '&lt;').replace(/'/g, '&#39').replace(/"/g, '&#34');
-        if (this.optionsService.getOption('enableDefaultMessageFormatter')) {
-            message = this.optionsService
-                .getOption('playerMessageFormat')
-                .replace('{0}', playerName)
-                .replace('{1}', message);
-            message = DEFAULT_MESSAGE_PROCESSOR(message);
+    public processMessage(message: string) {
+        if (!this.optionsService.getOption('enableDefaultMessageFormatter'))
+            return this.messageFormatter?.(message) ?? message;
 
-            this.optionsService.getEmojis().forEach((emoji) => {
-                const escapedName = emoji.name.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
-                const escapedTextEquivalent = emoji.textEquivalent.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
-                const regex = new RegExp(`(:${escapedName}:|${escapedTextEquivalent})`, 'g');
-                const src = this.optionsService
-                    .getOption('emojiCDN')
-                    .replace('{0}', emoji.name)
-                    .replace('{1}', emoji.fileFormat);
-                message = message.replace(
-                    regex,
-                    `<img src="${src}" alt="${emoji.name}" width="24" height="24" style="display: inline-block;" />`,
-                );
-            });
-        }
+        message = DEFAULT_MESSAGE_PROCESSOR(message);
 
-        if (this.optionsService.getOption('logPlayerMessages'))
-            this.loggerService.log(`[message] ${playerName}: ${message}`);
+        this.optionsService.getEmojis().forEach((emoji) => {
+            const escapedName = emoji.name.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
+            const escapedTextEquivalent = emoji.textEquivalent.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
+            const regex = new RegExp(`(:${escapedName}:|${escapedTextEquivalent})`, 'g');
+            const src = this.optionsService
+                .getOption('emojiCDN')
+                .replace('{0}', emoji.name)
+                .replace('{1}', emoji.fileFormat);
+            message = message.replace(
+                regex,
+                `<img src="${src}" alt="${emoji.name}" width="24" height="24" style="display: inline-block;" />`,
+            );
+        });
 
         return this.messageFormatter?.(message) ?? message;
     }
