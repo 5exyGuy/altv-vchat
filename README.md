@@ -19,9 +19,9 @@ command by typing part of the command name in the input field and more.
 
 **Features:**
 
--   Keyboard and mouse support
--   Command suggestions
--   Text formatting
+-   Keyboard and Mouse Support
+-   Command Suggestions
+-   Text Formatting
 -   Emojis
 
 It is also included in the project together with other examples of front-end framework implementations, if you want to
@@ -84,11 +84,11 @@ get some ideas for your own project.
 3. Add the chat resource as a dependency in the `resource.toml` file inside your resource folder
     > **_NOTE:_** Make sure that the name you insert matches the name of the resource folder.
     ```
-    deps: [vchat]
+    deps = ['vchat']
     ```
     **OR** add it into `server.toml`
     ```
-    resources: [vchat]
+    resources = ['vchat']
     ```
 4. Import the chat library in your server-side code
     > **_NOTE:_** Make sure that the name of the library you insert matches the name of the resource folder.
@@ -174,7 +174,7 @@ _Lorem Ipsum is simply dummy text of the printing and typesetting industry_
 
 ### 3. Command Suggestions
 
-The default command prefix is `/`.
+The default command prefix is `/`. You can change it in `options.json` file.
 
 To get command suggestions, you need to enter the prefix as the first character in the input field and at least one
 character after the prefix.
@@ -235,10 +235,6 @@ alt.on('playerConnect', (player) => {
 ```
 
 ### 2. Command Suggestions
-
-> **_NOTE:_** I recommend inserting some of the commands statically in one of the `WebView` examples to avoid
-> unnecessary event dispatches. Each `WebView` example has a `commands.json` file where you can insert your own
-> commands.
 
 To add command line suggestions to chat, you need to follow the specified data structure
 
@@ -322,9 +318,6 @@ chat.registerCmd('spawn', (player, args) => {
 ```
 
 ### 4. Muting Players
-
-> **_NOTE:_** If the default message handler is used, a muted player trying to send a message will receive an `Error`
-> message that he is muted.
 
 ![Mute Preview](./preview/mute-preview.gif)
 
@@ -464,35 +457,7 @@ alt.on('playerConnect', (player) => {
 });
 ```
 
-### 7. Message Handler
-
-If you're not happy with the default message handling, you can set it to your own. Since the default message handler
-manages commands and player correspondence, you will need to set up your own command registration and player
-communication.
-
-```ts
-export type MessageHandler = (player: Player, message: string) => void;
-```
-
-To set the handler to your own, use the `setMessageHandler` function
-
-```ts
-export function setMessageHandler(fn: MessageHandler): void;
-```
-
-To remove the current handler, use the `removeMessageHandler` function
-
-```ts
-export function removeMessageHandler(): void;
-```
-
-To restore the handler to its default, use the `restoreMessageHandler` function
-
-```ts
-export function restoreMessageHandler(): void;
-```
-
-### 8. Message Processor
+### 7. Message Formatter
 
 If there is a need to change the message processor in the default message handler, this is quite simple. And if you
 don't need it, you can simply remove it.
@@ -522,73 +487,6 @@ export function restoreMessageProcessor(): void;
 You can also use the internally used message processor as required (this is the default message processor)
 
 ```ts
-export function processMessage(message: string): string;
-```
-
-<p align="right">(<a href="#top">back to top</a>)</p>
-
-<!-- EXPORTED FUNCTIONS -->
-
-## Exported Functions
-
-### Interfaces, Enumerators and Types
-
-```ts
-// Iterfaces
-export interface CommandSuggestion {
-    name: string;
-    description?: string;
-    parameters?: Array<{ name: string; description?: string }>;
-}
-// Enums
-export enum MessageType {
-    Default = 0,
-    Empty = 1,
-    Info = 2,
-    Success = 3,
-    Warning = 4,
-    Error = 5,
-}
-// Types
-export type CommandHandler = (player: Player, args: Array<string>) => void;
-export type MountCallback = (player: Player, mounted: boolean) => void;
-export type MessageHandler = (player: Player, message: string) => void;
-export type MessageProcessor = (message: string) => void;
-```
-
-### Funcions
-
-```ts
-export function send(player: Player, message: string, type: MessageType = MessageType.Default): void;
-export function broadcast(message: string, type: MessageType = MessageType.Default): void;
-export function registerCmd(cmdName: string, handler: CommandHandler): void;
-export function unregisterCmd(cmdName: string): void;
-export function addSuggestion(player: Player, suggestion: CommandSuggestion | Array<CommandSuggestion>): void;
-export function addSuggestionAll(suggestion: CommandSuggestion | Array<CommandSuggestion>): void;
-export function toggleFocusEnabled(player: Player, enabled: boolean): void;
-export function toggleFocusEnabledAll(enabled: boolean): void;
-export function focus(player: Player): void;
-export function focusAll(): void;
-export function unfocus(player: Player): void;
-export function unfocusAll(): void;
-export function clearHistory(player: Player): void;
-export function clearHistoryAll(): void;
-export function clear(player: Player): void;
-export function clearAll(): void;
-export function mutePlayer(player: Player): void;
-export function muteAllPlayers(): void;
-export function unmutePlayer(player: Player): void;
-export function unmuteAllPlayer(player: Player): void;
-export function isMuted(player: Player): void;
-export function onMounted(fn: MountCallback): number;
-export function offMounted(id: number): number;
-export function isMounted(player: Player): void;
-export function setMessageHandler(fn: MessageHandler): void;
-export function removeMessageHandler(): void;
-export function restoreMessageHandler(): void;
-export function setMessageProcessor(fn: MessageProcessor): void;
-export function removeMessageProcessor(): void;
-export function restoreMessageProcessor(): void;
 export function processMessage(message: string): string;
 ```
 
