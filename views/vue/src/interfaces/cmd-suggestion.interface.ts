@@ -1,7 +1,7 @@
 export interface CommandSuggestion {
     name: string;
     description?: string;
-    params?: Array<{
+    parameters?: Array<{
         name: string;
         description?: string;
     }>;

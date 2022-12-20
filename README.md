@@ -246,7 +246,7 @@ To add command line suggestions to chat, you need to follow the specified data s
 export interface CommandSuggestion {
     name: string; // The name of the command.
     description?: string; // The description of the command.
-    params?: Array<{ name: string; description?: string }>; // The parameters of the command.
+    parameters?: Array<{ name: string; description?: string }>; // The parameters of the command.
 }
 ```
 
@@ -273,7 +273,7 @@ import * as chat from 'vchat';
 const suggestion = {
     name: 'spawn',
     description: 'Teleport a player to the spawnpoint or to the specified coordinates.',
-    params: [{ name: 'x' }, { name: 'y' }, { name: 'z' }],
+    parameters: [{ name: 'x' }, { name: 'y' }, { name: 'z' }],
 };
 
 alt.on('playerConnect', (player) => {
@@ -538,7 +538,7 @@ export function processMessage(message: string): string;
 export interface CommandSuggestion {
     name: string;
     description?: string;
-    params?: Array<{ name: string; description?: string }>;
+    parameters?: Array<{ name: string; description?: string }>;
 }
 // Enums
 export enum MessageType {

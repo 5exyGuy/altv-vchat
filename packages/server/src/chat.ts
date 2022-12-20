@@ -84,7 +84,7 @@ export class Chat {
         this.eventService.emitClient(
             player,
             'vchat:syncSettings',
-            this.optionsService.getClientOptions(),
+            { ...this.optionsService.getClientOptions(), ...this.optionsService.getWindowOptions() },
             this.optionsService.getCommandSuggestions(),
         );
     }
@@ -111,10 +111,12 @@ export class Chat {
             const escapedName = emoji.name.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
             const escapedTextEquivalent = emoji.textEquivalent.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
             const regex = new RegExp(`(:${escapedName}:|${escapedTextEquivalent})`, 'g');
-            const src = this.optionsService
-                .getOption('emojiCDN')
-                .replace('{0}', emoji.name)
-                .replace('{1}', emoji.fileFormat);
+            const src =
+                emoji.url ??
+                this.optionsService
+                    .getOption('emojiCDN')
+                    .replace('{0}', emoji.name)
+                    .replace('{1}', emoji.extension ?? 'png');
             message = message.replace(
                 regex,
                 `<img src="${src}" alt="${emoji.name}" width="24" height="24" style="display: inline-block;" />`,

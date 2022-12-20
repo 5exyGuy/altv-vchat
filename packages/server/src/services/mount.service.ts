@@ -7,8 +7,9 @@ export class MountService {
     private readonly listeners = new Map<number, MountCallback>();
     private readonly players = new Set<Player>();
     private readonly freeIds = [] as Array<number>;
-    private currentId = -1;
     private readonly waiters = new Map<Player, Array<Function>>();
+
+    private currentId = -1;
 
     public onMounted(fn: MountCallback) {
         const id = this.freeIds.pop() ?? ++this.currentId;

@@ -72,7 +72,7 @@ export function CommandSuggestions() {
         const newMatchedCommands = commands
             .filter(
                 (command) =>
-                    (command.name === cmdName && cmdParams.length <= (command.params?.length ?? 0)) ||
+                    (command.name === cmdName && cmdParams.length <= (command.parameters?.length ?? 0)) ||
                     (command.name.startsWith(cmdName) && cmdParams.length === 0),
             )
             .splice(0, options.maxCommandSuggestions)
@@ -80,7 +80,7 @@ export function CommandSuggestions() {
                 let currentParam = -1;
 
                 if (words.length === 1 && command.name === cmdName) currentParam = 0;
-                else if (cmdParams.length > 0 && cmdParams.length <= (command.params?.length ?? 0))
+                else if (cmdParams.length > 0 && cmdParams.length <= (command.parameters?.length ?? 0))
                     currentParam = cmdParams.length;
 
                 return { currentParam, ...command, name: options.prefix + command.name };
@@ -145,7 +145,7 @@ export function CommandSuggestions() {
                         <span className={classnames({ 'font-bold': matchedCommand.currentParam === 0 })}>
                             {matchedCommand.name}
                         </span>
-                        {(matchedCommand.params ?? []).map((param, paramIndex) => (
+                        {(matchedCommand.parameters ?? []).map((param, paramIndex) => (
                             <span
                                 key={paramIndex}
                                 className={classnames('ml-1', {
@@ -159,7 +159,7 @@ export function CommandSuggestions() {
                     <div className="text-xs text-white text-opacity-50">
                         {(matchedCommand.currentParam <= 0
                             ? matchedCommand.description
-                            : matchedCommand.params![matchedCommand.currentParam - 1].description) ?? ''}
+                            : matchedCommand.parameters![matchedCommand.currentParam - 1].description) ?? ''}
                     </div>
                 </div>
             ))}

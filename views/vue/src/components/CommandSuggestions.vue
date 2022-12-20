@@ -62,7 +62,7 @@ function updateMatchedCommands(message: string, commands: Array<CommandSuggestio
     matchedCommands.value = commands
         .filter(
             (command) =>
-                (command.name === cmdName && cmdParams.length <= (command.params?.length ?? 0)) ||
+                (command.name === cmdName && cmdParams.length <= (command.parameters?.length ?? 0)) ||
                 (command.name.startsWith(cmdName) && cmdParams.length === 0),
         )
         .splice(0, options.maxCommandSuggestions)
@@ -70,7 +70,7 @@ function updateMatchedCommands(message: string, commands: Array<CommandSuggestio
             let currentParam = -1;
 
             if (words.length === 1 && command.name === cmdName) currentParam = 0;
-            else if (cmdParams.length > 0 && cmdParams.length <= (command.params?.length ?? 0))
+            else if (cmdParams.length > 0 && cmdParams.length <= (command.parameters?.length ?? 0))
                 currentParam = cmdParams.length;
 
             return { currentParam, ...command, name: options.prefix + command.name };
@@ -142,7 +142,7 @@ onUnmounted(() => {
             <div class="flex text-base text-white text-opacity-100">
                 <span :class="{ 'font-bold': matchedCommand.currentParam === 0 }">{{ matchedCommand.name }}</span>
                 <span
-                    v-for="(param, paramIndex) in matchedCommand.params"
+                    v-for="(param, paramIndex) in matchedCommand.parameters"
                     class="ml-1"
                     :class="{ 'font-bold': matchedCommand.currentParam === paramIndex + 1 }"
                 >
@@ -153,7 +153,7 @@ onUnmounted(() => {
                 {{
                     (matchedCommand.currentParam <= 0
                         ? matchedCommand.description
-                        : matchedCommand.params![matchedCommand.currentParam - 1].description) ?? ''
+                        : matchedCommand.parameters![matchedCommand.currentParam - 1].description) ?? ''
                 }}
             </div>
         </div>

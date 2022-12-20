@@ -127,7 +127,7 @@ declare module 'vchat' {
     export interface CommandSuggestion {
         description?: string;
         name: string;
-        params?: Array<{
+        parameters?: Array<{
             name: string;
             description?: string;
         }>;

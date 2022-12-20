@@ -62,7 +62,7 @@
         matchedCommands = commands
             .filter(
                 (command) =>
-                    (command.name === cmdName && cmdParams.length <= (command.params?.length ?? 0)) ||
+                    (command.name === cmdName && cmdParams.length <= (command.parameters?.length ?? 0)) ||
                     (command.name.startsWith(cmdName) && cmdParams.length === 0),
             )
             .splice(0, $options.maxCommandSuggestions)
@@ -70,7 +70,7 @@
                 let currentParam = -1;
 
                 if (words.length === 1 && command.name === cmdName) currentParam = 0;
-                else if (cmdParams.length > 0 && cmdParams.length <= (command.params?.length ?? 0))
+                else if (cmdParams.length > 0 && cmdParams.length <= (command.parameters?.length ?? 0))
                     currentParam = cmdParams.length;
 
                 return { currentParam, ...command, name: $options.prefix + command.name };
@@ -139,7 +139,7 @@
                 <span class:font-bold={matchedCommand.currentParam === 0}>
                     {matchedCommand.name}
                 </span>
-                {#each matchedCommand.params ?? [] as param, paramIndex}
+                {#each matchedCommand.parameters ?? [] as param, paramIndex}
                     <span class="ml-1" class:font-bold={matchedCommand.currentParam === paramIndex + 1}>
                         [{param.name}]
                     </span>
@@ -148,7 +148,7 @@
             <div class="text-xs text-white text-opacity-50">
                 {(matchedCommand.currentParam <= 0
                     ? matchedCommand.description
-                    : matchedCommand.params[matchedCommand.currentParam - 1].description) ?? ''}
+                    : matchedCommand.parameters[matchedCommand.currentParam - 1].description) ?? ''}
             </div>
         </div>
     {/each}

@@ -45,14 +45,14 @@ export class OptionsService {
     private readCommandSuggestions() {
         const commandSuggestionsPath = path.join(process.cwd(), 'resources', Resource.current.name, 'commands.json');
         if (!fs.existsSync(commandSuggestionsPath)) return;
-        this.commandSuggestions = JSON.parse(fs.readFileSync(commandSuggestionsPath, 'utf8'));
+        this.commandSuggestions = JSON.parse(fs.readFileSync(commandSuggestionsPath, 'utf8')).commandSuggestions;
         this.loggerService.log(`Loaded command suggestions from ${commandSuggestionsPath}`);
     }
 
     private readEmojis() {
         const emojisPath = path.join(process.cwd(), 'resources', Resource.current.name, 'emojis.json');
         if (!fs.existsSync(emojisPath)) return;
-        this.emojis = JSON.parse(fs.readFileSync(emojisPath, 'utf8'));
+        this.emojis = JSON.parse(fs.readFileSync(emojisPath, 'utf8')).emojis;
         this.loggerService.log(`Loaded emojis from ${emojisPath}`);
     }
 
@@ -63,14 +63,24 @@ export class OptionsService {
     }
 
     public getClientOptions() {
-        const {
-            enableHTMLInjections,
-            enableDefaultMessageFormatter,
-            logPlayerMessages,
-            logPlayerCommands,
-            ...clientOptions
-        } = this.options;
-        return clientOptions as ClientOptions;
+        return {
+            focusKey: this.options.focusKey,
+            hideOnConnect: this.options.hideOnConnect,
+            maxMessageHistory: this.options.maxMessageHistory,
+            unfocusKey: this.options.unfocusKey,
+        } as ClientOptions;
+    }
+
+    public getWindowOptions() {
+        return {
+            maxCommandSuggestions: this.options.maxCommandSuggestions,
+            maxMessageBufferLength: this.options.maxMessageBufferLength,
+            maxMessageLength: this.options.maxMessageLength,
+            maxMessages: this.options.maxMessages,
+            placeholder: this.options.placeholder,
+            prefix: this.options.prefix,
+            scrollStep: this.options.scrollStep,
+        } as WindowOptions;
     }
 
     public getCommandSuggestions() {

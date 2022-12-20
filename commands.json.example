@@ -1,7 +1,20 @@
-[
-    {
-        "name": "tp",
-        "description": "Teleport to the specified coordinates.",
-        "params": [{ "name": "x" }, { "name": "y" }, { "name": "z" }]
-    }
-]
+{
+    "$schema": "https://raw.githubusercontent.com/5exyGuy/altv-vchat/master/schemas/commands.schema.json",
+    "commandSuggestions": [
+        {
+            "name": "tp",
+            "description": "Teleport to the specified coordinates.",
+            "parameters": [{ "name": "x" }, { "name": "y" }, { "name": "z" }]
+        },
+        {
+            "name": "tp",
+            "description": "Teleport to the specified coordinates.",
+            "parameters": [
+                { "name": "x" },
+                { "name": "y" },
+                { "name": "z" },
+                { "name": "t", "description": "time dimension :|" }
+            ]
+        }
+    ]
+}

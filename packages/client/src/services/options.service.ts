@@ -28,23 +28,14 @@ export class OptionsService {
     }
 
     public getWindowOptions() {
-        const {
-            prefix,
-            maxCommandSuggestions,
-            maxMessageBufferLength,
-            maxMessageLength,
-            maxMessages,
-            placeholder,
-            scrollStep,
-        } = this.options;
         return {
-            prefix,
-            maxCommandSuggestions,
-            maxMessageBufferLength,
-            maxMessageLength,
-            maxMessages,
-            placeholder,
-            scrollStep,
-        };
+            prefix: this.options.prefix,
+            maxCommandSuggestions: this.options.maxCommandSuggestions,
+            maxMessageBufferLength: this.options.maxMessageBufferLength,
+            maxMessageLength: this.options.maxMessageLength,
+            maxMessages: this.options.maxMessages,
+            placeholder: this.options.placeholder,
+            scrollStep: this.options.scrollStep,
+        } as WindowOptions;
     }
 }
