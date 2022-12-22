@@ -353,7 +353,7 @@ alt.on('playerConnect', (player) => {
 });
 ```
 
-<p align="right">(<a href="#2-table-of-contents">go back to table of contents</a>)</p>
+<p align="right">(<a href="#table-of-contents">go back to table of contents</a>)</p>
 
 ### 2. Command Suggestions
 
@@ -402,7 +402,7 @@ alt.on('playerConnect', (player) => {
 
 ![Command Suggestion Example Preview](./preview/command-suggestion-example-preview.gif)
 
-<p align="right">(<a href="#2-table-of-contents">go back to table of contents</a>)</p>
+<p align="right">(<a href="#table-of-contents">go back to table of contents</a>)</p>
 
 ### 3. Command Registration
 
@@ -431,7 +431,7 @@ chat.registerCmd('spawn', (player, args) => {
 });
 ```
 
-<p align="right">(<a href="#2-table-of-contents">go back to table of contents</a>)</p>
+<p align="right">(<a href="#table-of-contents">go back to table of contents</a>)</p>
 
 ### 4. Muting Players
 
@@ -457,7 +457,7 @@ export function unmutePlayer(player: Player): void;
 export function muteAllPlayers(): void;
 ```
 
-<p align="right">(<a href="#2-table-of-contents">go back to table of contents</a>)</p>
+<p align="right">(<a href="#table-of-contents">go back to table of contents</a>)</p>
 
 ### 5. Clearing Player's Chat
 
@@ -475,7 +475,7 @@ export function clearMessageHistory(player: Player): void;
 export function clearMessageHistoryAll(): void;
 ```
 
-<p align="right">(<a href="#2-table-of-contents">go back to table of contents</a>)</p>
+<p align="right">(<a href="#table-of-contents">go back to table of contents</a>)</p>
 
 ### 6. Controlling Player's Chat Focus
 
@@ -503,7 +503,7 @@ export function unfocus(player: Player): void;
 export function unfocusAll(): void;
 ```
 
-<p align="right">(<a href="#2-table-of-contents">go back to table of contents</a>)</p>
+<p align="right">(<a href="#table-of-contents">go back to table of contents</a>)</p>
 
 ### 7. Chat's Visibility
 
@@ -518,7 +518,7 @@ export function hide(player: Player): void;
 export function hideAll(): void;
 ```
 
-<p align="right">(<a href="#2-table-of-contents">go back to table of contents</a>)</p>
+<p align="right">(<a href="#table-of-contents">go back to table of contents</a>)</p>
 
 ### 8. Player Chat Mount Events
 
@@ -552,7 +552,7 @@ alt.on('playerConnect', (player) => {
 });
 ```
 
-<p align="right">(<a href="#2-table-of-contents">go back to table of contents</a>)</p>
+<p align="right">(<a href="#table-of-contents">go back to table of contents</a>)</p>
 
 ### 9. Message Formatter
 
@@ -570,7 +570,7 @@ It is also possible to use the internal formatting function, which is used to fo
 export function useDefaultMessageFormatter(message: string): string;
 ```
 
-<p align="right">(<a href="#2-table-of-contents">go back to table of contents</a>)</p>
+<p align="right">(<a href="#table-of-contents">go back to table of contents</a>)</p>
 
 ### 10. Updating Player's Chat Options Dynamically
 
