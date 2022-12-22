@@ -440,12 +440,10 @@ export function muteAllPlayers(): void;
 
 To clear the chat of a player or all players, use the `clearMessages`/`clearMessagesAll` function.
 
-````
-
 ```ts
 export function clearMessages(player: Player): void;
 export function clearMessagesAll(): void;
-````
+```
 
 To clear the chat history of a player or all players, use the `clearMessageHistory`/`clearMessageHistoryAll` function.
 
