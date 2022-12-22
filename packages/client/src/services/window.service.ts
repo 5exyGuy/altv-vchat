@@ -5,8 +5,8 @@ import { singleton } from 'tsyringe';
 
 @singleton()
 export class WindowService {
-    // private readonly webView = new WebView('http://resource/client/view/index.html');
-    private readonly webView = new WebView('http://localhost:4000');
+    private readonly webView = new WebView('http://resource/client/view/index.html');
+    // private readonly webView = new WebView('http://localhost:4000');
     private focusEnabled = true;
 
     public constructor() {
