@@ -1,7 +1,7 @@
 {
     "name": "@altv-vchat/types",
     "description": "vChat resource types for alt:V.",
-    "version": "1.0.3",
+    "version": "1.0.5",
     "author": "5exyGuy (Aurėjus Remeika)",
     "main": "",
     "types": "index.d.ts",
