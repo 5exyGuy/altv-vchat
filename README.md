@@ -292,9 +292,24 @@ interface Emoji {
 }
 ```
 
+<p align="right">(<a href="#top">back to top</a>)</p>
+
 <!-- USAGE EXAMPLES FOR DEVELOPER -->
 
 ## Server API
+
+### Table of Contents
+
+1. [Messaging](#1-messaging)
+2. [Command Suggestions](#2-command-suggestions)
+3. [Command Registration](#3-command-registration)
+4. [Muting Players](#4-muting-players)
+5. [Clearing Player's Chat](#5-clearing-players-chat)
+6. [Controlling Player's Chat Focus](#6-controlling-players-chat-focus)
+7. [Chat's Visibility](#7-chats-visibility)
+8. [Player Chat Mount Events](#8-player-chat-mount-events)
+9. [Message Formatter](#9-message-formatter)
+10. [Updating Player's Chat Options Dynamically](#10-updating-players-chat-options-dynamically)
 
 ### 1. Messaging
 
@@ -337,6 +352,8 @@ alt.on('playerConnect', (player) => {
     chat.broadcast(`Player ${player.name} has joined the server`, 1);
 });
 ```
+
+<p align="right">(<a href="#2-table-of-contents">go back to table of contents</a>)</p>
 
 ### 2. Command Suggestions
 
@@ -385,6 +402,8 @@ alt.on('playerConnect', (player) => {
 
 ![Command Suggestion Example Preview](./preview/command-suggestion-example-preview.gif)
 
+<p align="right">(<a href="#2-table-of-contents">go back to table of contents</a>)</p>
+
 ### 3. Command Registration
 
 Each command name is unique, so there can only be one command handler/callback for a particular command name. The
@@ -412,6 +431,8 @@ chat.registerCmd('spawn', (player, args) => {
 });
 ```
 
+<p align="right">(<a href="#2-table-of-contents">go back to table of contents</a>)</p>
+
 ### 4. Muting Players
 
 ![Mute Preview](./preview/mute-preview.gif)
@@ -436,6 +457,8 @@ export function unmutePlayer(player: Player): void;
 export function muteAllPlayers(): void;
 ```
 
+<p align="right">(<a href="#2-table-of-contents">go back to table of contents</a>)</p>
+
 ### 5. Clearing Player's Chat
 
 To clear the chat of a player or all players, use the `clearMessages`/`clearMessagesAll` function.
@@ -451,6 +474,8 @@ To clear the chat history of a player or all players, use the `clearMessageHisto
 export function clearMessageHistory(player: Player): void;
 export function clearMessageHistoryAll(): void;
 ```
+
+<p align="right">(<a href="#2-table-of-contents">go back to table of contents</a>)</p>
 
 ### 6. Controlling Player's Chat Focus
 
@@ -478,6 +503,8 @@ export function unfocus(player: Player): void;
 export function unfocusAll(): void;
 ```
 
+<p align="right">(<a href="#2-table-of-contents">go back to table of contents</a>)</p>
+
 ### 7. Chat's Visibility
 
 It is also possible to control the visibility of the chat window. To hide the chat window of a player or all players,
@@ -490,6 +517,8 @@ export function showAll(): void;
 export function hide(player: Player): void;
 export function hideAll(): void;
 ```
+
+<p align="right">(<a href="#2-table-of-contents">go back to table of contents</a>)</p>
 
 ### 8. Player Chat Mount Events
 
@@ -523,6 +552,8 @@ alt.on('playerConnect', (player) => {
 });
 ```
 
+<p align="right">(<a href="#2-table-of-contents">go back to table of contents</a>)</p>
+
 ### 9. Message Formatter
 
 If there is a need to add your own message formatting, you can use the `setMessageFormatter` function. And if you don't
@@ -538,6 +569,8 @@ It is also possible to use the internal formatting function, which is used to fo
 ```ts
 export function useDefaultMessageFormatter(message: string): string;
 ```
+
+<p align="right">(<a href="#2-table-of-contents">go back to table of contents</a>)</p>
 
 ### 10. Updating Player's Chat Options Dynamically
 
@@ -581,6 +614,8 @@ Or you can update all options at once using the `updateOptions`/`updateOptionsAl
 export function updateOptions(player: Player, options: Partial<ClientOptions & WindowOptions>): void;
 export function updateOptionsAll(options: Partial<ClientOptions & WindowOptions>): void;
 ```
+
+<p align="right">(<a href="#2-table-of-contents">go back to table of contents</a>)</p>
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
