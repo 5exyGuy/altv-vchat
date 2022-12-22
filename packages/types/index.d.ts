@@ -6,6 +6,42 @@
 declare module 'vchat' {
     import { Player } from 'alt-server';
 
+    export type CommandHandler = (player: Player, args: Array<string>) => void;
+    export type MessageFormatter = (message: string) => string;
+    export type MountCallback = (player: Player, mounted: boolean) => void;
+    export interface ClientOptions {
+        focusKey: number;
+        hideOnConnect: boolean;
+        maxMessageHistory: number;
+        unfocusKey: number;
+    }
+    export interface WindowOptions {
+        maxCommandSuggestions: number;
+        maxMessageBufferLength: number;
+        maxMessageLength: number;
+        maxMessages: number;
+        placeholder: string;
+        prefix: string;
+        scrollStep: number;
+    }
+    export interface CommandSuggestion {
+        description?: string;
+        name: string;
+        parameters?: Array<{
+            name: string;
+            description?: string;
+        }>;
+    }
+
+    enum MessageType {
+        Default = 0,
+        Empty = 1,
+        Info = 2,
+        Success = 3,
+        Warning = 4,
+        Error = 5,
+    }
+
     /**
      * Clears the player's chat history from the local storage.
      */
@@ -22,10 +58,6 @@ declare module 'vchat' {
      * Clears all players' chat in the webview.
      */
     export function clearMessagesAll(): void;
-    export type CommandHandler = (player: Player, args: Array<string>) => void;
-    export type MessageHandler = (player: Player, message: string) => void;
-    export type MessageProcessor = (message: string) => string;
-    export type MountCallback = (player: Player, mounted: boolean) => void;
     /**
      * Registers a command handler to the specified command.
      */
@@ -59,33 +91,21 @@ declare module 'vchat' {
      */
     export function unfocusAll(): void;
     /**
-     * Sets the message handler.
-     */
-    export function setMessageHandler(fn: MessageHandler): void;
-    /**
-     * Removes the message handler.
-     */
-    export function removeMessageHandler(): void;
-    /**
-     * Sets the message handler to the default.
-     */
-    export function restoreMessageHandler(): void;
-    /**
      * Sets the message processor.
      */
-    export function setMessageProcessor(fn: MessageProcessor): void;
+    export function setMessageFormatter(fn: MessageFormatter): void;
     /**
      * Removes the message processor.
      */
-    export function removeMessageProcessor(): void;
+    export function removeMessageFormatter(): void;
     /**
      * Sets the message processor to the default.
      */
-    export function restoreMessageProcessor(): void;
+    export function restoreMessageFormatter(): void;
     /**
      * Processes the message.
      */
-    export function processMessage(message: string): void;
+    export function useDefaultMessageFormatter(message: string): void;
     /**
      * Subscribes to mount event and returns the id of the subscription.
      */
@@ -118,29 +138,6 @@ declare module 'vchat' {
      * Checks if the player is muted.
      */
     export function isMuted(player: Player): boolean;
-    export interface ClientOptions {
-        focusKey: number;
-        hideOnConnect: boolean;
-        maxMessageHistory: number;
-        unfocusKey: number;
-    }
-    export interface CommandSuggestion {
-        description?: string;
-        name: string;
-        parameters?: Array<{
-            name: string;
-            description?: string;
-        }>;
-    }
-    export interface WindowOptions {
-        maxCommandSuggestions: number;
-        maxMessageBufferLength: number;
-        maxMessageLength: number;
-        maxMessages: number;
-        placeholder: string;
-        prefix: string;
-        scrollStep: number;
-    }
     /**
      * Updates the specified option for the specified player.
      */
@@ -164,14 +161,6 @@ declare module 'vchat' {
      * Updates the specified options for all players.
      */
     export function updateOptionsAll(options: Partial<ClientOptions & WindowOptions>): void;
-    enum MessageType {
-        Default = 0,
-        Empty = 1,
-        Info = 2,
-        Success = 3,
-        Warning = 4,
-        Error = 5,
-    }
     /**
      * Sends a message to the player.
      */
@@ -184,10 +173,20 @@ declare module 'vchat' {
      * Adds a command suggestion to the player's chat webview.
      */
     export function addSuggestion(player: Player, suggestion: CommandSuggestion | Array<CommandSuggestion>): void;
+    /**
+     * Adds a command suggestion to all players' chat webview.
+     */
+    export function addSuggetionAll(suggestion: CommandSuggestion | Array<CommandSuggestion>): void;
+    /**
+     * Removes all command suggestions from the player's chat webview.
+     */
     export function removeSuggestions(player: Player): void;
     /**
+     * Removes all command suggestions from all players' chat webview.
+     */
+    export function removeSuggestionsAll(): void;
+    /**
      * Shows the chat window for the given player.
-     * @param player
      */
     export function show(player: Player): void;
     /**
@@ -196,7 +195,6 @@ declare module 'vchat' {
     export function showAll(): void;
     /**
      * Hides the chat window for the given player.
-     * @param player
      */
     export function hide(player: Player): void;
     /**

@@ -8,7 +8,7 @@
     "files": [
         "index.d.ts"
     ],
-    "peerDependencies": {
-        "@altv/types-server": ">=2.5.0"
+    "dependencies": {
+        "@altv/types-server": "^2.5.5"
     }
 }

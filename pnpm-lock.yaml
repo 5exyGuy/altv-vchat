@@ -71,7 +71,10 @@ importers:
       typescript: 4.9.4
 
   packages/types:
-    specifiers: {}
+    specifiers:
+      '@altv/types-server': ^2.5.5
+    dependencies:
+      '@altv/types-server': 2.5.5
 
   views/react:
     specifiers:
@@ -205,6 +208,12 @@ packages:
     dependencies:
       '@altv/types-client': 2.4.2_ien2poeuzpwnf3xf4z227que6a
     dev: true
+
+  /@altv/types-server/2.5.5:
+    resolution: {integrity: sha512-Wa6CReQLRgynloxgtwg7puvYdZAFLP8D0SP9b/wuNkSrMf7BiOPWdiT4e5laBiTpEgqha12Ox16enP0Vsa4m+A==}
+    peerDependencies:
+      '@altv/types-shared': latest
+    dev: false
 
   /@altv/types-server/2.5.5_@altv+types-shared@1.3.6:
     resolution: {integrity: sha512-Wa6CReQLRgynloxgtwg7puvYdZAFLP8D0SP9b/wuNkSrMf7BiOPWdiT4e5laBiTpEgqha12Ox16enP0Vsa4m+A==}

@@ -5,7 +5,6 @@ import { WindowService } from '../services/window.service';
 
 /**
  * Shows the chat window for the given player.
- * @param player
  */
 export function show(player: Player) {
     container.resolve(MountService).waitForMount(player, container.resolve(WindowService).show(player));
@@ -20,7 +19,6 @@ export function showAll() {
 
 /**
  * Hides the chat window for the given player.
- * @param player
  */
 export function hide(player: Player) {
     container.resolve(MountService).waitForMount(player, container.resolve(WindowService).hide(player));

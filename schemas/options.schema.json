@@ -3,93 +3,98 @@
     "properties": {
         "enableDefaultMessageFormatter": {
             "type": "boolean",
-            "description": "",
+            "description": "Enables the default message formatter.",
             "default": true
         },
         "enableHTMLInjections": {
             "type": "boolean",
-            "description": "",
+            "description": "Enables HTML injections (e.g. <script>...</script>).",
             "default": false
         },
         "focusKey": {
             "type": "number",
-            "description": "",
+            "description": "Key to focus the chat's input field.",
             "default": 84
         },
         "hideOnConnect": {
             "type": "boolean",
-            "description": "",
+            "description": "Hides the chat on player connect.",
             "default": false
         },
         "logPlayerCommands": {
             "type": "boolean",
-            "description": "",
+            "description": "Logs player commands.",
             "default": false
         },
         "logPlayerMessages": {
             "type": "boolean",
-            "description": "",
+            "description": "Logs player messages.",
             "default": false
         },
         "maxCommandSuggestions": {
             "type": "number",
-            "description": "",
+            "description": "Maximum number of command suggestions that are displayed in the chat.",
             "default": 3
         },
         "maxMessageBufferLength": {
             "type": "number",
-            "description": "",
+            "description": "Maximum number of messages in the buffer that can be used to pick a previously entered message with the up/down arrow keys.",
             "default": 100
         },
         "maxMessageHistory": {
             "type": "number",
-            "description": "",
+            "description": "Maximum number of messages in the history that are saved in the local storage.",
             "default": 100
         },
         "maxMessageLength": {
             "type": "number",
-            "description": "",
+            "description": "Maximum number of characters in a message.",
             "default": 1000
         },
         "maxMessages": {
             "type": "number",
-            "description": "",
+            "description": "Maximum number of messages that can be displayed at the same time.",
             "default": 100
         },
         "muteMessage": {
             "type": "string",
-            "description": "",
+            "description": "Message that is displayed when a player is muted.",
             "default": "You are muted."
         },
         "placeholder": {
             "type": "string",
-            "description": "",
+            "description": "Placeholder text in the input field.",
             "default": "Type a message..."
         },
         "prefix": {
             "type": "string",
-            "description": "",
+            "description": "Command prefix.",
             "default": "/"
         },
         "scrollStep": {
             "type": "number",
-            "description": "",
+            "description": "Number of pixels to scroll when using the mouse wheel or page up/down keys.",
             "default": 20
         },
         "unfocusKey": {
             "type": "number",
-            "description": "",
+            "description": "Key to unfocus the chat's input field.",
             "default": 27
         },
         "unknownCommandMessage": {
             "type": "string",
-            "description": "",
+            "description": "Message that is displayed when a player enters an unknown command.",
             "default": "Unknown command: {0}"
         },
         "useChatFormattingInAPI": {
             "type": "boolean",
-            "description": "",
+            "description": "Enables chat formatting in the API.",
             "default": true
+        },
+        "emojiCDN": {
+            "type": "string",
+            "description": "CDN for emoji images.",
+            "default": "http://resource/emojis/{0}.{1}"
         }
     }
 }

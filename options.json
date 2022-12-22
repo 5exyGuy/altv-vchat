@@ -17,5 +17,6 @@
     "scrollStep": 20,
     "unfocusKey": 27,
     "unknownCommandMessage": "Unknown command: {0}",
-    "useChatFormattingInAPI": true
+    "useChatFormattingInAPI": true,
+    "emojiCDN": "http://resource/emojis"
 }
