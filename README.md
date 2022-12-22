@@ -615,7 +615,7 @@ export function updateOptions(player: Player, options: Partial<ClientOptions & W
 export function updateOptionsAll(options: Partial<ClientOptions & WindowOptions>): void;
 ```
 
-<p align="right">(<a href="#2-table-of-contents">go back to table of contents</a>)</p>
+<p align="right">(<a href="#table-of-contents">go back to table of contents</a>)</p>
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
